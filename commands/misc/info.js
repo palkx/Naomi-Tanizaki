@@ -8,9 +8,10 @@ module.exports = class AboutCommand extends Command {
 			group: 'misc',
 			memberName: 'about',
 			description: 'Displays information about the command framework.',
+			guildOnly: false,
 			throttling: {
 				usages: 2,
-				duration: 3
+				duration: 5
 			}
 		});
 	}

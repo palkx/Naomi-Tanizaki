@@ -1,17 +1,33 @@
+global.Promise = require('bluebird');
 const commando = require('discord.js-commando');
 const { oneLine } = require('common-tags');
 const path = require('path');
-const mongoose = require('mongoose');
 const winston = require('winston');
+const sqlite = require('sqlite');
 
 const config = require('./config/conf.json');
+const version = require('./package.json').version;
 
 const client = new commando.Client({
+    autoreconnect: true,
     owner: config.owner,
     commandPrefix: config.commandPrefix,
     unknownCommandResponse: false,
-    disableEveryone: true
-})
+    disableEveryone: true,
+    disableEvenets: ['typingStart', 'typingStop', 'guildMemberSpeaking', 'messageUpdate']
+});
+
+client.setProvider(
+    sqlite.open(path.join(__dirname, 'settings.sqlite3')).then(db => new commando.SQLiteProvider(db))
+).catch(console.error);
+
+client.dispatcher.addInhibitor(msg => {
+	const blacklist = client.provider.get('global', 'userBlacklist', []);
+
+	if (!blacklist.includes(msg.author.id)) return false;
+
+	return `User ${msg.author.username}#${msg.author.discriminator} (${msg.author.id}) has been blacklisted.`;
+});
 
 client.on('error', winston.error)
           .on('warn', winston.warn)
@@ -19,7 +35,16 @@ client.on('error', winston.error)
               winston.info(oneLine`
               Client ready. Logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})
               `);
+              client.user.setGame(`${version} | ${config.commandPrefix}help | ${client.guilds.array().length} Servers`);
           })
+          /*.on('guildCreate', (Guild) => {
+          })
+          .on('guildDelete', (Guild) => {
+          })
+          .on('guildMemberAdd', (g, m) => {
+          })
+          .on('guildMemberRemove', (g, m) => {
+          })*/
           .on('disconnect', () => {winston.warn('Disconnected!'); })
           .on('reconnect', () => {winston.warn('Reconnecting...'); })
           .on('commandRun', (cmd, promise, msg, args) => {
@@ -66,9 +91,21 @@ client.on('error', winston.error)
                   `);
           });
 
+process.on('SIGINT', () => {
+    try {
+        client.destroy();
+    } catch (e) {
+        console.log(e);
+    }
+    setTimeout(() => {
+        process.exit(0);
+    }, 200);
+});
+
 client.registry
 	.registerGroups([
-		['misc', 'Misc']
+		['misc', 'Misc'],
+        ['moderation', 'Moderation']
 	])
 	.registerDefaults()
 	.registerCommandsIn(path.join(__dirname, 'commands'));
