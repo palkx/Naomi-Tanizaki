@@ -1,0 +1,5 @@
+{
+    "token": "YOUR_TOKEN",
+    "owner": "YOUR_ID",
+    "commandPrefix": "YOUR_PREFIX"
+}
