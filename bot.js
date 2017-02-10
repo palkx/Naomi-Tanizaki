@@ -95,7 +95,7 @@ process.on('SIGINT', () => {
     try {
         client.destroy();
     } catch (e) {
-        console.log(e);
+        winston.error(e);
     }
     setTimeout(() => {
         process.exit(0);
@@ -105,7 +105,8 @@ process.on('SIGINT', () => {
 client.registry
 	.registerGroups([
 		['misc', 'Misc'],
-        ['moderation', 'Moderation']
+        ['moderation', 'Moderation'],
+        ['bot','Bot']
 	])
 	.registerDefaults()
 	.registerCommandsIn(path.join(__dirname, 'commands'));
