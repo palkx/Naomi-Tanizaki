@@ -106,7 +106,8 @@ client.registry
 	.registerGroups([
 		['misc', 'Misc'],
         ['moderation', 'Moderation'],
-        ['bot','Bot']
+        ['bot','Bot'],
+        ['user', 'User']
 	])
 	.registerDefaults()
 	.registerCommandsIn(path.join(__dirname, 'commands'));

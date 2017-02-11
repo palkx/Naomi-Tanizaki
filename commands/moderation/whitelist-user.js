@@ -24,7 +24,7 @@ module.exports = class WhitelistUserCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.options.owner === msg.author.id;
+		return this.client.provider.get(msg.author.id, 'userLevel', [])[0]>=5?true:false;
 	}
 
 	async run(msg, args) {

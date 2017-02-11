@@ -24,13 +24,14 @@ module.exports = class BlacklistUserCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.options.owner === msg.author.id;
+		return this.client.provider.get(msg.author.id, 'userLevel', [])[0]>=5?true:false;
 	}
 
 	async run(msg, args) {
 		const user = args.user;
 
 		if (this.client.options.owner === user.id) return msg.reply('the bot owner can not be blacklisted.');
+		if(msg.author.id === user.id) return msg.reply('you cant blacklist yourself.');
 
 		const blacklist = this.client.provider.get('global', 'userBlacklist', []);
 		if (blacklist.includes(user.id)) return msg.reply('that user is already blacklisted.');
