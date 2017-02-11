@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "7"
+cache:
+  directories:
+    - node_modules
+install: npm install
+env:
+  global:
+    - COMMIT_AUTHOR_EMAIL: "sm1leua@ya.ru"
+dist: trusty
+sudo: false

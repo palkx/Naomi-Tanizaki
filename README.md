@@ -4,4 +4,5 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/iSm1le/Naomi-Tanizaki/master/LICENSE)
 [![dependencies Status](https://david-dm.org/iSm1le/Naomi-Tanizaki/status.svg?style=flat-square)](https://david-dm.org/iSm1le/Naomi-Tanizaki)
 [![Stories in Ready](https://badge.waffle.io/iSm1le/Naomi-Tanizaki.png?label=ready&title=Ready&style=flat-square)](https://waffle.io/iSm1le/Naomi-Tanizaki)
+[![Build Status](https://travis-ci.org/iSm1le/Naomi-Tanizaki.svg?branch=master)](https://travis-ci.org/iSm1le/Naomi-Tanizaki)
 # Naomi-Tanizaki
