@@ -50,6 +50,6 @@ module.exports = class SetUserLevelCommand extends Command {
         userlevel.push(level);
 		this.client.provider.set(user.id, 'userLevel', userlevel);
 
-		return msg.reply(`You have been set ${level} level to ${user.username}#${user.discriminator}`);
+		return msg.embed({ color: 3447003, description: `You have been set ${level} level to ${user.username}#${user.discriminator}`});
 	}
 };

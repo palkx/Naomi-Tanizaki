@@ -29,14 +29,14 @@ module.exports = class WhitelistRoleAddCommand extends Command {
 
 	async run(msg, args) {
         let role = msg.guild.roles.find('name', args.role);
-        if(!role) { return msg.channel.sendMessage(`${args.role} group not exist on server`); }
+        if(!role) { return msg.embed({ color: 3447003, description: `${args.role} group not exist on server`}); }
 
 		const roleWhitelist = this.client.provider.get(msg.guild.id, 'roleWhitelist', []);
-		if (roleWhitelist.includes(role.id)) return msg.reply('that role is already whitelisted.');
+		if (roleWhitelist.includes(role.id)) return msg.embed({ color: 3447003, description: 'that role is already whitelisted.'});
 
 		roleWhitelist.push(role.id);
 		this.client.provider.set(msg.guild.id, 'roleWhitelist', roleWhitelist);
 
-		return msg.reply(`${role} has been add to the whitelist.`);
+		return msg.embed({ color: 3447003, description: `${role} has been add to the whitelist.`});
 	}
 };

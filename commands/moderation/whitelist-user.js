@@ -31,7 +31,7 @@ module.exports = class WhitelistUserCommand extends Command {
 		const user = args.user;
 
 		const blacklist = this.client.provider.get('global', 'userBlacklist', []);
-		if (!blacklist.includes(user.id)) return msg.reply('that user is not blacklisted.');
+		if (!blacklist.includes(user.id)) return msg.embed({ color: 3447003, description: `that user is not blacklisted.`});
 
 		const index = blacklist.indexOf(user.id);
 		blacklist.splice(index, 1);
@@ -42,6 +42,6 @@ module.exports = class WhitelistUserCommand extends Command {
 			this.client.provider.set('global', 'userBlacklist', blacklist);
 		}
 
-		return msg.reply(`${user.username}#${user.discriminator} has been removed from the blacklist.`);
+		return msg.embed({ color: 3447003, description: `${user.username}#${user.discriminator} has been removed from the blacklist.`});
 	}
 };
