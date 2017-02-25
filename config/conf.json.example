@@ -3,5 +3,7 @@
     "owner": "YOUR_ID",
     "commandPrefix": "YOUR_PREFIX",
     "WeatherAPIKey": "darksky.net API Key",
-    "GoogleAPIKey": "Google Geocode API Key"
+    "GoogleAPIKey": "Google Geocode API Key",
+    "cleverbotApiKey": "Api key from cleverbot.io",
+    "cleverbotApiUser": "Api user from cleverbot.io"
 }

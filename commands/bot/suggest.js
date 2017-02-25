@@ -38,7 +38,7 @@ module.exports = class SuggestCommand extends Command {
 	                            icon_url: msg.author.avatarURL
 	                        },
 	                        color: 3447003,
-	                        description: args,
+	                        description: args.suggestion,
 	                        footer: {
 	                            text: `User: ${msg.author.username}#${msg.author.discriminator} UserID: ${msg.author.id} GuildID: ${msg.channel.guild.id}`
 	                        }
