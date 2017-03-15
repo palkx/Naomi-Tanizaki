@@ -36,16 +36,16 @@ module.exports = class AddRoleCommand extends Command {
 
     async run(msg, args) {
         if(!msg.guild.member(this.client.user).hasPermission("MANAGE_ROLES_OR_PERMISSIONS")){
-            return msg.channel.sendMessage("I dont have permission (MANAGE_ROLES_OR_PERMISSIONS) to do this.");
+            return 	msg.embed({ color: 3447003, description: `I dont have **MANAGE_ROLES_OR_PERMISSIONS** permission.`});
         }
 
         const member = args.member;
 
         let role = msg.guild.roles.find('name', args.role);
-        if(!role) { return msg.channel.sendMessage(`${args.role} role does not exist on server`); }
+        if(!role) { return msg.embed({ color: 3447003, description: `${args.role} role does not exist on server.` });}
 
         const roleWhitelist = this.client.provider.get(msg.guild.id, 'roleWhitelist', []);
-        if (!roleWhitelist.includes(role.id)) return msg.reply(`${role} is not whitelisted to manage. Add it to whitelist.`);
+        if (!roleWhitelist.includes(role.id)) return msg.embed({ color: 3447003, description: `${role} is not whitelisted to manage. Add it to whitelist.` });
 
         let userrolelvl=Math.max.apply(null, msg.member.roles.map(roles => `${roles.position}`));
         let userrolelvlwant=0;
@@ -57,12 +57,12 @@ module.exports = class AddRoleCommand extends Command {
 
         if( userrolelvl > userrolelvlwant ) {
             if( !member.roles.has(role.id) ){
-                member.addRole(role).then( () => { msg.reply(`successfully added ${role} to ${member}`); });
+                member.addRole(role).then( () => { msg.embed({ color: 3447003, description: `successfully added ${role} to ${member}`}); });
             } else {
-                return msg.reply(`${member} already have ${role} role on this server.`);
+                return msg.embed({ color: 3447003, description: `${member} already have ${role} role on this server.`});
             }
         } else {
-            return msg.reply(`You cant add ${role} to ${member} because your highest role is  ${msg.guild.roles.find('name',rolearr[userrolelvl])}.`);
+            return msg.embed({ color: 3447003, description: `You cant add ${role} to ${member} because your highest role is  ${msg.guild.roles.find('name',rolearr[userrolelvl])}.`});
         }
     }
 

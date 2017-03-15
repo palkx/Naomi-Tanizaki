@@ -1,12 +1,12 @@
 const { Command } = require('discord.js-commando');
 const winston = require('winston');
 
-module.exports = class TCommand extends Command {
+module.exports = class TestCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 't',
+			name: 'test',
 			group: 'moderation',
-			memberName: 't',
+			memberName: 'test',
 			description: '~~~~',
             guildOnly: true,
 			throttling: {

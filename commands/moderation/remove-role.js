@@ -36,16 +36,16 @@ module.exports = class RemoveRoleCommand extends Command {
 
     async run(msg, args) {
         if(!msg.guild.member(this.client.user).hasPermission("MANAGE_ROLES_OR_PERMISSIONS")){
-            return msg.channel.sendMessage("I dont have permission (MANAGE_ROLES_OR_PERMISSIONS) to do this.");
+            return msg.embed({ color: 3447003, description: `I dont have permission **MANAGE_ROLES_OR_PERMISSIONS** to do this.`});
         }
 
         const member = args.member;
 
         let role = msg.guild.roles.find('name', args.role);
-        if(!role) { return msg.channel.sendMessage(`${args.role} role does not exist on server`); }
+        if(!role) { return msg.embed({ color: 3447003, description: `${args.role} role does not exist on server`}); }
 
         const roleWhitelist = this.client.provider.get(msg.guild.id, 'roleWhitelist', []);
-        if (!roleWhitelist.includes(role.id)) return msg.reply(`${role} is not whitelisted to manage. Add it to whitelist.`);
+        if (!roleWhitelist.includes(role.id)) return msg.embed({ color: 3447003, description: `${role} is not whitelisted to manage. Add it to whitelist.`});
 
         let userrolelvl=Math.max.apply(null, msg.member.roles.map(roles => `${roles.position}`));
 		let targetuserrolelvl=Math.max.apply(null, member.roles.map(roles => `${roles.position}`));
@@ -59,15 +59,15 @@ module.exports = class RemoveRoleCommand extends Command {
 		if( userrolelvl > targetuserrolelvl) {
 	        if( userrolelvl > userrolelvlwant ) {
 	            if( member.roles.has(role.id) ){
-	                member.removeRole(role).then( () => { msg.reply(`successfully removed ${role} from ${member}`); });
+	                member.removeRole(role).then( () => { msg.embed({ color: 3447003, description: `successfully removed ${role} from ${member}`}); });
 	            } else {
-	                return msg.reply(`${member} already dont have ${role} role on this server.`);
+	                return msg.embed({ color: 3447003, description: `${member} already dont have ${role} role on this server.`});
 	            }
 	        } else {
-	            return msg.reply(`You cant remove ${role} from ${member} because your highest role is ${msg.guild.roles.find('name',rolearr[userrolelvl])}.`);
+	            return msg.embed({ color: 3447003, description: `You cant remove ${role} from ${member} because your highest role is ${msg.guild.roles.find('name',rolearr[userrolelvl])}.`});
 	        }
 		} else {
-			return msg.reply(`You cant remove ${role} from ${member} because his highest role is biggest or equal to yours(${msg.guild.roles.find('name',rolearr[targetuserrolelvl])})`)
+			return msg.embed({ color: 3447003, description: `You cant remove ${role} from ${member} because his highest role is biggest or equal to yours(${msg.guild.roles.find('name',rolearr[targetuserrolelvl])})`})
 		}
     }
 

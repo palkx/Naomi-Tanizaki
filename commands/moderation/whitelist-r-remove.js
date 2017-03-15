@@ -29,10 +29,10 @@ module.exports = class WhitelistRoleRemoveCommand extends Command {
 
 	async run(msg, args) {
         let role = msg.guild.roles.find('name', args.role);
-        if(!role) { return msg.channel.sendMessage(`${args.role} group not exist on server`); }
+        if(!role) { return msg.embed({ color: 3447003, description: `${args.role} group not exist on server`}); }
 
 		const roleWhitelist = this.client.provider.get(msg.guild.id, 'roleWhitelist', []);
-		if (!roleWhitelist.includes(role.id)) return msg.reply('that role is not whitelisted.');
+		if (!roleWhitelist.includes(role.id)) return msg.embed({ color: 3447003, description: `that role is not whitelisted.`});
 
 		const index = roleWhitelist.indexOf(role.id);
 		roleWhitelist.splice(index, 1);
@@ -43,6 +43,6 @@ module.exports = class WhitelistRoleRemoveCommand extends Command {
 			this.client.provider.set(msg.guild.id, 'roleWhitelist', roleWhitelist);
 		}
 
-		return msg.reply(`${role} has been removed from the whitelist.`);
+		return msg.embed({ color: 3447003, description: `${role} has been removed from the whitelist.`});
 	}
 };
