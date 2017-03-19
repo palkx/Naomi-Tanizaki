@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando');
 const moment = require('moment');
 const { stripIndents } = require('common-tags');
+const userName = require('../../postgreSQL/models/UserName');
 
 module.exports = class UserInfoCommand extends Command {
 	constructor(client) {
@@ -14,7 +15,7 @@ module.exports = class UserInfoCommand extends Command {
 			guildOnly: true,
 			throttling: {
 				usages: 2,
-				duration: 5
+				duration: 3
 			},
 
 			args: [
@@ -28,9 +29,9 @@ module.exports = class UserInfoCommand extends Command {
 	}
 
 	async run(msg, args) {
-		const member = args.member;
+		const { member } = args;
 		const user = member.user;
-
+		const userNames = await userName.findAll({ where: { userID: user.id } });
 		return msg.embed({
 			color: 3447003,
 			fields: [
@@ -48,6 +49,7 @@ module.exports = class UserInfoCommand extends Command {
 						• Created at: ${moment.utc(user.createdAt).format('dddd, MMMM Do YYYY, HH:mm:ss ZZ')}${user.bot
 							? '\n• Is a bot account'
 							: ''}
+						• Aliases: ${userNames.length ? userNames.map(uName => uName.username).join(', ') : user.username}
 						• Status: ${user.presence.status}
 						• Game: ${user.presence.game ? user.presence.game.name : 'None'}
 					`

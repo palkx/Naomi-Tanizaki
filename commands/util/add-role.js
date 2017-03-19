@@ -17,7 +17,7 @@ module.exports = class AddRoleCommand extends Command {
 			args: [
 				{
 					key: 'member',
-					prompt: 'whom do you want to blacklist?\n',
+					prompt: 'Add role to who?\n',
 					type: 'member'
 				},
 

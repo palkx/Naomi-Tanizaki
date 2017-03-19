@@ -17,13 +17,13 @@ module.exports = class RemoveRoleCommand extends Command {
 			args: [
 				{
 					key: 'member',
-					prompt: 'whom do you want to blacklist?\n',
+					prompt: 'Remove role from who?\n',
 					type: 'member'
 				},
 
                 {
                     key:'role',
-                    prompt: 'which role you want to add?\n',
+                    prompt: 'which role you want to remove?\n',
                     type: 'string'
                 }
 			]

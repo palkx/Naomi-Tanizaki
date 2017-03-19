@@ -21,12 +21,12 @@ module.exports = class ServerInfoCommand extends Command {
 			guildOnly: true,
 			throttling: {
 				usages: 2,
-				duration: 5
+				duration: 3
 			}
 		});
 	}
 
-	async run(msg) {
+	run(msg) {
 		return msg.embed({
 			color: 3447003,
 			description: `Info on **${msg.guild.name}** (ID: ${msg.guild.id})`,

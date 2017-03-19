@@ -10,7 +10,7 @@ module.exports = class WhitelistUserCommand extends Command {
 			description: 'Remove a user from the blacklist',
 			throttling: {
 				usages: 2,
-				duration: 5
+				duration: 3
 			},
 
 			args: [
@@ -24,14 +24,13 @@ module.exports = class WhitelistUserCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.provider.get(msg.author.id, 'userLevel', [])[0]>=5?true:false;
+		return this.client.isOwner(msg.author);
 	}
 
-	async run(msg, args) {
-		const user = args.user;
-
+	run(msg, args) {
+		const { user } = args;
 		const blacklist = this.client.provider.get('global', 'userBlacklist', []);
-		if (!blacklist.includes(user.id)) return msg.embed({ color: 3447003, description: `that user is not blacklisted.`});
+		if (!blacklist.includes(user.id)) return msg.reply('that user is not blacklisted.');
 
 		const index = blacklist.indexOf(user.id);
 		blacklist.splice(index, 1);
@@ -41,7 +40,6 @@ module.exports = class WhitelistUserCommand extends Command {
 		} else {
 			this.client.provider.set('global', 'userBlacklist', blacklist);
 		}
-
-		return msg.embed({ color: 3447003, description: `${user.username}#${user.discriminator} has been removed from the blacklist.`});
+		return msg.reply(`${user.username}#${user.discriminator} has been removed from the blacklist.`);
 	}
 };
