@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 
-const config = require('../../settings');
+const { exampleChannel } = require('../../settings');
 const Redis = require('../../redis/Redis');
 const Tag = require('../../postgreSQL/models/Tag');
 
@@ -44,7 +44,7 @@ module.exports = class ExampleAddCommand extends Command {
 	}
 
 	async run(msg, args) {
-		const name = this.content(args.name.toLowerCase(), msg);
+		const name = this.cleanContent(args.name.toLowerCase(), msg);
 		const content = this.cleanContent(args.content, msg);
 		const staffRole = await msg.member.roles.exists('name', 'Server Staff');
 		if (!staffRole) return msg.say(`Only the **Server Staff** can add examples, ${msg.author}`);
@@ -68,14 +68,14 @@ module.exports = class ExampleAddCommand extends Command {
 
 				redis.db.setAsync(`tag${name}${msg.guild.id}`, content);
 
-				msg.guild.channels.get(config.exampleChannel).sendMessage(content)
+				msg.guild.channels.get(exampleChannel).sendMessage(content)
 					.then(ex => Tag.update({ exampleID: ex.id }, { where: { name, guildID: msg.guild.id } }));
 				return msg.say(`An example with the name **${name}** has been added, ${msg.author}`);
 			});
 	}
 
 	cleanContent(content, msg) {
-		content.replace(/@everyone/g, '@\u200Beveryone')
+		return content.replace(/@everyone/g, '@\u200Beveryone')
 			.replace(/@here/g, '@\u200Bhere')
 			.replace(/<@&[0-9]+>/g, roles => {
 				const replaceID = roles.replace(/<|&|>|@/g, '');

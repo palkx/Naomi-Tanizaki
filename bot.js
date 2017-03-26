@@ -47,7 +47,7 @@ client.on('error', winston.error)
 		winston.info(oneLine`
 			Client ready... Logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})
 		`);
-		client.user.setGame(`${version}`);
+		client.user.setGame(`v${version}`);
 	})
 	.on('disconnect', () => winston.warn('Disconnected!'))
 	.on('reconnect', () => winston.warn('Reconnecting...'))
@@ -57,6 +57,22 @@ client.on('error', winston.error)
 			>> ${cmd.groupID}:${cmd.memberName}
 			${Object.values(args)[0] !== '' || [] ? `>>> ${Object.values(args)}` : ''}
 		`);
+	})
+	.on('guildMemberAdd', async member => {
+		await member.guild.defaultChannel.send({
+			embed: {
+				color: 0x00D824,
+				description: `New user joined. Welcome, ${member.user}, to this server.`
+			}
+		}).catch(err => null); // eslint-disable-line no-unused-vars, handle-callback-err
+	})
+	.on('guildMemberRemove', async member => {
+		await member.guild.defaultChannel.send({
+			embed: {
+				color: 0xD80000,
+				description: `User leaved. Bye, ${member.user}.`
+			}
+		}).catch(err => null); // eslint-disable-line no-unused-vars, handle-callback-err
 	})
 	.on('message', async message => {
 		if (message.channel.type === 'dm') return;
@@ -153,7 +169,7 @@ client.on('error', winston.error)
 							value: starredMessageContent ? starredMessageContent : '\u200B'
 						}
 					],
-					image: { url: starredMessageAttachmentImage ? starredMessageAttachmentImage : undefined },
+					image: { url: starredMessageAttachmentImage || undefined },
 					timestamp: starredMessageDate,
 					footer: { text: edit }
 				}

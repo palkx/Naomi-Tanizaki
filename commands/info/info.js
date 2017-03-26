@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
+const { version } = require('../../package.json');
 
 module.exports = class AboutCommand extends Command {
 	constructor(client) {
@@ -7,11 +8,10 @@ module.exports = class AboutCommand extends Command {
 			name: 'about',
 			group: 'info',
 			memberName: 'about',
-			description: 'Displays information about the command framework.',
-			guildOnly: false,
+			description: 'Displays info about the bot.',
 			throttling: {
-				usages: 2,
-				duration: 5
+				usages: 1,
+				duration: 60
 			}
 		});
 	}
@@ -20,14 +20,17 @@ module.exports = class AboutCommand extends Command {
 		return msg.embed({
 			color: 3447003,
 			description: stripIndents`
-				__**discord.js Commando:**__
-				This is the official command framework for discord.js.
-				[Framework GitHub](https://github.com/Gawdl3y/discord.js-commando)
-				[Naomi Tanizaki bot Github](https://github.com/iSm1le/Naomi-Tanizaki)
-				[Based on Commando](https://github.com/WeebDev/Commando)
-				[Documentation (WIP)](https://discord.js.org/#/docs/commando/)
-				[Discord.js Documentation](https://discord.js.org/#/docs/main/)
-			`
+				**Naomi Tanizaki**
+				**❯ CREATOR:** <@${this.client.options.owner}> (ID: ${this.client.options.owner})
+				**❯ BASED ON:** [Commando](https://github.com/WeebDev/Commando)
+				**❯ VERSION:** v${version}
+				**Naomi Tanizaki is a multipurpose bot.**
+				**If you have any suggestions or feedback head over to her server.**
+				**You can see her commands by via ${this.client.user} help**
+				**❯ WEBSITE:** [WIP](https://naom.me/)
+				**❯ [SERVER](https://s.xaff.ru/dis)**
+			`,
+			thumbnail: { url: this.client.user.avatarURL }
 		});
 	}
-};
+}

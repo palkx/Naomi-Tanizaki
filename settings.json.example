@@ -12,6 +12,7 @@
 "WeatherAPIKey": "YOUR_DARKNET_WEATHER_API_KEY",
 "GoogleAPIKey": "YOUR_KEY_FROM_GOOGLE_API_DASHBOARD",
 "soundcloudID": "SoundCloud API Key",
+"sherlockAPIKey": "Sherlock API Key",
 "paginationItems": 10,
 "defaultVolume": 2,
 "maxLength": 15,

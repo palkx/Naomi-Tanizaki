@@ -12,6 +12,7 @@ module.exports = class StarCommand extends Command {
 			memberName: 'star',
 			description: 'Stars a message.',
 			examples: ['star 189696688657530880'],
+			guildOnly: true,
 
 			args: [
 				{
@@ -78,11 +79,11 @@ module.exports = class StarCommand extends Command {
 							value: starredMessageContent ? starredMessageContent : '\u200B'
 						}
 					],
-					image: { url: starredMessageAttachmentImage ? starredMessageAttachmentImage : undefined },
+					image: { url: starredMessageAttachmentImage || undefined },
 					timestamp: starredMessageDate,
 					footer: { text: edit }
 				}
-			}).catch(null);
+			}).catch(err => null); // eslint-disable-line no-unused-vars, handle-callback-err
 
 			starred[message.id].count = starCount;
 			starred[message.id].stars.push(msg.author.id);
