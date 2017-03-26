@@ -3,7 +3,7 @@ const { Command, util } = require('discord.js-commando');
 const moment = require('moment');
 const Sequelize = require('sequelize');
 
-const config = require('../../settings');
+const { paginationItems } = require('../../settings');
 const Currency = require('../../currency/Currency.js');
 const Redis = require('../../redis/Redis');
 const UserProfile = require('../../postgreSQL/models/UserProfile');
@@ -50,8 +50,8 @@ module.exports = class MoneyLeaderboardCommand extends Command {
 		const cooldown = 30 * 60 * 1000;
 		const reset = cooldown - (Date.now() - lastUpdate);
 		const money = await this.findCached();
-		const paginated = util.paginate(JSON.parse(money), page, Math.floor(config.paginationItems));
-		let ranking = config.paginationItems * (paginated.page - 1);
+		const paginated = util.paginate(JSON.parse(money), page, Math.floor(paginationItems));
+		let ranking = paginationItems * (paginated.page - 1);
 
 		for (const user of paginated.items) await this.client.fetchUser(user.userID); // eslint-disable-line
 
@@ -59,13 +59,11 @@ module.exports = class MoneyLeaderboardCommand extends Command {
 			color: 3447003,
 			description: stripIndents`
 				__**${Currency.textSingular.replace(/./, lc => lc.toUpperCase())} leaderboard, page ${paginated.page}**__
-
 				${paginated.items.map(user => oneLine`
 					**${++ranking} -**
 					${`${this.client.users.get(user.userID).username}
 					#${this.client.users.get(user.userID).discriminator}`}
 					(**${Currency.convert(user.networth)}**)`).join('\n')}
-
 				${moment.duration(reset).format('hh [hours] mm [minutes]')} until the next update.
 			`,
 			footer: { text: paginated.maxPage > 1 ? `Use ${msg.usage()} to view a specific page.` : '' }
