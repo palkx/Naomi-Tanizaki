@@ -1,6 +1,6 @@
 {
   "name": "naomi-tanizaki-discord-bot",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "discord bot",
   "main": "bot.js",
   "scripts": {
@@ -43,7 +43,6 @@
     "request-promise": "^4.2.0",
     "sequelize": "sequelize/sequelize",
     "simple-youtube-api": "^2.1.0",
-    "sodium": "^2.0.1",
     "winston": "^2.3.1",
     "ytdl-core": "^0.10.3"
   },
