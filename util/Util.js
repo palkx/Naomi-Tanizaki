@@ -1,7 +1,7 @@
 class Util {
-	/*constructor() {
+	constructor() {
 		throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
-	}*/
+	}
 
 	static cleanContent(content, msg) {
 		return content.replace(/@everyone/g, '@\u200Beveryone')
