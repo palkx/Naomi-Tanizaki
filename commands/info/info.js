@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
 const { version } = require('../../package.json');
+const { commandoVersion } = require('../../settings.json');
 
 module.exports = class AboutCommand extends Command {
 	constructor(client) {
@@ -22,7 +23,7 @@ module.exports = class AboutCommand extends Command {
 			description: stripIndents`
 				**Naomi Tanizaki**
 				**❯ CREATOR:** <@${this.client.options.owner}> (ID: ${this.client.options.owner})
-				**❯ BASED ON:** [Commando](https://github.com/WeebDev/Commando)
+				**❯ BASED ON:** [Commando v${commandoVersion}](https://github.com/WeebDev/Commando)
 				**❯ VERSION:** v${version}
 				**Naomi Tanizaki is a multipurpose bot.**
 				**If you have any suggestions or feedback head over to her server.**

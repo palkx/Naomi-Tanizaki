@@ -40,7 +40,6 @@ module.exports = class ItemAddCommand extends Command {
 	}
 
 	run(msg, args) {
-		const name = args.name.toLowerCase();
 		const { name, price } = args;
 		const item = Store.getItem(name);
 

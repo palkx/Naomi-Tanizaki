@@ -2,6 +2,7 @@
 "token": "YOUR_TOKEN_FROM_DISCORDDEV",
 "owner": "YOUR_ID",
 "commandPrefix": "!",
+"commandoVersion" : "0.23.0",
 "oAuthLink": "",
 "cleverbotApiKey": "YOUR_KEY_FROM_CLEVERBOT.IO",
 "cleverbotApiUser": "YOUR_USER_KEY_FROM_CLEVERBOT.IO",
