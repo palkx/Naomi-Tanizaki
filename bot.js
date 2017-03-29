@@ -1,6 +1,6 @@
 global.Promise = require('bluebird');
 
-const commando = require('discord.js-commando');
+const { CommandoClient } = require('discord.js-commando');
 const { oneLine } = require('common-tags');
 const path = require('path');
 const { URL } = require('url');
@@ -14,7 +14,7 @@ const version = require('./package.json').version;
 
 const database = new Database();
 const redis = new Redis();
-const client = new commando.Client({
+const client = new CommandoClient({
 	owner: config.owner,
 	commandPrefix: config.commandPrefix,
 	unknownCommandResponse: false,
