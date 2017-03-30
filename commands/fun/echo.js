@@ -18,7 +18,7 @@ module.exports = class EchoCommand extends Command {
 					key: 'message',
 					prompt: 'what would you like me to say?\n',
 					type: 'string',
-					default: '',
+					default: 'uhhhm',
 					max: 1800
 				}
 			]
@@ -26,8 +26,9 @@ module.exports = class EchoCommand extends Command {
 	}
 
 	async run(msg, args) {
+		const { message } = args;
 		msg.delete();
 
-		return msg.say(args.message);
+		return msg.say(message);
 	}
 };

@@ -1,12 +1,12 @@
 const { Command } = require('discord.js-commando');
 
-module.exports = class RemoveRoleCommand extends Command {
+module.exports = class RoleRemoveCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'remove-role',
+			name: 'role-remove',
 			aliases: ['rr'],
 			group: 'util',
-			memberName: 'remove-role',
+			memberName: 'role-remove',
 			description: 'Remove whitelisted role from user',
             guildOnly: true,
 			throttling: {

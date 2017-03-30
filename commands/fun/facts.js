@@ -42,33 +42,25 @@ module.exports = class FactsCommand extends Command {
 		const category = args.category;
 		const subcategory = args.subcategory;
 
-		if (category === 'random' || category === 'rng') {
-			return this.getRandom(msg, subcategory);
-		} else if (category === 'number') {
-			return this.getFact(msg, subcategory, 'trivia');
-		} else if (category === 'math') {
-			return this.getFact(msg, subcategory, 'math');
-		} else if (category === 'date') {
-			return this.getFact(msg, subcategory, 'date');
-		} else if (category === 'year') {
-			return this.getFact(msg, subcategory, 'year');
-		} else if (category === 'cat' || category === 'cats') {
-			return this.getCat(msg);
-		}
-	}
+		if (category === 'random' || category === 'rng') return this.getRandom(msg, subcategory);
+		else if (category === 'number') return this.getFact(msg, subcategory, 'trivia');
+		else if (category === 'math') return this.getFact(msg, subcategory, 'math');
+		else if (category === 'date') return this.getFact(msg, subcategory, 'date');
+		else if (category === 'year') return this.getFact(msg, subcategory, 'year');
+		else if (category === 'cat' || category === 'cats') return this.getCat(msg);
+  	}
 
 	async getRandom(msg, subcategory) {
 		const type = subcategory
-		? types.includes(subcategory)
-		? subcategory
-		: types[Math.floor(Math.random() * types.length)]
-		: types[Math.floor(Math.random() * types.length)];
+			? types.includes(subcategory)
+			? subcategory
+			: types[Math.floor(Math.random() * types.length)]
+			: types[Math.floor(Math.random() * types.length)];
 		const response = await request({
 			uri: `http://numbersapi.com/random/${type}`,
 			headers: { 'User-Agent': `Hamakaze v${version} (https://github.com/WeebDev/Hamakaze/)` },
 			json: true
 		});
-
 		return msg.say(response);
 	}
 
@@ -79,7 +71,6 @@ module.exports = class FactsCommand extends Command {
 				headers: { 'User-Agent': `Hamakaze v${version} (https://github.com/WeebDev/Hamakaze/)` },
 				json: true
 			});
-
 			return msg.say(response);
 		}
 		return msg.reply(`you need to supply a number. Maybe you want \`facts random ${type}\`?`);
@@ -91,7 +82,6 @@ module.exports = class FactsCommand extends Command {
 			headers: { 'User-Agent': `Hamakaze v${version} (https://github.com/WeebDev/Hamakaze/)` },
 			json: true
 		});
-
 		return msg.say(stripIndents`🐱 **${msg.author}, did you know:**
 				${response.facts[0]}`);
 	}

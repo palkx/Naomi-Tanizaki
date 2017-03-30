@@ -32,7 +32,8 @@ module.exports = class CleanCommand extends Command {
 					key: 'filter',
 					prompt: 'what filter would you like to apply?\n',
 					type: 'string',
-					default: ''
+					default: '',
+					parse: str => str.toLowerCase()
 				},
 				{
 					key: 'member',
@@ -49,8 +50,7 @@ module.exports = class CleanCommand extends Command {
 	}
 
 	async run(msg, args) { // eslint-disable-line consistent-return
-		const { limit } = args;
-		const filter = args.filter.toLowerCase();
+		const { filter, limit } = args;
 		let messageFilter;
 
 		if (filter) {
@@ -68,7 +68,7 @@ module.exports = class CleanCommand extends Command {
 			} else if (filter === 'bots') {
 				messageFilter = message => message.author.bot;
 			} else if (filter === 'you') {
-				messageFilter = message => message.author.id === message.client.user.id;
+				messageFilter = message => message.author.id === this.client.user.id;
 			} else if (filter === 'upload') {
 				messageFilter = message => message.attachments.size !== 0;
 			} else if (filter === 'links') {
@@ -76,16 +76,14 @@ module.exports = class CleanCommand extends Command {
 			} else {
 				return msg.say(`${msg.author}, this is not a valid filter. \`help clean\` for all available filters.`);
 			}
-		}
 
-		/* eslint-disable no-unused-vars, handle-callback-err */
-		if (!filter) {
-			const messagesToDelete = await msg.channel.fetchMessages({ limit: limit }).catch(err => null);
-			msg.channel.bulkDelete(messagesToDelete.array().reverse()).catch(err => null);
-		} else {
+			/* eslint-disable no-unused-vars, handle-callback-err */
 			const messages = await msg.channel.fetchMessages({ limit: limit }).catch(err => null);
 			const messagesToDelete = messages.filter(messageFilter);
 			msg.channel.bulkDelete(messagesToDelete.array().reverse()).catch(err => null);
 		}
+
+		const messagesToDelete = await msg.channel.fetchMessages({ limit: limit }).catch(err => null);
+		msg.channel.bulkDelete(messagesToDelete.array().reverse()).catch(err => null);
 	}
 };

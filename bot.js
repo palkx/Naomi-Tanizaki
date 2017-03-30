@@ -1,30 +1,30 @@
 global.Promise = require('bluebird');
 
-const commando = require('discord.js-commando');
+const { CommandoClient, FriendlyError } = require('discord.js-commando');
 const { oneLine } = require('common-tags');
 const path = require('path');
 const { URL } = require('url');
 const winston = require('winston');
 
-const Database = require('./postgreSQL/PostgreSQL');
-const Redis = require('./redis/Redis');
-const SequelizeProvider = require('./postgreSQL/SequelizeProvider');
-const config = require('./settings');
+const Database = require('./structures/PostgreSQL');
+const Redis = require('./structures/Redis');
+const SequelizeProvider = require('./providers/Sequelize');
+const { owner, token, commandPrefix } = require('./settings');
 const version = require('./package.json').version;
 
 const database = new Database();
 const redis = new Redis();
-const client = new commando.Client({
-	owner: config.owner,
-	commandPrefix: config.commandPrefix,
+const client = new CommandoClient({
+	owner,
+	commandPrefix: commandPrefix,
 	unknownCommandResponse: false,
 	disableEveryone: true
 });
 
-const Currency = require('./currency/Currency');
-const Experience = require('./currency/Experience');
-const starBoard = require('./postgreSQL/models/StarBoard');
-const userName = require('./postgreSQL/models/UserName');
+const Currency = require('./structures/currency/Currency');
+const Experience = require('./structures/currency/Experience');
+const starBoard = require('./models/StarBoard');
+const userName = require('./models/UserName');
 
 let earnedRecently = [];
 let gainedXPRecently = [];
@@ -320,8 +320,15 @@ client.on('error', winston.error)
 		settings.starred = starred;
 		await settings.save();
 	})
+	.on('unknownCommand', msg => {
+	if (msg.channel.type === 'dm') return;
+	if (msg.author.bot) return;
+
+	const args = { name: msg.content.split(client.commandPrefix)[1] };
+	client.registry.resolveCommand('tags:tag').run(msg, args);
+	})
 	.on('commandError', (cmd, err) => {
-		if (err instanceof commando.FriendlyError) return;
+		if (err instanceof FriendlyError) return;
 		winston.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
 	})
 	.on('commandBlocked', (msg, reason) => {
@@ -358,25 +365,26 @@ client.on('error', winston.error)
 
 client.registry
 	.registerGroups([
-		['info', 'Info'],
 		['anime', 'Anime'],
-		['fun', 'Fun'],
+		['bot','Bot'],
 		['economy', 'Economy'],
-		['social', 'Social'],
+		['fun', 'Fun'],
 		['games', 'Games'],
+		['info', 'Info'],
 		['item', 'Item'],
-		['weather', 'Weather'],
 		['music', 'Music'],
-		['tags', 'Tags'],
-		['starboard', 'Starboard'],
 		['rep', 'Reputation'],
-		['bot','Bot']
+		['social', 'Social'],
+		['starboard', 'Starboard'],
+		['tags', 'Tags'],
+		['util', 'Utility'],
+		['weather', 'Weather']
 	])
 	.registerDefaults()
 	.registerTypesIn(path.join(__dirname, 'types'))
 	.registerCommandsIn(path.join(__dirname, 'commands'));
 
-client.login(config.token);
+client.login(token)
 
 process.on('unhandledRejection', err => {
 	console.error(`Uncaught Promise Error: \n${err.stack}`); // eslint-disable-line no-console

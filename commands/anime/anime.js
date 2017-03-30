@@ -3,7 +3,7 @@ const moment = require('moment');
 const nani = require('nani');
 const { stripIndents } = require('common-tags');
 
-const config = require('../../settings');
+const { aniListID, aniListSecret }= require('../../settings');
 
 const seasons = {
 	1: 'Winter',
@@ -34,7 +34,7 @@ module.exports = class AnimeCommand extends Command {
 			]
 		});
 
-		nani.init(config.AniListID, config.AniListSecret);
+		nani.init(aniListID, aniListSecret);
 	}
 
 	async run(msg, args) { // eslint-disable-line consistent-return
@@ -67,7 +67,7 @@ module.exports = class AnimeCommand extends Command {
 					name: 'Type',
 					value: stripIndents`${data.type}
 						${data.season !== null
-							? this.parseSeason(data.season)
+							? this._parseSeason(data.season)
 							: '?'}
 							${data.source !== null
 								? data.source
@@ -115,9 +115,9 @@ module.exports = class AnimeCommand extends Command {
 		});
 	}
 
-	parseSeason(season) {
-		return season < 350
-		? `${seasons[season % 10]} 20${Math.floor(season / 10)}`
-		: `${seasons[season % 10]} 19${Math.floor(season / 10)}`;
+	_parseSeason(season) {
+			return season < 350
+				? `${seasons[season % 10]} 20${Math.floor(season / 10)}`
+				: `${seasons[season % 10]} 19${Math.floor(season / 10)}`;
+		}
 	}
-};
