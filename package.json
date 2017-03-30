@@ -1,6 +1,6 @@
 {
   "name": "naomi-tanizaki-discord-bot",
-  "version": "1.0.3",
+  "version": "17.03.30",
   "description": "discord bot",
   "main": "bot.js",
   "scripts": {
