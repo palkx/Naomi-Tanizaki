@@ -1,5 +1,3 @@
-//Dont work
-
 const { Command } = require('discord.js-commando');
 const winston = require('winston');
 const { stripIndents } = require('common-tags');
@@ -31,7 +29,7 @@ module.exports = class SuggestCommand extends Command {
 
 	async run(msg, args) {
 	    try {
-	        this.client.createMessage('279240881607933953', {
+			this.client.channels.find('id', '279240881607933953').send({
 	                    embed: {
 	                        author: {
 	                            name: `${msg.author.username} (${msg.channel.guild.name})`,

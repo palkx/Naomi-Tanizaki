@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-const { version } = require('../../../package.json');
-const { commandoVersion } = require('../../../settings.json');
+const { version } = require('../../package.json');
+const { commandoVersion } = require('../../settings.json');
 
 module.exports = class AboutCommand extends Command {
 	constructor(client) {

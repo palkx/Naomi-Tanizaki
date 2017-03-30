@@ -377,7 +377,7 @@ client.registry
 		['social', 'Social'],
 		['starboard', 'Starboard'],
 		['tags', 'Tags'],
-		//['util', 'Utility'],
+		['util', 'Utility'],
 		['weather', 'Weather']
 	])
 	.registerDefaults()
