@@ -13,8 +13,8 @@ module.exports = class SuggestCommand extends Command {
 			description: 'Send a **feature request** to the Bot Developer. Requests can have a max length of **1900 characters**',
 			guildOnly: true,
 			throttling: {
-				usages: 2,
-				duration: 30
+				usages: 1,
+				duration: 120
 			},
 
             args: [

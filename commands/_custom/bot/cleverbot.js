@@ -14,7 +14,7 @@ module.exports = class CleverbotCommand extends Command {
 			name: 'clever',
             aliases: ['talk'],
 			group: 'bot',
-			memberName: 'clever',
+			memberName: 'cleverbot',
 			description: 'Talk with bot',
 			guildOnly: false,
 			throttling: {

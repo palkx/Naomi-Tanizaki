@@ -1,10 +1,10 @@
 const { Command } = require('discord.js-commando');
 
-module.exports = class AddRoleCommand extends Command {
+module.exports = class RoleAddCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'add-role',
-			aliases: ['ar'],
+			name: 'role-add',
+			aliases: ['ra'],
 			group: 'util',
 			memberName: 'add-role',
 			description: 'Add whitelisted role to a user',
