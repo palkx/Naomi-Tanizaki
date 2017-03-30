@@ -59,11 +59,13 @@ module.exports = class MoneyLeaderboardCommand extends Command {
 			color: 3447003,
 			description: stripIndents`
 				__**${Currency.textSingular.replace(/./, lc => lc.toUpperCase())} leaderboard, page ${paginated.page}**__
+
 				${paginated.items.map(user => oneLine`
 					**${++ranking} -**
 					${`${this.client.users.get(user.userID).username}
 					#${this.client.users.get(user.userID).discriminator}`}
 					(**${Currency.convert(user.networth)}**)`).join('\n')}
+
 				${moment.duration(reset).format('hh [hours] mm [minutes]')} until the next update.
 			`,
 			footer: { text: paginated.maxPage > 1 ? `Use ${msg.usage()} to view a specific page.` : '' }
@@ -72,16 +74,13 @@ module.exports = class MoneyLeaderboardCommand extends Command {
 
 	async findCached() {
 		const cache = await redis.db.getAsync('moneyleaderboard');
-		redis.db.expire('moneyleaderboard', 3600);
 		if (cache) return cache;
 
 		const money = await UserProfile.findAll(
 			{ where: { userID: { $ne: 'bank' } }, order: Sequelize.literal('networth DESC') }
 		);
-		if (!money) return '';
 
 		redis.db.setAsync('moneyleaderboard', JSON.stringify(money));
-		redis.db.expire('moneyleaderboard', 3600);
 		return JSON.stringify(money);
 	}
 };
