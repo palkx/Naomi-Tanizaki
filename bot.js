@@ -358,19 +358,20 @@ client.on('error', winston.error)
 
 client.registry
 	.registerGroups([
-		['info', 'Info'],
 		['anime', 'Anime'],
-		['fun', 'Fun'],
+		['bot','Bot'],
 		['economy', 'Economy'],
-		['social', 'Social'],
+		['fun', 'Fun'],
 		['games', 'Games'],
+		['info', 'Info'],
 		['item', 'Item'],
-		['weather', 'Weather'],
 		['music', 'Music'],
-		['tags', 'Tags'],
-		['starboard', 'Starboard'],
 		['rep', 'Reputation'],
-		['bot','Bot']
+		['social', 'Social'],
+		['starboard', 'Starboard'],
+		['tags', 'Tags'],
+		['util', 'Utility'],
+		['weather', 'Weather']
 	])
 	.registerDefaults()
 	.registerTypesIn(path.join(__dirname, 'types'))
