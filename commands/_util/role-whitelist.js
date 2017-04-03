@@ -34,36 +34,36 @@ module.exports = class RoleWhitelistCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.provider.get(msg.author.id, 'userLevel', [])[0]>=2?true:false;
+		return this.client.provider.get(msg.author.id, 'userLevel', [])[0]>=3?true:false;
 	}
 
 	async run(msg, args) {
 		try {
 			let role = msg.guild.roles.find('name', args.role);
 			if(!role) { return msg.embed({ color: 3447003, description: `${args.role} group is not exist on server`}); }
-			const job = args.job === 'add' ? true : false;
+			const job = args.job.toLowerCase() === 'add' ? true : false;
 
 			const roleWhitelist = this.client.provider.get(msg.guild.id, 'roleWhitelist', []);
 			if(job){
-			if (roleWhitelist.includes(role.id)) return msg.embed({ color: 3447003, description: `${role} is already whitelisted.`});
+				if (roleWhitelist.includes(role.id)) return msg.embed({ color: 3447003, description: `${role} is already whitelisted.`});
 
-			roleWhitelist.push(role.id);
-			this.client.provider.set(msg.guild.id, 'roleWhitelist', roleWhitelist);
+				roleWhitelist.push(role.id);
+				this.client.provider.set(msg.guild.id, 'roleWhitelist', roleWhitelist);
 
-			return msg.embed({ color: 3447003, description: `${role} has been add to the whitelist.`});
-		} else {
-			if (!roleWhitelist.includes(role.id)) return msg.embed({ color: 3447003, description: `${role} is not whitelisted.`});
+				return msg.embed({ color: 3447003, description: `${role} has been add to the whitelist.`});
+			} else {
+				if (!roleWhitelist.includes(role.id)) return msg.embed({ color: 3447003, description: `${role} is not whitelisted.`});
 
-			const index = roleWhitelist.indexOf(role.id);
-			roleWhitelist.splice(index, 1);
+				const index = roleWhitelist.indexOf(role.id);
+				roleWhitelist.splice(index, 1);
 
-			if (roleWhitelist.length === 0) { this.client.provider.remove(msg.guild.id, 'roleWhitelist');
-			} else { this.client.provider.set(msg.guild.id, 'roleWhitelist', roleWhitelist); }
+				if (roleWhitelist.length === 0) { this.client.provider.remove(msg.guild.id, 'roleWhitelist');
+				} else { this.client.provider.set(msg.guild.id, 'roleWhitelist', roleWhitelist); }
 
-			return msg.embed({ color: 3447003, description: `${role} has been removed from the whitelist.`});
+				return msg.embed({ color: 3447003, description: `${role} has been removed from the whitelist.`});
 		}
-	}catch(err) {
-		 winston.error(err);
-	}
+		}catch(err) {
+			 winston.error(err);
+		}
 	}
 };

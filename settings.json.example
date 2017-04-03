@@ -9,7 +9,7 @@
 "aniListID": "ID_FROM_ANILIST",
 "aniListSecret": "KEY_FROM_ANILIST",
 "exampleChannel": "example_channel_ID",
-"db": "postgres://user:password@localhost/database",
+"db": "postgres://<user_name>:<user_password>@localhost/<db_name>",
 "weatherAPIKey": "YOUR_DARKNET_WEATHER_API_KEY",
 "googleAPIKey": "YOUR_KEY_FROM_GOOGLE_API_DASHBOARD",
 "soundcloudID": "SoundCloud_API_Key",
