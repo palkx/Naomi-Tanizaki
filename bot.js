@@ -10,7 +10,7 @@ const Database = require('./structures/PostgreSQL');
 const Redis = require('./structures/Redis');
 const SequelizeProvider = require('./providers/Sequelize');
 const { owner, token, commandPrefix } = require('./settings');
-const version = require('./package.json').version;
+const { version, build } = require('./package.json');
 
 const database = new Database();
 const redis = new Redis();
@@ -32,7 +32,7 @@ let gainedXPRecently = [];
 database.start();
 redis.start();
 
-client.setProvider(new SequelizeProvider(database.db));
+client.setProvider(new SequelizeProvider(Database.db));
 
 client.dispatcher.addInhibitor(msg => {
 	const blacklist = client.provider.get('global', 'userBlacklist', []);
@@ -47,7 +47,7 @@ client.on('error', winston.error)
 		winston.info(oneLine`
 			Client ready... Logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})
 		`);
-		client.user.setGame(`v${version}`);
+		client.user.setGame(`v${version} b${build}`);
 	})
 	.on('disconnect', () => winston.warn('Disconnected!'))
 	.on('reconnect', () => winston.warn('Reconnecting...'))

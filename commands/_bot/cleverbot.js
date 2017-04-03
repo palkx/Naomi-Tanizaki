@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const winston = require('winston');
-const config = require('../../settings');
+const config = require('../../settings.json');
 const Clever = require('cleverbot.io');
 let re = /<@[0-9].*>/g;
 const cleverbotKey = config.cleverbotApiKey;
