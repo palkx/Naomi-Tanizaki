@@ -1,7 +1,7 @@
 {
   "name": "naomi-tanizaki-discord-bot",
-  "version": "1.0.4",
-  "build": "170403",
+  "version": "1.0.5",
+  "build": "170404",
   "description": "discord bot",
   "main": "bot.js",
   "scripts": {
@@ -55,6 +55,6 @@
          "extends": "aqua"
     },
   "engines": {
-    "node": ">=7.6.0"
+    "node": ">=7.8.0"
   }
 }

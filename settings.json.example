@@ -4,6 +4,7 @@
 "commandPrefix": "!",
 "commandoVersion" : "0.24.0",
 "oAuthLink": "",
+"osukey": "osuAPIKey",
 "cleverbotApiKey": "YOUR_KEY_FROM_CLEVERBOT.IO",
 "cleverbotApiUser": "YOUR_USER_KEY_FROM_CLEVERBOT.IO",
 "aniListID": "ID_FROM_ANILIST",

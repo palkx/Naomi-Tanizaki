@@ -5,14 +5,14 @@ const Clever = require('cleverbot.io');
 let re = /<@[0-9].*>/g;
 const cleverbotKey = config.cleverbotApiKey;
 const cleverbotUser = config.cleverbotApiUser;
-if (typeof cleverbots == 'undefined') { var cleverbots=[];}
-if (typeof cb == 'undefined') { cb = new Clever(cleverbotUser, cleverbotKey); }
+if (typeof cleverbots === 'undefined') { var cleverbots = []; }
+if (typeof cb === 'undefined') { var cb = new Clever(cleverbotUser, cleverbotKey); }
 
 module.exports = class CleverbotCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'clever',
-            aliases: ['talk'],
+			aliases: ['talk'],
 			group: 'bot',
 			memberName: 'cleverbot',
 			description: 'Talk with bot',
@@ -22,50 +22,51 @@ module.exports = class CleverbotCommand extends Command {
 				duration: 5
 			},
 
-            args: [
-                {
-                    key:'message',
-                    prompt: 'what you want to say me?\n',
-                    type: 'string'
-                }
-            ]
+			args: [
+				{
+					key: 'message',
+					prompt: 'what you want to say me?\n',
+					type: 'string'
+				}
+			]
 		});
 	}
 
 	async run(msg, args) {
-        try{
-            let _id = `${msg.guild ? `${msg.guild.id}` : `${msg.message.author.id}`}`;
-            let msgClean = args.message.replace(re, '');
+		try {
+			let _id = `${msg.guild ? `${msg.guild.id}` : `${msg.message.author.id}`}`;
+			let msgClean = args.message.replace(re, '');
+			cb.setNick(`ism1le_naomi_${_id}`);
 
-            if (cleverbots.find(element => {
-                return element == _id ? true : false;
-            })) {
-                //session is opened already
-                winston.info(`Session ism1le_naomi_${_id} is opened already`);
-                cb.setNick(`ism1le_naomi_${_id}`);
-                cb.ask(msgClean, function(err, response) {
-                    msg.embed({
-                        color: 3447003,
-                        description: `:pencil: ${response}`,
-                    });
-                });
-            } else {
-                //session is needed to open
-                winston.info(`Session ism1le_naomi_${_id} is not opened already. Trying to open.`);
-                cb.setNick(`ism1le_naomi_${_id}`);
-                cb.create(function (err, session) {
-                    if(err) {return winston.error(err);}
-                    cb.ask(msgClean, function(err, response) {
-                        msg.embed({
-                            color: 3447003,
-                			description: `:pencil: ${response}`,
-                        });
-                    });
-                });
-                cleverbots.push(_id);
-            }
-        }   catch(e) {
-            winston.error(e);
-        }
+			if (cleverbots.find(element => { // eslint-disable-line arrow-body-style
+				return element === _id;
+			})) {
+				// Session is opened already
+				winston.info(`Session ism1le_naomi_${_id} is opened already`);
+				cb.ask(msgClean, (err, response) => {
+					if (err) return winston.error(err);
+					return msg.embed({
+						color: 3447003,
+						description: `:pencil: ${response}`
+					});
+				});
+			} else {
+				// Session is needed to open
+				winston.info(`Session ism1le_naomi_${_id} is not opened already. Trying to open.`);
+				cb.create(_err => { // eslint-disable-line consistent-return
+					if (_err) return winston.error(_err);
+					cb.ask(msgClean, (err, response) => {
+						if (err) return winston.error(err);
+						return msg.embed({
+							color: 3447003,
+							description: `:pencil: ${response}`
+						});
+					});
+				});
+				cleverbots.push(_id);
+			}
+		} catch (err) {
+			winston.error(err);
+		}
 	}
 };
