@@ -4,11 +4,11 @@ module.exports = class SetUserLevelCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'set-user-level',
-            aliases: ['sul'],
+			aliases: ['sul'],
 			group: 'util',
 			memberName: 'set-user-level',
 			description: 'Set command access level',
-            guildOnly: true,
+			guildOnly: true,
 			throttling: {
 				usages: 2,
 				duration: 5
@@ -21,14 +21,14 @@ module.exports = class SetUserLevelCommand extends Command {
 					type: 'user'
 				},
 
-                {
-                    key: 'level',
-                    prompt: 'what level you want to set?(from 0 to 100)',
-                    type: 'integer',
-                    min: 0,
-                    max: 100,
-                    wait: 10
-                }
+				{
+					key: 'level',
+					prompt: 'what level you want to set?(from 0 to 100)',
+					type: 'integer',
+					min: 0,
+					max: 100,
+					wait: 10
+				}
 			]
 		});
 	}
@@ -38,18 +38,21 @@ module.exports = class SetUserLevelCommand extends Command {
 	}
 
 	async run(msg, args) {
-		const user = args.user;
-        const level = args.level;
+		const { user } = args;
+		const { level } = args;
 
 		const userlevel = this.client.provider.get(user.id, 'userLevel', []);
-		//if (!userlevel.includes(user.id)) return msg.reply('that user is not blacklisted.');
 
 		const index = userlevel.indexOf(user.id);
 		userlevel.splice(index, 1);
 
-        userlevel.push(level);
+		userlevel.push(level);
 		this.client.provider.set(user.id, 'userLevel', userlevel);
 
-		return msg.embed({ color: 3447003, description: `You have been set ${level} level to ${user.username}#${user.discriminator}`});
+		return msg.embed(
+			{
+				color: 3447003,
+				description: `You have been set ${level} level to ${user.username}#${user.discriminator}`
+			});
 	}
 };

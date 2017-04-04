@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-const djsversion = require ("discord.js").version;
-const djscversion = require ("discord.js-commando").version;
+const djsversion = require('discord.js').version;
+const djscversion = require('discord.js-commando').version;
 const { version } = require('../../package.json');
 
 const { commandoVersion } = require('../../settings.json');
@@ -38,4 +38,4 @@ module.exports = class AboutCommand extends Command {
 			thumbnail: { url: this.client.user.avatarURL }
 		});
 	}
-}
+};

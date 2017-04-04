@@ -142,9 +142,13 @@ client.on('error', winston.error)
 			const starredMessageDate = starred[message.id].starredMessageDate;
 
 			let edit;
-			if ((starCount - 1) < 5) edit = starredMessage.embeds[0].footer.text.replace(`${starCount - 1} ⭐`, `${starCount} ⭐`);
-			else if ((starCount - 1) >= 5 < 10) edit = starredMessage.embeds[0].footer.text.replace(`${starCount - 1} ⭐`, `${starCount} 🌟`);
-			else if ((starCount - 1) >= 10) edit = starredMessage.embeds[0].footer.text.replace(`${starCount - 1} 🌟`, `${starCount} 🌠`);
+			if ((starCount - 1) < 5) {
+				edit = starredMessage.embeds[0].footer.text.replace(`${starCount - 1} ⭐`, `${starCount} ⭐`);
+			} else if ((starCount - 1) >= 5 < 10) {
+				edit = starredMessage.embeds[0].footer.text.replace(`${starCount - 1} ⭐`, `${starCount} 🌟`);
+			} else if ((starCount - 1) >= 10) {
+				edit = starredMessage.embeds[0].footer.text.replace(`${starCount - 1} 🌟`, `${starCount} 🌠`);
+			}
 
 			await starredMessage.edit({
 				embed: {
@@ -280,9 +284,13 @@ client.on('error', winston.error)
 			const starredMessageDate = starred[message.id].starredMessageDate;
 
 			let edit;
-			if ((starCount + 1) < 5) edit = starredMessage.embeds[0].footer.text.replace(`${starCount + 1} ⭐`, `${starCount} ⭐`);
-			else if ((starCount + 1) >= 5 < 10) edit = starredMessage.embeds[0].footer.text.replace(`${starCount + 1} 🌟`, `${starCount} ⭐`);
-			else if ((starCount + 1) >= 10) edit = starredMessage.embeds[0].footer.text.replace(`${starCount + 1} 🌠`, `${starCount} 🌟`);
+			if ((starCount + 1) < 5) {
+				edit = starredMessage.embeds[0].footer.text.replace(`${starCount + 1} ⭐`, `${starCount} ⭐`);
+			} else if ((starCount + 1) >= 5 < 10) {
+				edit = starredMessage.embeds[0].footer.text.replace(`${starCount + 1} 🌟`, `${starCount} ⭐`);
+			} else if ((starCount + 1) >= 10) {
+				edit = starredMessage.embeds[0].footer.text.replace(`${starCount + 1} 🌠`, `${starCount} 🌟`);
+			}
 
 			await starredMessage.edit({
 				embed: {
@@ -321,11 +329,11 @@ client.on('error', winston.error)
 		await settings.save();
 	})
 	.on('unknownCommand', msg => {
-	if (msg.channel.type === 'dm') return;
-	if (msg.author.bot) return;
+		if (msg.channel.type === 'dm') return;
+		if (msg.author.bot) return;
 
-	const args = { name: msg.content.split(client.commandPrefix)[1] };
-	client.registry.resolveCommand('tags:tag').run(msg, args);
+		const args = { name: msg.content.split(client.commandPrefix)[1] };
+		client.registry.resolveCommand('tags:tag').run(msg, args);
 	})
 	.on('commandError', (cmd, err) => {
 		if (err instanceof FriendlyError) return;
@@ -366,7 +374,7 @@ client.on('error', winston.error)
 client.registry
 	.registerGroups([
 		['anime', 'Anime'],
-		['bot','Bot'],
+		['bot', 'Bot'],
 		['economy', 'Economy'],
 		['fun', 'Fun'],
 		['games', 'Games'],
@@ -384,7 +392,7 @@ client.registry
 	.registerTypesIn(path.join(__dirname, 'types'))
 	.registerCommandsIn(path.join(__dirname, 'commands'));
 
-client.login(token)
+client.login(token);
 
 process.on('unhandledRejection', err => {
 	console.error(`Uncaught Promise Error: \n${err.stack}`); // eslint-disable-line no-console
