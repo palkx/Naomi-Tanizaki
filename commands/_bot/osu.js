@@ -10,6 +10,10 @@ module.exports = class OsuCommand extends Command {
 			group: 'bot',
 			memberName: 'osu',
 			description: 'Searches Osu user data.',
+			throttling: {
+				usages: 3,
+				duration: 30
+			},
 
 			args: [{
 				key: 'username',
@@ -33,10 +37,16 @@ module.exports = class OsuCommand extends Command {
 			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});
+		if (response.results.length === 0) {
+			return msg.embed({
+				color: 0x3498DB,
+				description: 'your request returned no results.'
+			});
+		}
 		return msg.embed({
 			author: {
 				icon_url: 'http://vignette3.wikia.nocookie.net/osugame/images/c/c9/Logo.png/revision/latest?cb=20151219073209', // eslint-disable-line
-				name: response[0].nickname,
+				name: 'osu!',
 				url: `https://osu.ppy.sh/u/${response[0].user_id}`
 			},
 			color: 0xFF66AA,
@@ -89,38 +99,5 @@ module.exports = class OsuCommand extends Command {
 			],
 			thumbnail: { url: `https://a.ppy.sh/${response[0].user_id}` || undefined }
 		});
-		/* Tconst embed = new Discord.RichEmbed()
-				.setColor(0xFF66AA)
-				.setAuthor(
-					'osu!',
-					'http://vignette3.wikia.nocookie.net/osugame/images/c/c9/Logo.png/revision/latest?cb=20151219073209'
-				)
-				.setURL('https://osu.ppy.sh/')
-				.addField('**Username:**',
-					data.username, true)
-				.addField('**ID:**',
-					data.user_id, true)
-				.addField('**Level:**',
-					data.level, true)
-				.addField('**Accuracy**',
-					data.accuracy, true)
-				.addField('**Rank:**',
-					data.pp_rank, true)
-				.addField('**Play Count:**',
-					data.playcount, true)
-				.addField('**Country:**',
-					data.country, true)
-				.addField('**Ranked Score:**',
-					data.ranked_score, true)
-				.addField('**Total Score:**',
-					data.total_score, true)
-				.addField('**SS:**',
-					data.count_rank_ss, true)
-				.addField('**S:**',
-					data.count_rank_s, true)
-				.addField('**A:**',
-					data.count_rank_a, true);
-		return msg.embed(embed);*/
-			// Treturn message.say(':x: Error! User not Found!');
 	}
 };

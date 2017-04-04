@@ -381,6 +381,7 @@ client.registry
 		['info', 'Info'],
 		['item', 'Item'],
 		['music', 'Music'],
+		['nsfw', 'NSFW'],
 		['rep', 'Reputation'],
 		['social', 'Social'],
 		['starboard', 'Starboard'],
