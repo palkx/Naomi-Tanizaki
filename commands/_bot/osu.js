@@ -37,6 +37,12 @@ module.exports = class OsuCommand extends Command {
 			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});
+		if (response.results.length === 0) {
+			return msg.embed({
+				color: 0x3498DB,
+				description: 'your request returned no results.'
+			});
+		}
 		return msg.embed({
 			author: {
 				icon_url: 'http://vignette3.wikia.nocookie.net/osugame/images/c/c9/Logo.png/revision/latest?cb=20151219073209', // eslint-disable-line
