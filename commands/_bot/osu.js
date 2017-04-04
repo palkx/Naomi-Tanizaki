@@ -93,38 +93,5 @@ module.exports = class OsuCommand extends Command {
 			],
 			thumbnail: { url: `https://a.ppy.sh/${response[0].user_id}` || undefined }
 		});
-		/* Tconst embed = new Discord.RichEmbed()
-				.setColor(0xFF66AA)
-				.setAuthor(
-					'osu!',
-					'http://vignette3.wikia.nocookie.net/osugame/images/c/c9/Logo.png/revision/latest?cb=20151219073209'
-				)
-				.setURL('https://osu.ppy.sh/')
-				.addField('**Username:**',
-					data.username, true)
-				.addField('**ID:**',
-					data.user_id, true)
-				.addField('**Level:**',
-					data.level, true)
-				.addField('**Accuracy**',
-					data.accuracy, true)
-				.addField('**Rank:**',
-					data.pp_rank, true)
-				.addField('**Play Count:**',
-					data.playcount, true)
-				.addField('**Country:**',
-					data.country, true)
-				.addField('**Ranked Score:**',
-					data.ranked_score, true)
-				.addField('**Total Score:**',
-					data.total_score, true)
-				.addField('**SS:**',
-					data.count_rank_ss, true)
-				.addField('**S:**',
-					data.count_rank_s, true)
-				.addField('**A:**',
-					data.count_rank_a, true);
-		return msg.embed(embed);*/
-			// Treturn message.say(':x: Error! User not Found!');
 	}
 };
