@@ -10,6 +10,10 @@ module.exports = class OsuCommand extends Command {
 			group: 'bot',
 			memberName: 'osu',
 			description: 'Searches Osu user data.',
+			throttling: {
+				usages: 3,
+				duration: 30
+			},
 
 			args: [{
 				key: 'username',
@@ -36,7 +40,7 @@ module.exports = class OsuCommand extends Command {
 		return msg.embed({
 			author: {
 				icon_url: 'http://vignette3.wikia.nocookie.net/osugame/images/c/c9/Logo.png/revision/latest?cb=20151219073209', // eslint-disable-line
-				name: response[0].nickname,
+				name: 'osu!',
 				url: `https://osu.ppy.sh/u/${response[0].user_id}`
 			},
 			color: 0xFF66AA,
