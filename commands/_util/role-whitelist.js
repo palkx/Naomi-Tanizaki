@@ -40,7 +40,7 @@ module.exports = class RoleWhitelistCommand extends Command {
 		return this.client.provider.get(msg.author.id, 'userLevel', [])[0] >= 3;
 	}
 
-	async run(msg, args) {
+	async run(msg, args) {  // eslint-disable-line consistent-return
 		try {
 			let role = msg.guild.roles.find('name', args.role);
 			if (!role) { return msg.embed({ color: 3447003, description: `${args.role} group is not exist on server` }); }

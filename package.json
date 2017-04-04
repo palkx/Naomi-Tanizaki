@@ -55,6 +55,6 @@
          "extends": "aqua"
     },
   "engines": {
-    "node": ">=7.6.0"
+    "node": ">=7.8.0"
   }
 }

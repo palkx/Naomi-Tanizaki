@@ -48,7 +48,7 @@ module.exports = class RoleControlCommand extends Command {
 		return this.client.provider.get(msg.author.id, 'userLevel', [])[0] >= 2;
 	}
 
-	async run(msg, args) {
+	async run(msg, args) { // eslint-disable-line consistent-return
 		try {
 			// Checks
 			if (!msg.guild.member(this.client.user).hasPermission('MANAGE_ROLES_OR_PERMISSIONS')) {

@@ -38,7 +38,7 @@ module.exports = class CleverbotCommand extends Command {
 			let msgClean = args.message.replace(re, '');
 			cb.setNick(`ism1le_naomi_${_id}`);
 
-			if (cleverbots.find(element => {
+			if (cleverbots.find(element => { // eslint-disable-line arrow-body-style
 				return element === _id;
 			})) {
 				// Session is opened already
@@ -53,7 +53,7 @@ module.exports = class CleverbotCommand extends Command {
 			} else {
 				// Session is needed to open
 				winston.info(`Session ism1le_naomi_${_id} is not opened already. Trying to open.`);
-				cb.create(_err => {
+				cb.create(_err => { // eslint-disable-line consistent-return
 					if (_err) return winston.error(_err);
 					cb.ask(msgClean, (err, response) => {
 						if (err) return winston.error(err);

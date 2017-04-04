@@ -33,7 +33,7 @@ module.exports = class SuggestCommand extends Command {
 				embed: {
 					author: {
 						name: `${msg.author.username} (${msg.channel.guild.name})`,
-						icon_url: msg.author.avatarURL
+						icon_url: msg.author.avatarURL // eslint-disable-line camelcase
 					},
 					color: 3447003,
 					description: args.suggestion,
