@@ -11,8 +11,8 @@ module.exports = class YandereCommand extends Command {
 			memberName: 'yandere',
 			description: 'Random picture from yande.re',
 			throttling: {
-				usages: 2,
-				duration: 10
+				usages: 1,
+				duration: 15
 			},
 
 			args: [{
@@ -49,7 +49,7 @@ module.exports = class YandereCommand extends Command {
 			author: {
 				icon_url: msg.author.displayAvatarURL, // eslint-disable-line camelcase
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
-				url: response[_id].file_url
+				url: response[_id].file_url || undefined
 			},
 			color: 0x3498DB,
 			fields: [
