@@ -2,7 +2,7 @@ const path = require('path');
 const { URL } = require('url');
 const winston = require('winston');
 
-const Star = require('../../models/Star');
+const Star = require('../../models/Star.js');
 
 module.exports = class Starboard {
 	static async createStar(message, starboardChannel, starBy) {
