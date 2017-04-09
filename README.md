@@ -65,6 +65,11 @@ git clone https://github.com/iSm1le/Naomi-Tanizaki.git
 sudo npm i
 ```
 
+If sodium fails to install try this:
+```bash
+npm install sodium --unsafe-perm
+```
+
 #### Clone settings
 ```bash
 cp settings.json.example settings.json

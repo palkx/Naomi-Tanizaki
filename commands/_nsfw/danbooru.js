@@ -49,7 +49,7 @@ module.exports = class DanbooruCommand extends Command {
 			author: {
 				icon_url: msg.author.displayAvatarURL, // eslint-disable-line camelcase
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
-				url: `https://danbooru.donmai.us${response[_id].large_file_url}` || undefined
+				url: response[_id].large_file_url !== undefined ? `https://danbooru.donmai.us${response[_id].large_file_url}` : `https://danbooru.donmai.us${response[_id].preview_file_url}` // eslint-disable-line
 			},
 			color: 0x3498DB,
 			fields: [

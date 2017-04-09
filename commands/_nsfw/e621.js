@@ -48,7 +48,7 @@ module.exports = class E621Command extends Command {
 			author: {
 				icon_url: msg.author.displayAvatarURL, // eslint-disable-line camelcase
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
-				url: response[_id].file_url || undefined
+				url: response[_id].file_url !== undefined ? response[_id].file_url : response[_id].sample_url
 			},
 			color: 0x3498DB,
 			fields: [
