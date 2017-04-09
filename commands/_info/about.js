@@ -33,7 +33,7 @@ module.exports = class AboutCommand extends Command {
 				**If you have any suggestions or feedback head over to her server.**
 				**You can see her commands by via ${this.client.user} help**
 				**❯ WEBSITE:** [WIP](https://naom.me/)
-				**❯ [SERVER](https://s.xaff.ru/dis)**
+				**❯ [SERVER](https://s.xaff.ru/devdis)**
 			`,
 			thumbnail: { url: this.client.user.avatarURL }
 		});
