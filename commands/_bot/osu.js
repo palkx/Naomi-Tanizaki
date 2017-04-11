@@ -43,6 +43,16 @@ module.exports = class OsuCommand extends Command {
 				description: 'your request returned no results.'
 			});
 		}
+		const userbest = await request({
+			uri: `https://osu.ppy.sh/api/get_user_best?k=${osukey}&u=${username}&limit=1`,
+			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
+			json: true
+		});
+		const _userbest = await request({
+			uri: `https://osu.ppy.sh/api/get_beatmaps?k=${osukey}&limit=1&b=${userbest[0].beatmap_id}`,
+			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
+			json: true
+		});
 		return msg.embed({
 			author: {
 				icon_url: 'http://vignette3.wikia.nocookie.net/osugame/images/c/c9/Logo.png/revision/latest?cb=20151219073209', // eslint-disable-line
@@ -92,8 +102,8 @@ module.exports = class OsuCommand extends Command {
 					inline: true
 				},
 				{
-					name: '**Country**',
-					value: `:flag_${response[0].country.toLowerCase()}: ${response[0].country}`,
+					name: '**Best play**',
+					value: `:flag_${response[0].country.toLowerCase()}: ${response[0].country} ${_userbest[0].title} \`${userbest[0].pp}\``, // eslint-disable-line
 					inline: true
 				}
 			],

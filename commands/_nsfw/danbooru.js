@@ -11,8 +11,8 @@ module.exports = class DanbooruCommand extends Command {
 			memberName: 'danbooru',
 			description: 'Random picture from danbooru.donmai.us',
 			throttling: {
-				usages: 2,
-				duration: 10
+				usages: 1,
+				duration: 15
 			},
 
 			args: [{
@@ -48,7 +48,8 @@ module.exports = class DanbooruCommand extends Command {
 		return msg.embed({
 			author: {
 				icon_url: msg.author.displayAvatarURL, // eslint-disable-line camelcase
-				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`
+				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
+				url: response[_id].large_file_url !== undefined ? `https://danbooru.donmai.us${response[_id].large_file_url}` : `https://danbooru.donmai.us${response[_id].preview_file_url}` // eslint-disable-line
 			},
 			color: 0x3498DB,
 			fields: [
@@ -58,8 +59,8 @@ module.exports = class DanbooruCommand extends Command {
 					inline: true
 				}
 			],
-			image: { url: `https://danbooru.donmai.us${response[_id].file_url}` || undefined },
-			footer: { text: `**Tags**: ${response[_id].tag_string}` }
+			image: { url: `https://danbooru.donmai.us${response[_id].preview_file_url}` || undefined },
+			footer: { text: `Tags: ${response[_id].tag_string}` }
 		});
 	}
 };

@@ -11,8 +11,8 @@ module.exports = class YandereCommand extends Command {
 			memberName: 'yandere',
 			description: 'Random picture from yande.re',
 			throttling: {
-				usages: 2,
-				duration: 10
+				usages: 1,
+				duration: 15
 			},
 
 			args: [{
@@ -48,7 +48,8 @@ module.exports = class YandereCommand extends Command {
 		return msg.embed({
 			author: {
 				icon_url: msg.author.displayAvatarURL, // eslint-disable-line camelcase
-				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`
+				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
+				url: response[_id].file_url !== undefined ? response[_id].file_url : response[_id].sample_url
 			},
 			color: 0x3498DB,
 			fields: [
@@ -58,8 +59,8 @@ module.exports = class YandereCommand extends Command {
 					inline: true
 				}
 			],
-			image: { url: response[_id].file_url || undefined },
-			footer: { text: `**Tags**: ${response[_id].tags}` }
+			image: { url: response[_id].sample_url || undefined },
+			footer: { text: `Tags: ${response[_id].tags}` }
 		});
 	}
 };

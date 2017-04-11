@@ -8,21 +8,21 @@
 
 ## Installation guide for Ubuntu 16.04.2 LTS && Debian >7
 
-#### Install node.js version >7.6.0
+#### Install node.js version >7.8.0
 
 ```bash
 curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
-sudo apt-get install -y nodejs
+sudo apt install -y nodejs
 node -v
-> 7.6.0
+> 7.8.0
 ```
 
 #### Install PostgresSQL
 If Postgres is not installed yet, follow these steps. If it is already installed, you should create a new db or use an existing one.
 
 ```bash
-sudo apt-get update
-sudo apt-get install postgresql postgresql-contrib
+sudo apt update
+sudo apt install -y postgresql postgresql-contrib
 sudo update-rc.d postgresql enable
 ```
 
@@ -36,27 +36,38 @@ createdb <db_name>
 
 #### Install Redis
 ```bash
-sudo apt-get update
-sudo apt-get install redis-server
+sudo apt update
+sudo apt install -y redis-server
 sudo update-rc.d redis-server enable
 ```
 
 #### Install required libraries
 ```bash
-sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
+sudo apt install -y libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++ libtool autoconf automake
 ```
 
 On debian you need to install ffmpeg, or install newer library. (it`s called libav, if i am correct)
 
 #### Intall git if you dont have it
 ```bash
-sudo apt-get install git
+sudo apt install git
 ```
 
 #### Clone source and install dependencies(with admin privileges)
+But before install node-gyp.
+```bash
+sudo npm install node-gyp -g
+```
+
+Now we can install dependencies.
 ```bash
 git clone https://github.com/iSm1le/Naomi-Tanizaki.git
 sudo npm i
+```
+
+If sodium fails to install try this:
+```bash
+npm install sodium --unsafe-perm
 ```
 
 #### Clone settings
