@@ -24,7 +24,7 @@ module.exports = class StatsCommand extends Command {
 	run(msg) {
 		return msg.embed({
 			color: 3447003,
-			description: '**Commando Statistics**',
+			description: '**Statistics**',
 			fields: [
 				{
 					name: '❯ Uptime',
