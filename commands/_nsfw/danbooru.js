@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const { version } = require('../../settings.json');
+const { version, permittedGroup } = require('../../settings.json');
 const request = require('request-promise');
 
 module.exports = class DanbooruCommand extends Command {
@@ -25,9 +25,8 @@ module.exports = class DanbooruCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.provider.get(msg.author.id, 'userLevel', [])[0] >= 1
-		|| msg.member.roles.exists('name', 'Server Staff')
-		|| msg.member.hasPermission('ADMINISTRATOR');
+		return this.client.provider.get(msg.author.id, 'userLevel') >= 1
+		|| msg.member.roles.exists('name', permittedGroup);
 	}
 
 	async run(msg, args) {
