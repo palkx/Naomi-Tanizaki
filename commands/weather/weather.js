@@ -6,7 +6,7 @@ const fs = global.Promise.promisifyAll(require('fs'));
 const path = require('path');
 const request = require('request-promise');
 
-const { googleAPIKey, weatherAPIKey } = require('../../settings');
+const { googleAPIKey, weatherAPIKey } = require('../../assets/_data/settings');
 const { version } = require('../../package');
 
 module.exports = class WeatherCommand extends Command {
@@ -46,7 +46,7 @@ module.exports = class WeatherCommand extends Command {
 		const locationURI = encodeURIComponent(location.replace(/ /g, '+'));
 		const response = await request({
 			uri: `https://maps.googleapis.com/maps/api/geocode/json?address=${locationURI}&key=${googleAPIKey}`,
-			headers: { 'User-Agent': `Commando v${version} (https://github.com/WeebDev/Commando/)` },
+			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});
 
@@ -66,7 +66,7 @@ module.exports = class WeatherCommand extends Command {
 
 		const res = await request({
 			uri: `https://api.darksky.net/forecast/${weatherAPIKey}/${params}?exclude=minutely,hourly,flags&units=auto`,
-			headers: { 'User-Agent': `Commando v${version} (https://github.com/WeebDev/Commando/)` },
+			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});
 

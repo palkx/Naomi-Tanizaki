@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const request = require('request-promise');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const version = require('../../package').version;
 
 const types = ['math', 'date', 'year', 'trivia'];
@@ -38,7 +38,7 @@ module.exports = class FactsCommand extends Command {
 		});
 	}
 
-	async run(msg, args) { // eslint-disable-line consistent-return
+	async run(msg, args) { // eslint-disable-line consistent-return, require-await
 		const category = args.category;
 		const subcategory = args.subcategory;
 
@@ -48,7 +48,7 @@ module.exports = class FactsCommand extends Command {
 		else if (category === 'date') return this.getFact(msg, subcategory, 'date');
 		else if (category === 'year') return this.getFact(msg, subcategory, 'year');
 		else if (category === 'cat' || category === 'cats') return this.getCat(msg);
-  	}
+	}
 
 	async getRandom(msg, subcategory) {
 		const type = subcategory
@@ -58,31 +58,37 @@ module.exports = class FactsCommand extends Command {
 			: types[Math.floor(Math.random() * types.length)];
 		const response = await request({
 			uri: `http://numbersapi.com/random/${type}`,
-			headers: { 'User-Agent': `Hamakaze v${version} (https://github.com/WeebDev/Hamakaze/)` },
+			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});
-		return msg.say(response);
+		return msg.embed({ color: colors.blue, description: response });
 	}
 
 	async getFact(msg, number, type) {
 		if (number) {
 			const response = await request({
 				uri: `http://numbersapi.com/${number}/${type}`,
-				headers: { 'User-Agent': `Hamakaze v${version} (https://github.com/WeebDev/Hamakaze/)` },
+				headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 				json: true
 			});
-			return msg.say(response);
+			return msg.embed({ color: colors.blue, description: response });
 		}
-		return msg.reply(`you need to supply a number. Maybe you want \`facts random ${type}\`?`);
+		return msg.embed({
+			color: colors.blue,
+			description: `you need to supply a number. Maybe you want \`facts random ${type}\`?`
+		});
 	}
 
 	async getCat(msg) {
 		const response = await request({
 			uri: 'http://catfacts-api.appspot.com/api/facts',
-			headers: { 'User-Agent': `Hamakaze v${version} (https://github.com/WeebDev/Hamakaze/)` },
+			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});
-		return msg.say(stripIndents`🐱 **${msg.author}, did you know:**
-				${response.facts[0]}`);
+		return msg.embed({
+			color: colors.blue,
+			description: stripIndents`🐱 **${msg.author}, did you know:**
+				${response.facts[0]}`
+		});
 	}
 };

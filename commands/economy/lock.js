@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
+const colors = require('../../assets/_data/colors.json');
 const { stripIndents } = require('common-tags');
-
 const Currency = require('../../structures/currency/Currency');
 
 module.exports = class LockCommand extends Command {
@@ -33,15 +33,22 @@ module.exports = class LockCommand extends Command {
 
 	run(msg, args) {
 		const channel = args.channel || msg.channel;
-		if (channel.type !== 'text') return msg.reply('you can only lock text channels.');
+		if (channel.type !== 'text') {
+			return msg.embed({ color: colors.red, description: `${msg.author}, you can only lock text channels.` });
+		}
 
 		const channelLocks = this.client.provider.get(msg.guild.id, 'locks', []);
-		if (channelLocks.includes(channel.id)) return msg.reply(`${channel} has already been locked.`);
+		if (channelLocks.includes(channel.id)) {
+			return msg.embed({ color: colors.red, description: `${msg.author}, ${channel} has already been locked.` });
+		}
 
 		channelLocks.push(channel.id);
 		this.client.provider.set(msg.guild.id, 'locks', channelLocks);
-		return msg.reply(stripIndents`
-			this channel has been locked. You can no longer earn xp or ${Currency.textPlural} in ${channel}.
-		`);
+		return msg.embed({
+			color: colors.green,
+			description: stripIndents`
+			${msg.author}, this channel has been locked. You can no longer earn xp or ${Currency.textPlural} in ${channel}.
+		`
+		});
 	}
 };

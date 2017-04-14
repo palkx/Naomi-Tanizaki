@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const moment = require('moment');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const username = require('../../models/UserName');
 
 module.exports = class UserInfoCommand extends Command {
@@ -35,7 +35,7 @@ module.exports = class UserInfoCommand extends Command {
 		const usernames = await username.findAll({ where: { userID: user.id } });
 
 		return msg.embed({
-			color: 3447003,
+			color: colors.blue,
 			fields: [
 				{
 					name: '❯ Member Details',

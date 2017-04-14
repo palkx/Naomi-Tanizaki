@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
+const colors = require('../../assets/_data/colors.json');
 const moment = require('moment');
 const { oneLine, stripIndents } = require('common-tags');
-
 const Currency = require('../../structures/currency/Currency');
 const Daily = require('../../structures/currency/Daily');
 
@@ -28,16 +28,20 @@ module.exports = class DailyRandomCommand extends Command {
 
 		if (received) {
 			const nextDaily = await Daily.nextDaily(msg.author.id);
-			return msg.reply(stripIndents`
-				you have already gifted your daily ${Currency.textPlural}.
-				You can gift away your next daily in ${moment.duration(nextDaily).format('hh [hours] mm [minutes]')}
-			`);
+			return msg.embed({
+				color: colors.blue,
+				description: stripIndents`
+				${msg.author}, you have already gifted your daily ${Currency.textPlural}.
+				You can gift away your next daily in ${moment.duration(nextDaily).format('hh [hours] mm [minutes]')}`
+			});
 		}
 
 		Daily.receive(msg.author.id, member.id);
-		return msg.reply(oneLine`
-			${member.displayName}#${member.user.discriminator} (${member.id}) has successfully received your daily
-			${Currency.convert(Daily.dailyDonationPayout)}.
-		`);
+		return msg.embed({
+			color: colors.green,
+			description: oneLine`
+			${msg.author}, ${member.displayName}#${member.user.discriminator} (${member.id}) has 
+			successfully received your daily ${Currency.convert(Daily.dailyDonationPayout)}.`
+		});
 	}
 };

@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const moment = require('moment');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const humanLevels = {
 	0: 'None',
 	1: 'Low',
@@ -28,7 +28,7 @@ module.exports = class ServerInfoCommand extends Command {
 
 	run(msg) {
 		return msg.embed({
-			color: 3447003,
+			color: colors.blue,
 			description: `Info on **${msg.guild.name}** (ID: ${msg.guild.id})`,
 			fields: [
 				{

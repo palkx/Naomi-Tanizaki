@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 const Currency = require('../../structures/currency/Currency');
 
 module.exports = class MoneyRemoveCommand extends Command {
@@ -50,6 +50,10 @@ module.exports = class MoneyRemoveCommand extends Command {
 	run(msg, args) {
 		const { member, donuts } = args;
 		Currency._changeBalance(member.id, donuts);
-		return msg.reply(`successfully removed ${Currency.convert(donuts)} from ${member.displayName}'s balance.`);
+		return msg.embed({
+			color: colors.green,
+			description: `
+			${msg.author}, successfully removed ${Currency.convert(donuts)} from ${member.displayName}'s balance.`
+		});
 	}
 };

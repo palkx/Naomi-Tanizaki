@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 module.exports = class EchoCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -25,10 +25,10 @@ module.exports = class EchoCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
+	async run(msg, args) { // eslint-disable-line require-await
 		const { message } = args;
 		msg.delete();
 
-		return msg.say(message);
+		return msg.embed({ color: colors.dark_grey, description: message });
 	}
 };

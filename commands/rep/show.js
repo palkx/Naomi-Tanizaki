@@ -1,5 +1,5 @@
 const { Command, util } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 const UserRep = require('../../models/UserRep');
 
 module.exports = class RepShowCommand extends Command {
@@ -34,7 +34,7 @@ module.exports = class RepShowCommand extends Command {
 			value: rep.reputationMessage || '*-no message-*'
 		}));
 		const embed = {
-			color: positive === negative ? 0xF5AD1E : positive > negative ? 0x52C652 : 0xE93F3C,
+			color: positive === negative ? colors.orange : positive > negative ? colors.green : colors.red,
 			author: {
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 				icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase

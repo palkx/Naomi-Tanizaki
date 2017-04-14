@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const request = require('request-promise');
-
-const { sherlockAPIKey } = require('../../settings');
+const colors = require('../../assets/_data/colors.json');
+const { sherlockAPIKey } = require('../../assets/_data/settings');
 const { version } = require('../../package');
 
 module.exports = class TranslateCommand extends Command {
@@ -41,14 +41,19 @@ module.exports = class TranslateCommand extends Command {
 	async run(msg, args) {
 		const { query, to, from } = args;
 
-		if (!sherlockAPIKey) return msg.reply('my Commander has not set the Sherlock API Key. Go yell at him.');
+		if (!sherlockAPIKey) {
+			return msg.embed({
+				color: colors.blue,
+				description: `${msg.author}, my Commander has not set the Sherlock API Key. Go yell at him.`
+			});
+		}
 
 		let response;
 		try {
 			response = await request({
 				method: 'POST',
 				headers: {
-					'User-Agent': `Commando v${version} (https://github.com/WeebDev/Commando/)`,
+					'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)`,
 					Authorization: sherlockAPIKey
 				},
 				uri: `https://api.kurisubrooks.com/api/translate`,
@@ -56,10 +61,13 @@ module.exports = class TranslateCommand extends Command {
 				json: true
 			});
 		} catch (error) {
-			if (error.error) return msg.reply(this.handleError(error.error));
+			if (error.error) {
+				return msg.embed({ color: colors.blue, description: `${msg.author}, ${this.handleError(error.error)}` });
+			}
 		}
 
 		return msg.embed({
+			color: colors.green,
 			author: {
 				name: msg.member ? msg.member.displayName : msg.author.username,
 				icon_url: msg.author.avatarURL // eslint-disable-line camelcase

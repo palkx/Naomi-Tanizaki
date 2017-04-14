@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { oneLine } = require('common-tags');
-
-const config = require('../../settings');
+const colors = require('../../assets/_data/colors.json');
+const config = require('../../assets/_data/settings');
 
 module.exports = class MaxSongsCommand extends Command {
 	constructor(client) {
@@ -31,20 +31,29 @@ module.exports = class MaxSongsCommand extends Command {
 	run(msg, args) {
 		if (!args) {
 			const maxSongs = this.client.provider.get(msg.guild.id, 'maxSongs', config.maxSongs);
-			return msg.reply(`the maximum songs a user may have in the queue at one time is ${maxSongs}.`);
+			return msg.embed({
+				color: colors.blue,
+				description: `${msg.author}, the maximum songs a user may have in the queue at one time is ${maxSongs}.`
+			});
 		}
 
 		if (args.toLowerCase() === 'default') {
 			this.client.provider.remove(msg.guild.id, 'maxSongs');
-			return msg.reply(`set the maximum songs to the default (currently ${config.maxSongs}).`);
+			return msg.embed({
+				color: colors.green,
+				description: `${msg.author}, set the maximum songs to the default (currently ${config.maxSongs}).`
+			});
 		}
 
 		const maxSongs = parseInt(args);
 		if (isNaN(maxSongs) || maxSongs <= 0) {
-			return msg.reply(`invalid number provided.`);
+			return msg.embed({ color: colors.red, description: `${msg.author}, invalid number provided.` });
 		}
 
 		this.client.provider.set(msg.guild.id, 'maxSongs', maxSongs);
-		return msg.reply(`set the maximum songs to ${maxSongs}.`);
+		return msg.embed({
+			color: colors.green,
+			description: `${msg.author}, set the maximum songs to ${maxSongs}.`
+		});
 	}
 };

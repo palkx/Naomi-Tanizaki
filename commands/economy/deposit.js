@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
+const colors = require('../../assets/_data/colors.json');
 const { stripIndents } = require('common-tags');
-
 const Bank = require('../../structures/currency/Bank');
 const Currency = require('../../structures/currency/Currency');
 
@@ -38,17 +38,30 @@ module.exports = class DepositCommand extends Command {
 	async run(msg, args) {
 		const { donuts } = args;
 
-		if (donuts <= 0) return msg.reply(`you can't deposit 0 or less ${Currency.convert(0)}.`);
+		if (donuts <= 0) {
+			return msg.embed({
+				color: colors.red,
+				description: `${msg.author}, you can't deposit 0 or less ${Currency.convert(0)}.
+			`
+			});
+		}
 
 		const userBalance = await Currency.getBalance(msg.author.id);
 		if (userBalance < donuts) {
-			return msg.reply(stripIndents`
-				you don't have that many ${Currency.textPlural} to deposit!
+			return msg.embed({
+				color: colors.red,
+				description: stripIndents`
+				${msg.author}, you don't have that many ${Currency.textPlural} to deposit!
 				You currently have ${Currency.convert(userBalance)} on hand.
-			`);
+			`
+			});
 		}
 
 		Bank.deposit(msg.author.id, donuts);
-		return msg.reply(`successfully deposited ${Currency.convert(donuts)} to the bank!`);
+		return msg.embed({
+			color: colors.green,
+			description: `${msg.author}, successfully deposited ${Currency.convert(donuts)} to the bank!
+			`
+		});
 	}
 };

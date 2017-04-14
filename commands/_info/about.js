@@ -2,9 +2,10 @@ const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
 const djsversion = require('discord.js').version;
 const djscversion = require('discord.js-commando').version;
+const colors = require('../../assets/_data/colors.json');
 const { version } = require('../../package.json');
 
-const { commandoVersion } = require('../../settings.json');
+const { commandoVersion } = require('../../assets/_data/settings.json');
 
 module.exports = class AboutCommand extends Command {
 	constructor(client) {
@@ -20,9 +21,9 @@ module.exports = class AboutCommand extends Command {
 		});
 	}
 
-	async run(msg) {
+	async run(msg) { // eslint-disable-line require-await
 		return msg.embed({
-			color: 3447003,
+			color: colors.blue,
 			description: stripIndents`
 				**Naomi Tanizaki**
 				**❯ CREATOR:** <@${this.client.options.owner}> (ID: ${this.client.options.owner})

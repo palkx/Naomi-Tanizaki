@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const Tag = require('../../models/Tag');
 
 module.exports = class TagListCommand extends Command {
@@ -21,7 +21,12 @@ module.exports = class TagListCommand extends Command {
 
 	async run(msg) {
 		const tags = await Tag.findAll({ where: { guildID: msg.guild.id } });
-		if (!tags) return msg.say(`${msg.guild.name} doesn't have any tags, ${msg.author}. Why not add one?`); // eslint-disable-line
+		if (!tags) {
+			return msg.embed({
+				color: colors.blue,
+				description: `${msg.guild.name} doesn't have any tags, ${msg.author}. Why not add one?`
+			});
+		}
 		const examples = tags.filter(tag => tag.type)
 			.filter(tag => tag.example)
 			.map(tag => tag.name)
@@ -32,7 +37,9 @@ module.exports = class TagListCommand extends Command {
 			.map(tag => tag.name)
 			.sort()
 			.join(', ');
-		return msg.say(stripIndents`**❯ Tags:**
+		return msg.embed({
+			color: colors.blue,
+			description: stripIndents`**❯ Tags:**
 			${tags.filter(tag => tag.type)
 				.filter(tag => !tag.example)
 				.map(tag => tag.name)
@@ -43,7 +50,7 @@ module.exports = class TagListCommand extends Command {
 				${examples}` : `There are no examples.`}
 
 			${usertags ? `**❯ ${msg.member.displayName}'s tags:**
-				${usertags}` : `${msg.member.displayName} has no tags.`}
-		`);
+				${usertags}` : `${msg.member.displayName} has no tags.`}`
+		});
 	}
 };

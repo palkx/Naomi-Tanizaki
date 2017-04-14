@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const Store = require('../../structures/currency/Store');
 
 module.exports = class StoreInfoCommand extends Command {
@@ -32,14 +32,19 @@ module.exports = class StoreInfoCommand extends Command {
 		const { item } = args;
 		const storeItem = Store.getItem(item);
 		if (!storeItem) {
-			return msg.reply(stripIndents`
-				sorry, but that item doesn't exist.
+			return msg.embed({
+				color: colors.red,
+				description: stripIndents`
+				${msg.member}, sorry, but that item doesn't exist.
 
-				You can use ${msg.usage()} to get a list of the available items.
-			`);
+				You can use ${msg.usage()} to get a list of the available items.`
+			});
 		}
 
 		const storeItemName = storeItem.name.replace(/(\b\w)/gi, lc => lc.toUpperCase());
-		return msg.reply(`one ${storeItemName} costs ${storeItem.price} 🍩s`);
+		return msg.embed({
+			color: colors.green,
+			description: `${msg.author}, one ${storeItemName} costs ${storeItem.price} 🍩s`
+		});
 	}
 };

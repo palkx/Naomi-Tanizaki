@@ -1,7 +1,7 @@
 const { Command, util } = require('discord.js-commando');
 const { oneLine, stripIndents } = require('common-tags');
-
-const config = require('../../settings');
+const colors = require('../../assets/_data/colors.json');
+const config = require('../../assets/_data/settings');
 const Song = require('../../structures/Song');
 
 module.exports = class ViewQueueCommand extends Command {
@@ -32,7 +32,12 @@ module.exports = class ViewQueueCommand extends Command {
 	run(msg, args) {
 		const { page } = args;
 		const queue = this.queue.get(msg.guild.id);
-		if (!queue) return msg.reply('there are no songs in the queue. Why not start the party yourself?');
+		if (!queue) {
+			return msg.embed({
+				color: colors.blue,
+				description: `${msg.author}, there are no songs in the queue. Why not start the party yourself?`
+			});
+		}
 
 		const paginated = util.paginate(queue.songs, page, Math.floor(config.paginationItems));
 		const totalLength = queue.songs.reduce((prev, song) => prev + song.length, 0);
@@ -40,7 +45,7 @@ module.exports = class ViewQueueCommand extends Command {
 		const currentTime = currentSong.dispatcher ? currentSong.dispatcher.time / 1000 : 0;
 
 		const embed = {
-			color: 3447003,
+			color: colors.blue,
 			author: {
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 				icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase

@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
-const { stripIndents } = require('common-tags');
-
+const { stripIndents, oneLine } = require('common-tags');
+const colors = require('../../assets/_data/colors.json');
 const Blackjack = require('../../structures/games/Blackjack');
 const Currency = require('../../structures/currency/Currency');
 
@@ -52,14 +52,16 @@ module.exports = class BlackjackCommand extends Command {
 		const { bet } = args;
 
 		if (Blackjack.gameExists(msg.author.id)) {
-			return msg.reply(`you can't start 2 games of blackjack at the same time.`);
+			return msg.embed({ color: colors.red, description: `you can't start 2 games of blackjack at the same time.` });
 		}
 
 		const blackjack = new Blackjack(msg);
 
-		return msg.say(
-			`New game of blackjack started with ${msg.member.displayName} with a bet of ${Currency.convert(bet)}!`
-		).then(async () => {
+		return msg.embed({
+			color: colors.blue,
+			description: oneLine`
+			New game of blackjack started with ${msg.member.displayName} with a bet of ${Currency.convert(bet)}!`
+		}).then(async () => {
 			const balance = await Currency.getBalance(msg.author.id);
 			const playerHand = blackjack.getHand();
 			let dealerHand = blackjack.getHand();

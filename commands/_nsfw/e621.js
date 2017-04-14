@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
-const { version, permittedGroup } = require('../../settings.json');
+const { version, permittedGroup } = require('../../assets/_data/settings.json');
+const colors = require('../../assets/_data/colors.json');
 const request = require('request-promise');
 
 module.exports = class E621Command extends Command {
@@ -38,7 +39,7 @@ module.exports = class E621Command extends Command {
 		});
 		if (response.length === 0) {
 			return msg.embed({
-				color: 0x3498DB,
+				color: colors.red,
 				description: 'your request returned no results.'
 			});
 		}
@@ -49,7 +50,7 @@ module.exports = class E621Command extends Command {
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 				url: response[_id].file_url !== undefined ? response[_id].file_url : response[_id].sample_url
 			},
-			color: 0x3498DB,
+			color: colors.green,
 			fields: [
 				{
 					name: 'ID',

@@ -9,7 +9,7 @@ const Database = require('./structures/PostgreSQL');
 const Redis = require('./structures/Redis');
 const SequelizeProvider = require('./providers/Sequelize');
 const Starboard = require('./structures/stars/Starboard');
-const { owner, token, commandPrefix } = require('./settings');
+const { owner, token, commandPrefix } = require('./assets/_data/settings');
 const { version, build } = require('./package.json');
 
 const database = new Database();

@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 const Redis = require('../../structures/Redis');
 const Tag = require('../../models/Tag');
 const Util = require('../../util/Util');
@@ -43,7 +43,12 @@ module.exports = class TagAddCommand extends Command {
 		const name = Util.cleanContent(args.name.toLowerCase(), msg);
 		const content = Util.cleanContent(args.content, msg);
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
-		if (tag) return msg.say(`A tag with the name **${name}** already exists, ${msg.author}`);
+		if (tag) {
+			return msg.embed({
+				color: colors.red,
+				description: `A tag with the name **${name}** already exists, ${msg.author}`
+			});
+		}
 
 		return Tag.sync()
 			.then(() => {
@@ -59,7 +64,10 @@ module.exports = class TagAddCommand extends Command {
 				});
 
 				redis.db.setAsync(`tag${name}${msg.guild.id}`, content);
-				return msg.say(`A tag with the name **${name}** has been added, ${msg.author}`);
+				return msg.embed({
+					color: colors.green,
+					description: `A tag with the name **${name}** has been added, ${msg.author}`
+				});
 			});
 	}
 };

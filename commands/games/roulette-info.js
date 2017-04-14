@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const Currency = require('../../structures/currency/Currency');
 
 module.exports = class RouletteInfo extends Command {
@@ -21,6 +21,7 @@ module.exports = class RouletteInfo extends Command {
 
 	run(msg) {
 		return msg.embed({
+			color: colors.blue,
 			description: stripIndents`
 				To start a game or place a bet use \`roulette <${Currency.textPlural}> <space>\`
 

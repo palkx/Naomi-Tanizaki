@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
-const { version, permittedGroup } = require('../../settings.json');
+const { version, permittedGroup } = require('../../assets/_data/settings.json');
+const colors = require('../../assets/_data/colors.json');
 const request = require('request-promise');
 
 module.exports = class DanbooruCommand extends Command {
@@ -39,7 +40,7 @@ module.exports = class DanbooruCommand extends Command {
 		});
 		if (response.length === 0) {
 			return msg.embed({
-				color: 0x3498DB,
+				color: colors.red,
 				description: 'your request returned no results.'
 			});
 		}
@@ -50,7 +51,7 @@ module.exports = class DanbooruCommand extends Command {
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 				url: response[_id].large_file_url !== undefined ? `https://danbooru.donmai.us${response[_id].large_file_url}` : `https://danbooru.donmai.us${response[_id].preview_file_url}` // eslint-disable-line
 			},
-			color: 0x3498DB,
+			color: colors.green,
 			fields: [
 				{
 					name: 'ID',

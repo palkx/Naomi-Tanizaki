@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
-
-const config = require('../../settings');
+const colors = require('../../assets/_data/colors.json');
+const config = require('../../assets/_data/settings');
 
 module.exports = class DefaultVolumeCommand extends Command {
 	constructor(client) {
@@ -19,26 +19,40 @@ module.exports = class DefaultVolumeCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
+		return this.client.isOwner(msg.author)
+			|| msg.member.hasPermission('ADMINISTRATOR');
 	}
 
 	run(msg, args) {
 		if (!args) {
 			const defaultVolume = this.client.provider.get(msg.guild.id, 'defaultVolume', config.defaultVolume);
-			return msg.reply(`the default volume level is ${defaultVolume}.`);
+			return msg.embed({
+				color: colors.blue,
+				description: `${msg.author}, the default volume level is ${defaultVolume}.`
+			});
 		}
 
 		if (args.toLowerCase() === 'default') {
 			this.client.provider.remove(msg.guild.id, 'defaultVolume');
-			return msg.reply(`set the default volume level to the bot's default (currently ${config.defaultVolume}).`);
+			return msg.embed({
+				color: colors.green,
+				description: `
+				${msg.member}, set the default volume level to the bot's default (currently ${config.defaultVolume}).`
+			});
 		}
 
 		const defaultVolume = parseInt(args);
 		if (isNaN(defaultVolume) || defaultVolume <= 0 || defaultVolume > 10) {
-			return msg.reply(`invalid number provided. It must be in the range of 0-10.`);
+			return msg.embed({
+				color: colors.red,
+				description: `${msg.author}, invalid number provided. It must be in the range of 0-10.`
+			});
 		}
 
 		this.client.provider.set(msg.guild.id, 'defaultVolume', defaultVolume);
-		return msg.reply(`set the default volume level to ${defaultVolume}.`);
+		return msg.embed({
+			color: colors.green,
+			description: `${msg.author}, set the default volume level to ${defaultVolume}.`
+		});
 	}
 };

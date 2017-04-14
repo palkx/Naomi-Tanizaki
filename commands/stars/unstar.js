@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 const Starboard = require('../../structures/stars/Starboard');
 
 module.exports = class UnstarCommand extends Command {
@@ -24,9 +24,16 @@ module.exports = class UnstarCommand extends Command {
 	async run(msg, args) { // eslint-disable-line consistent-return
 		const { message } = args;
 		const starboard = msg.guild.channels.find('name', 'starboard');
-		if (!starboard) return msg.reply('you can\'t unstar things without a #starboard...');
+		if (!starboard) {
+			return msg.embed({
+				color: colors.red,
+				description: `${msg.author}, you can't unstar things without a #starboard...`
+			});
+		}
 		const hasStarred = await Starboard.hasStarred(message.id, msg.author.id);
-		if (!hasStarred) return msg.reply('you never starred this message.');
+		if (!hasStarred) {
+			return msg.embed({ color: colors.red, description: `${msg.author}, you never starred this message.'` });
+		}
 		Starboard.removeStar(message, starboard, msg.author.id);
 	}
 };

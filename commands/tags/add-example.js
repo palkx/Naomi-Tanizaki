@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
-
-const { exampleChannel } = require('../../settings');
+const colors = require('../../assets/_data/colors.json');
+const { exampleChannel } = require('../../assets/_data/settings');
 const Redis = require('../../structures/Redis');
 const Tag = require('../../models/Tag');
 const Util = require('../../util/Util');
@@ -48,10 +48,20 @@ module.exports = class ExampleAddCommand extends Command {
 		const name = Util.cleanContent(args.name.toLowerCase(), msg);
 		const content = Util.cleanContent(args.content, msg);
 		const staffRole = await msg.member.roles.exists('name', 'Server Staff');
-		if (!staffRole) return msg.say(`Only the **Server Staff** can add examples, ${msg.author}`);
+		if (!staffRole) {
+			return msg.embed({
+				color: colors.red,
+				description: `Only the **Server Staff** can add examples, ${msg.author}`
+			});
+		}
 
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
-		if (tag) return msg.say(`An example with the name **${name}** already exists, ${msg.author}`);
+		if (tag) {
+			return msg.embed({
+				color: colors.red,
+				description: `An example with the name **${name}** already exists, ${msg.author}`
+			});
+		}
 		return Tag.sync()
 			.then(() => {
 				Tag.create({
@@ -71,7 +81,10 @@ module.exports = class ExampleAddCommand extends Command {
 
 				msg.guild.channels.get(exampleChannel).sendMessage(content)
 					.then(ex => Tag.update({ exampleID: ex.id }, { where: { name, guildID: msg.guild.id } }));
-				return msg.say(`An example with the name **${name}** has been added, ${msg.author}`);
+				return msg.embed({
+					color: colors.green,
+					description: `An example with the name **${name}** has been added, ${msg.author}`
+				});
 			});
 	}
 };

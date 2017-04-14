@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando');
-const { stripIndents } = require('common-tags');
-const { colorInfo, colorError, colorOk, permittedGroup } = require('../../settings.json');
+const { permittedGroup } = require('../../assets/_data/settings.json');
+const { oneLine } = require('common-tags');
+const colors = require('../../assets/_data/colors.json');
 
 module.exports = class RoleControlCommand extends Command {
 	constructor(client) {
@@ -49,27 +50,27 @@ module.exports = class RoleControlCommand extends Command {
 			|| msg.member.roles.exists('name', permittedGroup);
 	}
 
-	async run(msg, args) { // eslint-disable-line consistent-return
+	async run(msg, args) { // eslint-disable-line consistent-return, require-await
 			// Checks
 		if (!msg.guild.member(this.client.user).hasPermission('MANAGE_ROLES_OR_PERMISSIONS')) {
-			return 	msg.embed({ color: colorError, description: `I don't have **MANAGE_ROLES_OR_PERMISSIONS** permission.` });
+			return 	msg.embed({ color: colors.red, description: `I don't have **MANAGE_ROLES_OR_PERMISSIONS** permission.` });
 		}
 
 		const { member } = args;
 		const job = args.job.toLowerCase() === 'add';
 
 		if (msg.author.id === member.id) {
-			return msg.embed({ color: colorError, description: 'You cant operate with himself' });
+			return msg.embed({ color: colors.red, description: 'You cant operate with himself' });
 		}
 
 		let role = msg.guild.roles.find('name', args.role);
-		if (!role) { return msg.embed({ color: colorError, description: `${args.role} role does not exist on server.` }); }
+		if (!role) { return msg.embed({ color: colors.red, description: `${args.role} role does not exist on server.` }); }
 
 		const roleWhitelist = this.client.provider.get(msg.guild.id, 'roleWhitelist', []);
 		if (!roleWhitelist.includes(role.id)) {
 			return msg.embed(
 				{
-					color: colorError,
+					color: colors.red,
 					description: `${role} is not whitelisted to manage. Add it to whitelist first.`
 				});
 		}
@@ -78,7 +79,7 @@ module.exports = class RoleControlCommand extends Command {
 
 		if (roleAdminList.length !== 0 && !this.client.isOwner(msg.member)) {
 			if (!roleAdminList.includes(msg.member.id)) {
-				return msg.embed({ color: colorError, description: `${msg.member}, you are not admin of ${role}.` });
+				return msg.embed({ color: colors.red, description: `${msg.author}, you are not admin of ${role}.` });
 			}
 		}
 
@@ -86,26 +87,27 @@ module.exports = class RoleControlCommand extends Command {
 		const targetUserRoleLvl = member.highestRole.position;
 		const userRoleLvlWant = role.position;
 		if (!job && !member.roles.has(role.id)) {
-			return msg.embed({ color: colorInfo, description: `${member} already don't have ${role} role on this server.` });
-		} else if (job && member.roles.has(role.id)) {
-			return msg.embed({ color: colorInfo, description: `${member} already have ${role} role on this server.` });
-		}
-		if (userRoleLvl <= targetUserRoleLvl && userRoleLvl <= targetUserRoleLvl) {
 			return msg.embed({
-				color: colorError,
-				description: stripIndents`
+				color: colors.blue,
+				description: `${member} already don't have ${role} role on this server.`
+			});
+		} else if (job && member.roles.has(role.id)) {
+			return msg.embed({ color: colors.blue, description: `${member} already have ${role} role on this server.` });
+		}
+		if (userRoleLvl <= targetUserRoleLvl) {
+			return msg.embed({
+				color: colors.red,
+				description: oneLine`
 					You cant ${job ? 'add' : 'remove'} ${role} ${job ? 'to' : 'from'} ${member} because your highest
 					role is ${msg.member.highestRole}
-					and his highest role is biggest or equal to yours(${member.highestRole})
-					`
+					and his highest role is biggest or equal to yours(${member.highestRole})`
 			});
 		} else if (userRoleLvl <= userRoleLvlWant) {
 			return msg.embed({
-				color: colorError,
-				description: stripIndents`
+				color: colors.red,
+				description: oneLine`
 					You cant ${job ? 'add' : 'remove'} ${role} ${job ? 'to' : 'from'} ${member} because your highest
-					role is ${msg.member.highestRole}
-					`
+					role is ${msg.member.highestRole}`
 			});
 		}
 			// Checks end
@@ -113,7 +115,7 @@ module.exports = class RoleControlCommand extends Command {
 			member.addRole(role).then(() => {
 				msg.embed(
 					{
-						color: colorOk,
+						color: colors.green,
 						description: `${msg.author} successfully added ${role} to ${member}`
 					});
 			});
@@ -121,7 +123,7 @@ module.exports = class RoleControlCommand extends Command {
 			member.removeRole(role).then(() => {
 				msg.embed(
 					{
-						color: colorOk,
+						color: colors.green,
 						description: `${msg.author} successfully removed ${role} from ${member}`
 					});
 			});

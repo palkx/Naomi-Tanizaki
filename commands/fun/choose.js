@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 const RESPONSES = [
 	ch => `I choose **${ch}**`,
 	ch => `I pick **${ch}**`,
@@ -34,13 +34,23 @@ module.exports = class ChooseCommand extends Command {
 
 	async run(msg, args) {
 		const choices = args.choices;
-		if (choices.length < 2) return msg.reply(`You need to tell me atleast 2 things to choose from, ${msg.author}`);
+		if (choices.length < 2) {
+			return msg.embed({
+				color: colors.red,
+				description: `You need to tell me atleast 2 things to choose from, ${msg.author}`
+			});
+		}
 
 		let userError;
 		choices.forEach(ch => {
 			if (/[,|;|\||/|//|\-]/.test(ch) && ch.length >= 2) userError = true; // eslint-disable-line no-useless-escape
 		});
-		if (userError) return msg.say(`Please seperate your choices with a simple space, ${msg.author}`);
+		if (userError) {
+			return msg.embed({
+				color: colors.red,
+				description: `Please seperate your choices with a simple space, ${msg.author}`
+			});
+		}
 
 		let pick = Math.floor(Math.random() * choices.length);
 		choices.forEach((ch, i) => {
@@ -54,6 +64,9 @@ module.exports = class ChooseCommand extends Command {
 			}
 		});
 
-		return msg.say(`${RESPONSES[Math.floor(Math.random() * RESPONSES.length)](choices[pick])}, ${msg.author}.`);
+		return msg.embed({
+			color: colors.green,
+			description: `${RESPONSES[Math.floor(Math.random() * RESPONSES.length)](choices[pick])}, ${msg.author}.`
+		});
 	}
 };

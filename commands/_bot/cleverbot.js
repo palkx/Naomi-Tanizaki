@@ -1,12 +1,11 @@
 const { Command } = require('discord.js-commando');
 const winston = require('winston');
-const config = require('../../settings.json');
+const { cleverBotApiKey, cleverBotApiUser } = require('../../assets/_data/settings.json');
+const colors = require('../../assets/_data/colors.json');
 const Clever = require('cleverbot.io');
 let re = /<@[0-9].*>/g;
-const cleverbotKey = config.cleverbotApiKey;
-const cleverbotUser = config.cleverbotApiUser;
 if (typeof cleverbots === 'undefined') { var cleverbots = []; }
-if (typeof cb === 'undefined') { var cb = new Clever(cleverbotUser, cleverbotKey); }
+if (typeof cb === 'undefined') { var cb = new Clever(cleverBotApiUser, cleverBotApiKey); }
 
 module.exports = class CleverbotCommand extends Command {
 	constructor(client) {
@@ -32,33 +31,33 @@ module.exports = class CleverbotCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
+	async run(msg, args) { // eslint-disable-line require-await
 		try {
-			let _id = `${msg.guild ? `${msg.guild.id}` : `${msg.message.author.id}`}`;
+			let _id = msg.guild ? msg.guild.id : msg.message.author.id;
 			let msgClean = args.message.replace(re, '');
-			cb.setNick(`ism1le_naomi_${_id}`);
+			cb.setNick(`naomi_${_id}`);
 
 			if (cleverbots.find(element => { // eslint-disable-line arrow-body-style
 				return element === _id;
 			})) {
 				// Session is opened already
-				winston.info(`Session ism1le_naomi_${_id} is opened already`);
+				winston.info(`Session naomi_${_id} is opened already`);
 				cb.ask(msgClean, (err, response) => {
 					if (err) return winston.error(err);
 					return msg.embed({
-						color: 3447003,
+						color: colors.blue,
 						description: `:pencil: ${response}`
 					});
 				});
 			} else {
 				// Session is needed to open
-				winston.info(`Session ism1le_naomi_${_id} is not opened already. Trying to open.`);
+				winston.info(`Session naomi_${_id} is not opened already. Trying to open.`);
 				cb.create(_err => { // eslint-disable-line consistent-return
 					if (_err) return winston.error(_err);
 					cb.ask(msgClean, (err, response) => {
 						if (err) return winston.error(err);
 						return msg.embed({
-							color: 3447003,
+							color: colors.blue,
 							description: `:pencil: ${response}`
 						});
 					});

@@ -1,7 +1,7 @@
 const { Util } = require('discord.js');
 const { oneLineTrim } = require('common-tags');
 
-const { soundcloudID } = require('../settings');
+const { soundcloudID } = require('../assets/_data/settings');
 
 module.exports = class Song {
 	constructor(video, member) {

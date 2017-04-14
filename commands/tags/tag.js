@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 const Redis = require('../../structures/Redis');
 const Tag = require('../../models/Tag');
 
@@ -40,7 +40,7 @@ module.exports = class TagCommand extends Command {
 		if (cache) {
 			const tag = await Tag.findOne({ where: { name, guildID } });
 			if (tag) tag.increment('uses');
-			return msg.say(cache);
+			return msg.embed({ color: colors.blue, description: cache });
 		}
 
 		const tag = await Tag.findOne({ where: { name: name, guildID: guildID } });
@@ -48,6 +48,6 @@ module.exports = class TagCommand extends Command {
 		tag.increment('uses');
 		const content = await redis.db.setAsync(`tag${name}${guildID}`, tag.content);
 		redis.db.expire(`tag${name}${guildID}`, 3600);
-		return msg.say(content);
+		return msg.embed({ color: colors.blue, description: content });
 	}
 };

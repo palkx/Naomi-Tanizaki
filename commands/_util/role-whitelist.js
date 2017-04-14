@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
-const { colorError, colorOk, permittedGroup } = require('../../settings.json');
+const { permittedGroup } = require('../../assets/_data/settings.json');
+const colors = require('../../assets/_data/colors.json');
 
 module.exports = class RoleWhitelistCommand extends Command {
 	constructor(client) {
@@ -42,24 +43,24 @@ module.exports = class RoleWhitelistCommand extends Command {
 		|| msg.member.roles.exists('name', permittedGroup);
 	}
 
-	async run(msg, args) {  // eslint-disable-line consistent-return
+	async run(msg, args) {  // eslint-disable-line consistent-return, require-await
 		let role = msg.guild.roles.find('name', args.role);
-		if (!role) { return msg.embed({ color: colorError, description: `${args.role} group is not exist on server` }); }
+		if (!role) { return msg.embed({ color: colors.red, description: `${args.role} group is not exist on server` }); }
 		const job = args.job.toLowerCase() === 'add';
 
 		const roleWhitelist = this.client.provider.get(msg.guild.id, 'roleWhitelist', []);
 		if (job) {
 			if (roleWhitelist.includes(role.id)) {
-				return msg.embed({ color: colorError, description: `${role} is already whitelisted.` });
+				return msg.embed({ color: colors.red, description: `${role} is already whitelisted.` });
 			}
 
 			roleWhitelist.push(role.id);
 			this.client.provider.set(msg.guild.id, 'roleWhitelist', roleWhitelist);
 
-			return msg.embed({ color: colorOk, description: `${role} has been added to the whitelist.` });
+			return msg.embed({ color: colors.green, description: `${role} has been added to the whitelist.` });
 		} else {
 			if (!roleWhitelist.includes(role.id)) {
-				return msg.embed({ color: colorError, description: `${role} is not whitelisted.` });
+				return msg.embed({ color: colors.red, description: `${role} is not whitelisted.` });
 			}
 
 			const index = roleWhitelist.indexOf(role.id);
@@ -71,7 +72,7 @@ module.exports = class RoleWhitelistCommand extends Command {
 				this.client.provider.set(msg.guild.id, 'roleWhitelist', roleWhitelist);
 			}
 
-			return msg.embed({ color: colorOk, description: `${role} has been removed from the whitelist.` });
+			return msg.embed({ color: colors.green, description: `${role} has been removed from the whitelist.` });
 		}
 	}
 };

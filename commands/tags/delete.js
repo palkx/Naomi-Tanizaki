@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
-
-const { exampleChannel } = require('../../settings');
+const colors = require('../../assets/_data/colors.json');
+const { exampleChannel } = require('../../assets/_data/settings');
 const Redis = require('../../structures/Redis');
 const Tag = require('../../models/Tag');
 
@@ -56,9 +56,14 @@ module.exports = class TagDeleteCommand extends Command {
 		const { name } = args;
 		const staffRole = this.client.isOwner(msg.author) || await msg.member.roles.exists('name', 'Server Staff');
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
-		if (!tag) return msg.say(`A tag with the name **${name}** doesn't exist, ${msg.author}`);
+		if (!tag) {
+			return msg.embed({
+				color: colors.red,
+				description: `A tag with the name **${name}** doesn't exist, ${msg.author}`
+			});
+		}
 		if (tag.userID !== msg.author.id && !staffRole) {
-			return msg.say(`You can only delete your own tags, ${msg.author}`);
+			return msg.embed({ color: colors.red, description: `You can only delete your own tags, ${msg.author}` });
 		}
 		return Tag.sync()
 			.then(() => {
@@ -67,7 +72,10 @@ module.exports = class TagDeleteCommand extends Command {
 				if (tag.example) {
 					msg.guild.channels.get(exampleChannel).fetchMessage(tag.exampleID).then(del => del.delete());
 				}
-				return msg.say(`The tag **${name}** has been deleted, ${msg.author}`);
+				return msg.embed({
+					color: colors.green,
+					description: `The tag **${name}** has been deleted, ${msg.author}`
+				});
 			});
 	}
 };

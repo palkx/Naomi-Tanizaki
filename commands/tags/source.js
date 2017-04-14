@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 const Redis = require('../../structures/Redis');
 const Tag = require('../../models/Tag');
 
@@ -41,7 +41,10 @@ module.exports = class TagSourceCommand extends Command {
 		if (cache) return msg.code('md', cache);
 		const tag = await Tag.findOne({ where: { name, guildID } });
 		if (!tag) {
-			return msg.say(`A tag with the name **${name}** doesn't exist, ${msg.author}`);
+			return msg.embed({
+				color: colors.red,
+				description: `A tag with the name **${name}** doesn't exist, ${msg.author}`
+			});
 		}
 		return redis.db.setAsync(`tag${name}${guildID}`, tag.content).then(() => msg.code('md', tag.content));
 	}

@@ -1,20 +1,14 @@
-const common_tags_1 = require("common-tags");
-const discord_js_commando_1 = require("discord.js-commando");
-const moment = require("moment");
+const { stripIndents } = require('common-tags');
+const { Command } = require('discord.js-commando');
+const moment = require('moment');
 const nani = require('nani');
 
-const { aniListID, aniListSecret } = require('../../settings.json');
+const { aniListID, aniListSecret } = require('../../assets/_data/settings.json');
+const colors = require('../../assets/_data/colors.json');
 
-var seasons;
+let seasons = { 0: 'Winter', 1: 'Spring', 2: 'Summer', 3: 'Fall', Winter: 0, Spring: 1, Summer: 2, Fall: 3 };
 
-(function (seasons) {
-	seasons[seasons["Winter"] = 0] = "Winter";
-	seasons[seasons["Spring"] = 1] = "Spring";
-	seasons[seasons["Summer"] = 2] = "Summer";
-	seasons[seasons["Fall"] = 3] = "Fall";
-})(seasons || (seasons = {}));
-
-class AnimeCommand extends discord_js_commando_1.Command {
+module.exports = class AnimeCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'anime',
@@ -26,6 +20,7 @@ class AnimeCommand extends discord_js_commando_1.Command {
 				usages: 2,
 				duration: 3
 			},
+
 			args: [
 				{
 					key: 'anime',
@@ -41,13 +36,13 @@ class AnimeCommand extends discord_js_commando_1.Command {
 		const { anime } = args;
 		let data = await nani.get(`anime/search/${anime}`);
 		if (!Array.isArray(data)) {
-			return msg.reply(data.error.messages[0]);
+			return msg.embed({ color: colors.red, description: data.error.messages[0] });
 		}
 		data = data.length === 1
 			? data[0]
-			: data.find((en) => en.title_english.toLowerCase() === anime.toLowerCase()
-				|| en.title_romaji.toLowerCase() === anime.toLowerCase())
-				|| data[0];
+			: data.find(en => en.title_english.toLowerCase() === anime.toLowerCase()
+			|| en.title_romaji.toLowerCase() === anime.toLowerCase())
+			|| data[0];
 		const title = data.title_english !== '' && data.title_romaji !== data.title_english
 			? `${data.title_english} / ${data.title_romaji} / ${data.title_japanese}`
 			: `${data.title_romaji} / ${data.title_japanese}`;
@@ -56,7 +51,7 @@ class AnimeCommand extends discord_js_commando_1.Command {
 			: 'No description';
 		const score = data.average_score / 10;
 		return msg.embed({
-			color: 3447003,
+			color: colors.green,
 			author: {
 				name: title,
 				url: `https://www.anilist.co/anime/${data.id}`
@@ -64,7 +59,7 @@ class AnimeCommand extends discord_js_commando_1.Command {
 			fields: [
 				{
 					name: 'Type',
-					value: common_tags_1.stripIndents `
+					value: stripIndents`
 						${data.type}
 						${data.season !== null
 						? this._parseSeason(data.season)
@@ -82,7 +77,7 @@ class AnimeCommand extends discord_js_commando_1.Command {
 				},
 				{
 					name: 'Status',
-					value: data.airing_status.replace(/(\b\w)/gi, (lc) => lc.toUpperCase()),
+					value: data.airing_status.replace(/(\b\w)/gi, lc => lc.toUpperCase()),
 					inline: true
 				},
 				{
@@ -124,5 +119,4 @@ class AnimeCommand extends discord_js_commando_1.Command {
 			? `${seasons[season % 10]} 20${Math.floor(season / 10)}`
 			: `${seasons[season % 10]} 19${Math.floor(season / 10)}`;
 	}
-}
-exports.default = AnimeCommand;
+};

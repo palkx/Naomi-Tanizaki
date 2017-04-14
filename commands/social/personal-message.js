@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 const UserProfile = require('../../models/UserProfile');
 
 module.exports = class PersonalMessageCommand extends Command {
@@ -44,11 +44,11 @@ module.exports = class PersonalMessageCommand extends Command {
 				userID: msg.author.id,
 				personalMessage
 			});
-			return msg.reply('your message has been updated!');
+			return msg.embed({ color: colors.green, description: `${msg.author}, your message has been updated!` });
 		}
 
 		profile.personalMessage = personalMessage;
 		await profile.save();
-		return msg.reply('your message has been updated!');
+		return msg.embed({ color: colors.green, description: `${msg.author}, your message has been updated!` });
 	}
 };

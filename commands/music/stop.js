@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 module.exports = class StopMusicCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -23,11 +23,19 @@ module.exports = class StopMusicCommand extends Command {
 
 	run(msg) {
 		const queue = this.queue.get(msg.guild.id);
-		if (!queue) return msg.reply('there isn\'t any music playing right now.');
+		if (!queue) {
+			return msg.embed({
+				color: colors.red,
+				description: `${msg.author}, there isn't any music playing right now.`
+			});
+		}
 		const song = queue.songs[0];
 		queue.songs = [];
 		if (song.dispatcher) song.dispatcher.end();
-		return msg.reply('you\'ve just killed the party. Congrats. 👏');
+		return msg.embed({
+			color: colors.blue,
+			description: `${msg.author}, you've just killed the party. Congrats. 👏`
+		});
 	}
 
 	get queue() {
