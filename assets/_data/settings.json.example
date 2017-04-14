@@ -16,9 +16,6 @@
     "soundcloudID": "SoundCloud_API_Key",
     "sherlockAPIKey": "Sherlock_API_Key",
     "permittedGroup": "Server Staff", //Case-sensitive
-    "colorError": 14365748,
-    "colorInfo": 3447003,
-    "colorOk": 3463988,
     "paginationItems": 10,
     "defaultVolume": 2,
     "maxLength": 15,

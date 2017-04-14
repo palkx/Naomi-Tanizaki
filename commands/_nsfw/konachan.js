@@ -31,7 +31,7 @@ module.exports = class KonachanCommand extends Command {
 	}
 
 	async run(msg, args) {
-		const { tags } = args;
+		const tags = args.tags.replace(' ', '+');
 		const page = tags === '' ? Math.floor((Math.random() * 8900) + 1) : 1;
 		const response = await request({
 			uri: `https://konachan.com/post.json?tags=${tags}&page=${page}`,

@@ -31,7 +31,7 @@ module.exports = class YandereCommand extends Command {
 	}
 
 	async run(msg, args) {
-		const { tags } = args;
+		const tags = args.tags.replace(' ', '+');
 		const page = tags === '' ? Math.floor((Math.random() * 7500) + 1) : 1;
 		const response = await request({
 			uri: `https://yande.re/post.json?tags=${tags}&page=${page}`,

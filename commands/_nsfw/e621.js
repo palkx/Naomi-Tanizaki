@@ -30,7 +30,7 @@ module.exports = class E621Command extends Command {
 	}
 
 	async run(msg, args) {
-		const { tags } = args;
+		const tags = args.tags.replace(' ', '+');
 		const page = tags === '' ? Math.floor((Math.random() * 13500) + 1) : 1;
 		const response = await request({
 			uri: `https://e621.net/post/index.json?tags=${tags}&page=${page}`,

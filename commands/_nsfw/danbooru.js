@@ -31,7 +31,7 @@ module.exports = class DanbooruCommand extends Command {
 	}
 
 	async run(msg, args) {
-		const { tags } = args;
+		const tags = args.tags.replace(' ', '+');
 		const _random = tags === '';
 		const response = await request({
 			uri: `https://danbooru.donmai.us/posts.json?random=${_random}&tags=${tags}`,
