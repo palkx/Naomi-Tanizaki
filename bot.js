@@ -4,7 +4,7 @@ const { CommandoClient, FriendlyError } = require('discord.js-commando');
 const { oneLine } = require('common-tags');
 const path = require('path');
 const winston = require('winston');
-
+const colors = require('../../assets/_data/colors.json');
 const Database = require('./structures/PostgreSQL');
 const Redis = require('./structures/Redis');
 const SequelizeProvider = require('./providers/Sequelize');
@@ -60,7 +60,7 @@ client.on('error', winston.error)
 	.on('guildMemberAdd', async member => {
 		await member.guild.defaultChannel.send({
 			embed: {
-				color: 0x00D824,
+				color: colors.green,
 				description: `New user joined. Welcome, ${member.user}, to this server.`
 			}
 		}).catch(err => null); // eslint-disable-line no-unused-vars, handle-callback-err
@@ -68,7 +68,7 @@ client.on('error', winston.error)
 	.on('guildMemberRemove', async member => {
 		await member.guild.defaultChannel.send({
 			embed: {
-				color: 0xD80000,
+				color: colors.red,
 				description: `User leaved. Bye, ${member.user}.`
 			}
 		}).catch(err => null); // eslint-disable-line no-unused-vars, handle-callback-err
@@ -120,11 +120,32 @@ client.on('error', winston.error)
 		if (reaction.emoji.name !== '⭐') return;
 		const { message } = reaction;
 		const starboard = message.guild.channels.find('name', 'starboard');
-		if (!starboard) return message.channel.send(`${user}, can't star things without a #starboard...`); // eslint-disable-line
+		if (!starboard) {
+			return message.channel.send({ // eslint-disable-line consistent-return
+				embed: {
+					color: colors.blue,
+					description: `${user}, can't star things without a #starboard...`
+				}
+			});
+		}
 		const isAuthor = await Starboard.isAuthor(message.id, user.id);
- 		if (isAuthor || message.author.id === user.id) return message.channel.send(`${user}, you can't star your own messages.`); // eslint-disable-line
+		if (isAuthor || message.author.id === user.id) {
+			return message.channel.send({ // eslint-disable-line consistent-return
+				embed: {
+					color: colors.red,
+					description: `${user}, you can't star your own messages.`
+				}
+			});
+		}
 		const hasStarred = await Starboard.hasStarred(message.id, user.id);
-		if (hasStarred) return message.channel.send(`${user}, you've already starred this message.`); // eslint-disable-line
+		if (hasStarred) {
+			return message.channel.send({ // eslint-disable-line consistent-return
+				embed: {
+					color: colors.red,
+					description: `${user}, you've already starred this message.`
+				}
+			});
+		}
 		const isStarred = await Starboard.isStarred(message.id);
 		if (isStarred) return Starboard.addStar(message, starboard, user.id); // eslint-disable-line
 		Starboard.createStar(message, starboard, user.id);
@@ -133,9 +154,23 @@ client.on('error', winston.error)
 			if (reaction.emoji.name !== '⭐') return;
 			const { message } = reaction;
 			const starboard = message.guild.channels.find('name', 'starboard');
-			if (!starboard) return message.channel.send(`${user}, you can't unstar things without a #starboard...`); // eslint-disable-line
+			if (!starboard) {
+				return message.channel.send({ // eslint-disable-line consistent-return
+					embed: {
+						color: colors.blue,
+						description: `${user}, you can't unstar things without a #starboard...`
+					}
+				});
+			}
 			const hasStarred = await Starboard.hasStarred(message.id, user.id);
-			if (!hasStarred) return message.channel.send(`${user}, you never starred this message.`); // eslint-disable-line
+			if (!hasStarred) {
+				return message.channel.send({ // eslint-disable-line consistent-return
+					embed: {
+						color: colors.red,
+						description: `${user}, you never starred this message.`
+					}
+				});
+			}
 			Starboard.removeStar(message, starboard, user.id);
 		})
 	.on('unknownCommand', msg => {
