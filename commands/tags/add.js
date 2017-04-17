@@ -1,10 +1,7 @@
 const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
-const Redis = require('../../structures/Redis');
 const Tag = require('../../models/Tag');
 const Util = require('../../util/Util');
-
-const redis = new Redis();
 
 module.exports = class TagAddCommand extends Command {
 	constructor(client) {
@@ -50,24 +47,19 @@ module.exports = class TagAddCommand extends Command {
 			});
 		}
 
-		return Tag.sync()
-			.then(() => {
-				Tag.create({
-					userID: msg.author.id,
-					userName: `${msg.author.username}#${msg.author.discriminator}`,
-					guildID: msg.guild.id,
-					guildName: msg.guild.name,
-					channelID: msg.channel.id,
-					channelName: msg.channel.name,
-					name: name,
-					content: content
-				});
-
-				redis.db.setAsync(`tag${name}${msg.guild.id}`, content);
-				return msg.embed({
-					color: colors.green,
-					description: `A tag with the name **${name}** has been added, ${msg.author}`
-				});
-			});
+		await Tag.create({
+			userID: msg.author.id,
+			userName: `${msg.author.username}#${msg.author.discriminator}`,
+			guildID: msg.guild.id,
+			guildName: msg.guild.name,
+			channelID: msg.channel.id,
+			channelName: msg.channel.name,
+			name: name,
+			content: content
+		});
+		return msg.embed({
+			color: colors.green,
+			description: `A tag with the name **${name}** has been added, ${msg.author}`
+		});
 	}
 };
