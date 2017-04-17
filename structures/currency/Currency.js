@@ -41,8 +41,8 @@ class Currency {
 
 		const ids = Object.keys(balances || {});
 
+		/* eslint-disable no-await-in-loop */
 		for (const id of ids) {
-			/* eslint-disable no-await-in-loop */
 			const money = parseInt(balances[id] || 0);
 			const balance = parseInt(bankBalances[id] || 0);
 			const networth = money + balance;
@@ -63,6 +63,7 @@ class Currency {
 				});
 			}
 		}
+		/* eslint-enable no-await-in-loop */
 
 		setTimeout(() => Currency.leaderboard(), UPDATE_DURATION);
 		redis.db.setAsync('moneyleaderboardreset', Date.now());

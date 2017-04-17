@@ -25,7 +25,7 @@ module.exports = class Starboard {
 
 	static async isStarred(messageID) {
 		const star = await Star.findByPrimary(messageID);
-		return !!star;
+		return Boolean(star);
 	}
 
 	static async isAuthor(messageID, userID) {
@@ -35,7 +35,7 @@ module.exports = class Starboard {
 				authorID: userID
 			}
 		});
-		return !!star;
+		return Boolean(star);
 	}
 
 	static async hasStarred(messageID, userID) {

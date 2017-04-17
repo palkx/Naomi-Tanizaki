@@ -21,7 +21,7 @@ module.exports = class UnstarCommand extends Command {
 		});
 	}
 
-	async run(msg, args) { // eslint-disable-line consistent-return
+	async run(msg, args) {
 		const { message } = args;
 		const starboard = msg.guild.channels.find('name', 'starboard');
 		if (!starboard) {
@@ -35,5 +35,6 @@ module.exports = class UnstarCommand extends Command {
 			return msg.embed({ color: colors.red, description: `${msg.author}, you never starred this message.'` });
 		}
 		Starboard.removeStar(message, starboard, msg.author.id);
+		return null
 	}
 };

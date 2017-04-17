@@ -33,7 +33,7 @@ module.exports = class RepShowCommand extends Command {
 			name: `[ ${rep.reputationType.trim()} ] ${this.client.users.get(rep.reputationBy).username}`,
 			value: rep.reputationMessage || '*-no message-*'
 		}));
-		const embed = {
+		return msg.embed({
 			color: positive === negative ? colors.orange : positive > negative ? colors.green : colors.red,
 			author: {
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
@@ -53,7 +53,6 @@ module.exports = class RepShowCommand extends Command {
 				...reputationMessages
 			],
 			footer: { text: paginated.maxPage > 1 ? `Use ${msg.usage()} to view a specific page.` : '' }
-		};
-		return msg.embed(embed);
+		});
 	}
 };

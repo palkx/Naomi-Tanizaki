@@ -21,7 +21,7 @@ module.exports = class StarCommand extends Command {
 		});
 	}
 
-	async run(msg, args) { // eslint-disable-line consistent-return
+	async run(msg, args) {
 		const { message } = args;
 		const starboard = msg.guild.channels.find('name', 'starboard');
 		if (!starboard) {
@@ -41,5 +41,6 @@ module.exports = class StarCommand extends Command {
 		const isStarred = await Starboard.isStarred(message.id);
 		if (isStarred) return Starboard.addStar(message, starboard, msg.author.id);
 		Starboard.createStar(message, starboard, msg.author.id);
+		return null;
 	}
 };

@@ -61,8 +61,8 @@ module.exports = class LaunchCybernukeCommand extends Command {
 		let response;
 		let statusMsg2;
 
+		/* eslint-disable no-await-in-loop */
 		while (!statusMsg2) {
-			/* eslint-disable no-await-in-loop */
 			const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
 				maxMatches: 1,
 				time: 10000
@@ -93,6 +93,7 @@ module.exports = class LaunchCybernukeCommand extends Command {
 				});
 			}
 		}
+		/* eslint-enable no-await-in-loop */
 
 		const fatalities = [];
 		const survivors = [];

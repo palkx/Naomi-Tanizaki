@@ -49,7 +49,7 @@ module.exports = class CleanCommand extends Command {
 		return this.client.isOwner(msg.author) || msg.member.roles.exists('name', 'Server Staff');
 	}
 
-	async run(msg, args) { // eslint-disable-line consistent-return
+	async run(msg, args) {
 		const { filter, limit } = args;
 		let messageFilter;
 
@@ -87,9 +87,13 @@ module.exports = class CleanCommand extends Command {
 			const messages = await msg.channel.fetchMessages({ limit: limit }).catch(err => null);
 			const messagesToDelete = messages.filter(messageFilter);
 			msg.channel.bulkDelete(messagesToDelete.array().reverse()).catch(err => null);
+
+			return null;
 		}
 
 		const messagesToDelete = await msg.channel.fetchMessages({ limit: limit }).catch(err => null);
 		msg.channel.bulkDelete(messagesToDelete.array().reverse()).catch(err => null);
+
+		return null;
 	}
 };

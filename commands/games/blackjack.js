@@ -157,7 +157,7 @@ module.exports = class BlackjackCommand extends Command {
 			let currentHand = hands[0];
 			let totalBet = bet;
 
-			const nextHand = () => { currentHand = hands[hands.indexOf(currentHand) + 1]; };
+			const nextHand = () => currentHand = hands[hands.indexOf(currentHand) + 1]; // eslint-disable-line no-return-assign, max-len
 
 			while (currentHand) { // eslint-disable-line no-unmodified-loop-condition
 				if (currentHand.length === 1) blackjack.hit(currentHand);

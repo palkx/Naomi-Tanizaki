@@ -149,20 +149,17 @@ module.exports = class ItemTradeCommand extends Command {
 		Currency.addBalance(toUser, amount);
 	}
 
-	response(msg, user, embed) {
-		return new Promise(async resolve => {
-			msg.embed({ color: colors.blue, description: `${user}, ${msg.member.displayName} wants to trade with you.` });
-			msg.embed(embed);
-
-			const responses = await msg.channel.awaitMessages(response =>
+	async response(msg, user, embed) {
+		msg.say(`${user}, ${msg.member.displayName} wants to trade with you.`);
+		msg.embed(embed);
+		const responses = await msg.channel.awaitMessages(response =>
 				response.author.id === user.id && response.content.toLowerCase() === 'accept',
-				{
-					maxMatches: 1,
-					time: 30e3
-				});
+			{
+				maxMatches: 1,
+				time: 30e3
+			});
 
-			if (responses.size === 0) return resolve(false);
-			return resolve(true);
-		});
+		if (responses.size === 0) return false;
+		return true;
 	}
 };

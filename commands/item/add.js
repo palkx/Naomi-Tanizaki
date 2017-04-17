@@ -39,7 +39,7 @@ module.exports = class ItemAddCommand extends Command {
 		return this.client.isOwner(msg.author);
 	}
 
-	run(msg, args) {
+	async run(msg, args) {
 		const { name, price } = args;
 		const item = Store.getItem(name);
 
@@ -49,16 +49,17 @@ module.exports = class ItemAddCommand extends Command {
 				description: `${msg.author}, an item with that name already exists.`
 			});
 		}
-		return Item.create({
+
+		const newItem = await Item.create({
 			name,
 			price
-		}).then(newItem => {
-			const newItemName = newItem.name.replace(/(\b\w)/gi, lc => lc.toUpperCase());
-			Store.registerItem(new StoreItem(newItem.name, newItem.price));
-			return msg.embed({
-				color: colors.green,
-				description: `${msg.author}, the item ${newItemName} has been successfully created!`
-			});
+		});
+		const newItemName = newItem.name.replace(/(\b\w)/gi, lc => lc.toUpperCase());
+		Store.registerItem(new StoreItem(newItem.name, newItem.price));
+
+		return msg.embed({
+			color: colors.green,
+			description: `${msg.author}, the item ${newItemName} has been successfully created!`
 		});
 	}
 };

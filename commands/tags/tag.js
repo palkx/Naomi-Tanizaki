@@ -30,6 +30,7 @@ module.exports = class TagCommand extends Command {
 	async run(msg, args) {
 		const { name } = args;
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
+		if (!tag) return null;
 		tag.increment('uses');
 		return msg.embed({ color: colors.blue, description: tag.content });
 	}
