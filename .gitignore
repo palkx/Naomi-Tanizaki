@@ -29,5 +29,6 @@ node_modules
 
 .idea
 .vscode
+commands/_util/test.js
 settings.json
 docsdata.json
