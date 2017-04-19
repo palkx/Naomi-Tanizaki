@@ -21,10 +21,10 @@ module.exports = class SetUserLevelCommand extends Command {
 					prompt: 'get or set?',
 					type: 'string',
 					validate: job => {
-						if (job.toLowerCase() !== 'get' && job.toLowerCase() !== 'set') {
-							return `Job name must be 'get' or 'set'`;
+						if (['get', 'set'].includes(job)) {
+							return true;
 						}
-						return true;
+						return `Job name must be **add** or **remove**`;
 					}
 				},
 

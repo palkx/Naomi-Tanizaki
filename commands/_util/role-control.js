@@ -23,10 +23,10 @@ module.exports = class RoleControlCommand extends Command {
 					prompt: 'add or remove role?',
 					type: 'string',
 					validate: job => {
-						if (job.toLowerCase() !== 'add' && job.toLowerCase() !== 'remove') {
-							return `Job name must be 'add' or 'remove'`;
+						if (['add', 'remove'].includes(job)) {
+							return true;
 						}
-						return true;
+						return `Job name must be **add** or **remove**`;
 					}
 				},
 

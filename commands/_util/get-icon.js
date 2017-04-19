@@ -13,14 +13,14 @@ module.exports = class SetUserLevelCommand extends Command {
 			args: [
 				{
 					key: 'obj',
-					prompt: 'must be **\'user\'** or **\'server\'** ID\n',
+					prompt: 'must be **user** or **server** ID\n',
 					type: 'string',
 					default: 'user',
 					validate: obj => {
 						if (['user', 'server'].includes(obj)) {
 							return true;
 						}
-						return `Job name must be **'user'** or **'server'**`;
+						return `Job name must be **user** or **server**`;
 					}
 				},
 
@@ -32,10 +32,6 @@ module.exports = class SetUserLevelCommand extends Command {
 				}
 			]
 		});
-	}
-
-	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
 	}
 
 	async run(msg, args) {
