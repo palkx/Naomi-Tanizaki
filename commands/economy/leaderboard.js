@@ -1,10 +1,10 @@
 const { oneLine, stripIndents } = require('common-tags');
+const colors = require('../../assets/_data/colors.json');
 const { Command, util } = require('discord.js-commando');
 const moment = require('moment');
 const Sequelize = require('sequelize');
-
 const Currency = require('../../structures/currency/Currency');
-const { paginationItems } = require('../../settings');
+const { paginationItems } = require('../../assets/_data/settings');
 const Redis = require('../../structures/Redis');
 const UserProfile = require('../../models/UserProfile');
 
@@ -56,7 +56,7 @@ module.exports = class MoneyLeaderboardCommand extends Command {
 		for (const user of paginated.items) await this.client.fetchUser(user.userID); // eslint-disable-line
 
 		return msg.embed({
-			color: 3447003,
+			color: colors.blue,
 			description: stripIndents`
 				__**${Currency.textSingular.replace(/./, lc => lc.toUpperCase())} leaderboard, page ${paginated.page}**__
 
@@ -65,8 +65,7 @@ module.exports = class MoneyLeaderboardCommand extends Command {
 					${`${this.client.users.get(user.userID).username}#${this.client.users.get(user.userID).discriminator}`}
 					(**${Currency.convert(user.networth)}**)`).join('\n')}
 
-				${moment.duration(reset).format('hh [hours] mm [minutes]')} until the next update.
-			`,
+				${moment.duration(reset).format('hh [hours] mm [minutes]')} until the next update.`,
 			footer: { text: paginated.maxPage > 1 ? `Use ${msg.usage()} to view a specific page.` : '' }
 		});
 	}

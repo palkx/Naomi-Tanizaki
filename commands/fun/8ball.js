@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 const RESPONSES = [
 	'it is certain.',
 	'it is decidedly so.',
@@ -45,7 +45,10 @@ module.exports = class EightBallCommand extends Command {
 		});
 	}
 
-	async run(msg) {
-		return msg.say(`🎱  |  ${msg.author}, ${RESPONSES[Math.floor(Math.random() * RESPONSES.length)]}`);
+	async run(msg) { // eslint-disable-line require-await
+		return msg.embed({
+			color: colors.blue,
+			description: `🎱  |  ${msg.author}, ${RESPONSES[Math.floor(Math.random() * RESPONSES.length)]}`
+		});
 	}
 };

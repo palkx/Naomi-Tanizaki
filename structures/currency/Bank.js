@@ -43,11 +43,11 @@ class Bank {
 
 		redis.db.hgetallAsync('ledger').then(async balances => {
 			if (!balances) return;
-
+			/* eslint-disable no-await-in-loop */
 			for (const [user, balance] of Object.entries(balances)) {
-				/* eslint-disable no-await-in-loop */
 				await redis.db.hsetAsync('ledger', user, Math.round(balance * (interestRate + 1)));
 			}
+			/* eslint-enable no-await-in-loop */
 		});
 
 		const newInterestRate = Math.max(MIN_INTEREST_RATE, interestRate + (bankBalanceDelta * -INTEREST_MATURE_RATE));

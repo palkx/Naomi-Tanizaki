@@ -1,13 +1,8 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const Currency = require('../../structures/currency/Currency');
 const Roulette = require('../../structures/games/Roulette');
-
-const colors = {
-	red: 0xBE1931,
-	black: 0x0C0C0C
-};
 
 module.exports = class RouletteCommand extends Command {
 	constructor(client) {
@@ -75,34 +70,42 @@ module.exports = class RouletteCommand extends Command {
 
 		if (roulette) {
 			if (roulette.hasPlayer(msg.author.id)) {
-				return msg.reply('you have already put a bet in this game of roulette.');
+				return msg.embed({ color: colors.red, description: 'you have already put a bet in this game of roulette.' });
 			}
 
 			roulette.join(msg.author, bet, space);
 			Currency.removeBalance(msg.author.id, bet);
 
-			return msg.reply(`you have successfully placed your bet of ${Currency.convert(bet)} on ${space}.`);
+			return msg.embed({
+				color: colors.green,
+				description: `you have successfully placed your bet of ${Currency.convert(bet)} on ${space}.`
+			});
 		}
 
 		roulette = new Roulette(msg.guild.id);
 		roulette.join(msg.author, bet, space);
 		Currency.removeBalance(msg.author.id, bet);
 
-		return msg.say(stripIndents`
+		return msg.embed({
+			color: colors.blue,
+			description: stripIndents`
 			A new game of roulette has been initiated!
 
-			Use ${msg.usage()} in the next 15 seconds to place your bet.
-		`)
+			Use ${msg.usage()} in the next 15 seconds to place your bet.`
+		})
 			.then(async () => {
-				setTimeout(() => msg.say('5 more seconds for new people to bet.'), 10000);
-				setTimeout(() => msg.say('The roulette starts spinning!'), 14500);
+				setTimeout(() => msg.embed({
+					color: colors.blue,
+					description: '5 more seconds for new people to bet.'
+				}), 10000);
+				setTimeout(() => msg.embed({ color: colors.blue, description: 'The roulette starts spinning!' }), 14500);
 
 				const winners = await roulette.awaitPlayers(16000).filter(player => player.winnings !== 0);
 
 				winners.forEach(winner => Currency.changeBalance(winner.user.id, winner.winnings));
 
 				return msg.embed({
-					color: colors[roulette.winSpaces[1]] || null,
+					color: roulette.winSpaces[1] ? colors.black : colors.red,
 					description: stripIndents`
 						The ball landed on: **${roulette.winSpaces[1]
 							? roulette.winSpaces[1]

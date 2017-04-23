@@ -1,7 +1,7 @@
 const { Command, util } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 const Inventory = require('../../structures/currency/Inventory');
-const { paginationItems } = require('../../settings');
+const { paginationItems } = require('../../assets/_data/settings');
 
 module.exports = class InventoryShowCommand extends Command {
 	constructor(client) {
@@ -42,8 +42,11 @@ module.exports = class InventoryShowCommand extends Command {
 
 		const paginated = util.paginate(items, page, Math.floor(paginationItems));
 
-		if (items.length === 0) return msg.reply('can\'t show what you don\'t have, man.');
+		if (items.length === 0) {
+			return msg.embed({ color: colors.red, description: `${msg.author}, can't show what you don't have, man.` });
+		}
 		return msg.embed({
+			color: colors.green,
 			description: `__**${msg.author.username}#${msg.author.discriminator}'s inventory:**__`,
 			fields: [
 				{

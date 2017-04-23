@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const request = require('request-promise');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const version = require('../../package').version;
 
 module.exports = class FortuneCommand extends Command {
@@ -38,12 +38,12 @@ module.exports = class FortuneCommand extends Command {
 
 		const response = await request({
 			uri: `http://www.yerkee.com/api/fortune/${category}`,
-			headers: { 'User-Agent': `Hamakaze v${version} (https://github.com/WeebDev/Hamakaze/)` },
+			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});
 
 		return msg.embed({
-			color: 3447003,
+			color: colors.blue,
 			description: response.fortune
 		});
 	}

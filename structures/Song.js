@@ -1,7 +1,7 @@
 const { Util } = require('discord.js');
 const { oneLineTrim } = require('common-tags');
 
-const { soundcloudID } = require('../settings');
+const { soundcloudID } = require('../assets/_data/settings');
 
 module.exports = class Song {
 	constructor(video, member) {
@@ -24,7 +24,7 @@ module.exports = class Song {
 	}
 
 	get username() {
-		const name = `${this.member.user.username}#${this.member.user.discriminator} (${this.member.user.id})`;
+		const name = `${this.member.user.tag} (${this.member.user.id})`;
 		return Util.escapeMarkdown(name);
 	}
 

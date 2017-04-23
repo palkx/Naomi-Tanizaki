@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
+const colors = require('../../assets/_data/colors.json');
 const { oneLine } = require('common-tags');
-
 const Bank = require('../../structures/currency/Bank');
 const Currency = require('../../structures/currency/Currency');
 
@@ -37,21 +37,36 @@ module.exports = class MoneyInfoCommand extends Command {
 		const networth = (money || 0) + balance;
 
 		if (args.member) {
-			if (money === null) return msg.reply(`${member.displayName} hasn't earned any ${Currency.textPlural} yet.`);
-			return msg.reply(oneLine`
+			if (money === null) {
+				return msg.embed({
+					color: colors.blue,
+					description: oneLine`${msg.author}, ${member.displayName} hasn't earned any ${Currency.textPlural} yet.`
+				});
+			}
+			return msg.embed({
+				color: colors.blue,
+				description: oneLine`
 				${member.displayName} has ${Currency.convert(money)} on hand and
 				${Currency.convert(balance)} in the bank.
 				Their net worth is ${Currency.convert(networth)}.
-				Good on them!
-			`);
+				Good on them!`
+			});
 		} else {
-			if (money === null) return msg.reply(`you haven't earned any ${Currency.textPlural} yet.`);
-			return msg.reply(oneLine`
-				you have ${Currency.convert(money)} on hand and
+			if (money === null) {
+				return msg.embed({
+					color: colors.blue,
+					description: `
+					${msg.author}, you haven't earned any ${Currency.textPlural} yet.`
+				});
+			}
+			return msg.embed({
+				color: colors.green,
+				description: oneLine`
+				${msg.author}, you have ${Currency.convert(money)} on hand and
 				${Currency.convert(balance)} in the bank.
 				Your net worth is ${Currency.convert(networth)}.
-				Good on you!
-			`);
+				Good on you!`
+			});
 		}
 	}
 };

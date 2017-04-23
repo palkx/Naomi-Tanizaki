@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const Currency = require('../../structures/currency/Currency');
 const Inventory = require('../../structures/currency/Inventory');
 const ItemGroup = require('../../structures/currency/ItemGroup');
@@ -95,7 +95,7 @@ module.exports = class SlotMachineCommand extends Command {
 
 		if (winnings === 0) {
 			return msg.embed({
-				color: 0xBE1931,
+				color: colors.red,
 				description: stripIndents`
 					**${msg.member.displayName}, you rolled:**
 
@@ -109,7 +109,7 @@ module.exports = class SlotMachineCommand extends Command {
 
 		Currency.addBalance(msg.author.id, coins * winnings);
 		return msg.embed({
-			color: 0x5C913B,
+			color: colors.green,
 			description: stripIndents`
 				**${msg.member.displayName}, you rolled:**
 

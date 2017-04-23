@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando');
 const moment = require('moment');
 require('moment-duration-format');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const { version } = require('../../package');
 
 module.exports = class StatsCommand extends Command {
@@ -23,7 +23,7 @@ module.exports = class StatsCommand extends Command {
 
 	run(msg) {
 		return msg.embed({
-			color: 3447003,
+			color: colors.blue,
 			description: '**Statistics**',
 			fields: [
 				{

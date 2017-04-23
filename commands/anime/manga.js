@@ -1,10 +1,11 @@
-const discord_js_commando_1 = require("discord.js-commando");
-const moment = require("moment");
+const { Command } = require('discord.js-commando');
+const moment = require('moment');
 const nani = require('nani');
 
-const { aniListID, aniListSecret } = require('../../settings.json');
+const { aniListID, aniListSecret } = require('../../assets/_data/settings.json');
+const colors = require('../../assets/_data/colors.json');
 
-class MangaCommand extends discord_js_commando_1.Command {
+module.exports = class MangaCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'manga',
@@ -16,6 +17,7 @@ class MangaCommand extends discord_js_commando_1.Command {
 				usages: 2,
 				duration: 3
 			},
+
 			args: [
 				{
 					key: 'manga',
@@ -31,11 +33,11 @@ class MangaCommand extends discord_js_commando_1.Command {
 		const { manga } = args;
 		let data = await nani.get(`manga/search/${manga}`);
 		if (!Array.isArray(data)) {
-			return msg.reply(data.error.messages[0]);
+			return msg.embed({ color: colors.red, description: data.error.messages[0] });
 		}
 		data = data.length === 1
 			? data[0]
-			: data.find((en) => en.title_english.toLowerCase() === manga.toLowerCase()
+			: data.find(en => en.title_english.toLowerCase() === manga.toLowerCase()
 				|| en.title_romaji.toLowerCase() === manga.toLowerCase())
 				|| data[0];
 		const title = data.title_english !== '' && data.title_romaji !== data.title_english
@@ -46,7 +48,7 @@ class MangaCommand extends discord_js_commando_1.Command {
 			: 'No description';
 		const score = data.average_score / 10;
 		return msg.embed({
-			color: 3447003,
+			color: colors.green,
 			author: {
 				name: title,
 				url: `https://www.anilist.co/manga/${data.id}`
@@ -64,7 +66,7 @@ class MangaCommand extends discord_js_commando_1.Command {
 				},
 				{
 					name: 'Status',
-					value: data.publishing_status.replace(/(\b\w)/gi, (lc) => lc.toUpperCase()),
+					value: data.publishing_status.replace(/(\b\w)/gi, lc => lc.toUpperCase()),
 					inline: true
 				},
 				{
@@ -100,5 +102,4 @@ class MangaCommand extends discord_js_commando_1.Command {
 			}
 		});
 	}
-}
-exports.default = MangaCommand;
+};

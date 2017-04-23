@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const Song = require('../../structures/Song');
 
 module.exports = class MusicStatusCommand extends Command {
@@ -26,7 +26,7 @@ module.exports = class MusicStatusCommand extends Command {
 		const currentTime = song.dispatcher ? song.dispatcher.time / 1000 : 0;
 
 		const embed = {
-			color: 3447003,
+			color: colors.blue,
 			author: {
 				name: `${song.username}`,
 				icon_url: song.avatar // eslint-disable-line camelcase

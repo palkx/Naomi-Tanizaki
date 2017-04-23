@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
+const colors = require('../../assets/_data/colors.json');
 const { stripIndents } = require('common-tags');
 const moment = require('moment');
-
 const Bank = require('../../structures/currency/Bank');
 const Currency = require('../../structures/currency/Currency');
 
@@ -26,10 +26,12 @@ module.exports = class BankInfoCommand extends Command {
 		const interestRate = await Bank.getInterestRate();
 		const nextUpdate = await Bank.nextUpdate();
 
-		return msg.reply(stripIndents`
+		return msg.embed({
+			color: colors.blue,
+			description: stripIndents`
 			the bank currently has ${Currency.convert(balance)}.
 			The current interest rate is ${(interestRate * 100).toFixed(3)}%.
-			Interest will be applied in ${moment.duration(nextUpdate).format('hh [hours] mm [minutes]')}.
-		`);
+			Interest will be applied in ${moment.duration(nextUpdate).format('hh [hours] mm [minutes]')}.`
+		});
 	}
 };

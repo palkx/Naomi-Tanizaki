@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
 const winston = require('winston');
-
+const colors = require('../../assets/_data/colors.json');
 module.exports = class LaunchCybernukeCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -39,7 +39,10 @@ module.exports = class LaunchCybernukeCommand extends Command {
 	async run(msg, args) {
 		const { age, join } = args;
 
-		const statusMsg = await msg.reply('Calculating targeting parameters for cybernuke...');
+		const statusMsg = await msg.embed({
+			color: colors.blue,
+			description: `${msg.author},  Calculating targeting parameters for cybernuke...`
+		});
 		await msg.guild.fetchMembers();
 
 		const memberCutoff = Date.now() - (join * 60000);
@@ -49,37 +52,48 @@ module.exports = class LaunchCybernukeCommand extends Command {
 		);
 		const booleanType = this.client.registry.types.get('boolean');
 
-		await statusMsg.edit(`Cybernuke will strike ${members.size} members; proceed?`);
+		await statusMsg.edit('', {
+			embed: {
+				color: colors.blue,
+				description: `Cybernuke will strike ${members.size} members; proceed?`
+			}
+		});
 		let response;
 		let statusMsg2;
 
+		/* eslint-disable no-await-in-loop */
 		while (!statusMsg2) {
-			/* eslint-disable no-await-in-loop */
 			const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
 				maxMatches: 1,
 				time: 10000
 			});
 
 			if (!responses || responses.size !== 1) {
-				await msg.reply('Cybernuke cancelled.');
+				await msg.embed({ color: colors.blue, description: `${msg.author},  Cybernuke cancelled.` });
 				return null;
 			}
 			response = responses.first();
 
 			if (booleanType.validate(response.content)) {
 				if (!booleanType.parse(response.content)) {
-					await response.reply('Cybernuke cancelled.');
+					await response.embed({ color: colors.blue, description: `${msg.author},  Cybernuke cancelled.` });
 					return null;
 				}
 
-				statusMsg2 = await response.reply('Launching cybernuke...');
+				statusMsg2 = await response.embed({
+					color: colors.green,
+					description: `${msg.author},  Launching cybernuke...`
+				});
 			} else {
-				await response.reply(stripIndents`
+				await response.embed({
+					color: colors.blue,
+					description: stripIndents`
 					Unknown response. Please confirm the cybernuke launch with a simple "yes" or "no".
-					Awaiting your input, commander...
-				`);
+					Awaiting your input, commander...`
+				});
 			}
 		}
+		/* eslint-enable no-await-in-loop */
 
 		const fatalities = [];
 		const survivors = [];
@@ -87,11 +101,15 @@ module.exports = class LaunchCybernukeCommand extends Command {
 
 		for (const member of members.values()) {
 			promises.push(
-				member.sendMessage(stripIndents`
+				member.sendMessage('', {
+					embed: {
+						color: colors.red,
+						description: stripIndents`
 					Sorry, but you've been automatically targetted by the cybernuke in the "${msg.guild.name}" server.
 					This means that you have been banned, likely in the case of a server raid.
-					Please contact them if you believe this ban to be in error.
-				`).catch(winston.error)
+					Please contact them if you believe this ban to be in error.`
+					}
+				}).catch(winston.error)
 					.then(() => member.ban())
 					.then(() => {
 						fatalities.push(member);
@@ -106,15 +124,26 @@ module.exports = class LaunchCybernukeCommand extends Command {
 					.then(() => {
 						if (members.size <= 5) return;
 						if (promises.length % 5 === 0) {
-							statusMsg2.edit(`Launching cybernuke (${Math.round(promises.length / members.size * 100)}%)...`);
+							statusMsg2.edit('', {
+								embed: {
+									color: colors.green,
+									description: `Launching cybernuke (${Math.round(promises.length / members.size * 100)}%)...`
+								}
+							});
 						}
 					})
 			);
 		}
 
 		await Promise.all(promises);
-		await statusMsg2.edit('Cybernuke impact confirmed. Casualty report incoming...');
-		await response.reply(stripIndents`
+		await statusMsg2.edit('', {
+			embed: {
+				color: colors.green,
+				description: 'Cybernuke impact confirmed. Casualty report incoming...'
+			}
+		});
+		await response.embed({
+			color: colors.blue, description: stripIndents`
 			__**Fatalities**__
 			${fatalities.length > 0 ? stripIndents`
 				${fatalities.length} confirmed KIA.
@@ -128,8 +157,8 @@ module.exports = class LaunchCybernukeCommand extends Command {
 				${survivors.length} left standing.
 
 				${survivors.map(srv => `**-** ${srv.member.displayName} (${srv.member.id}): \`${srv.error}\``).join('\n')}
-			` : ''}
-		`, { split: true });
+			` : ''}`
+		});
 
 		return null;
 	}

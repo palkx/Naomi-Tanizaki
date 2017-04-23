@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 module.exports = class CoinflipCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -15,9 +15,12 @@ module.exports = class CoinflipCommand extends Command {
 		});
 	}
 
-	async run(msg) {
-		return msg.say(`I flipped a coin for you and it landed on ${Math.random() < 0.5
+	async run(msg) { // eslint-disable-line require-await
+		return msg.embed({
+			color: colors.blue,
+			description: `I flipped a coin for you and it landed on ${Math.random() < 0.5
 			? '**heads**'
-			: '**tails**'}, ${msg.author}.`);
+			: '**tails**'}, ${msg.author}.`
+		});
 	}
 };

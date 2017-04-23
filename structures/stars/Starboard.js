@@ -6,6 +6,8 @@ const Star = require('../../models/Star.js');
 
 module.exports = class Starboard {
 	static async createStar(message, starboardChannel, starBy) {
+		message.content = message.content.length <= 1024 ? message.content : `${message.content.substr(0, 1021)}...`;
+
 		const starboardMessage = await starboardChannel.send({ embed: Starboard._starEmbed(message, 1) });
 		return Star.create({
 			messageID: message.id,
@@ -25,7 +27,7 @@ module.exports = class Starboard {
 
 	static async isStarred(messageID) {
 		const star = await Star.findByPrimary(messageID);
-		return !!star;
+		return Boolean(star);
 	}
 
 	static async isAuthor(messageID, userID) {
@@ -35,7 +37,7 @@ module.exports = class Starboard {
 				authorID: userID
 			}
 		});
-		return !!star;
+		return Boolean(star);
 	}
 
 	static async hasStarred(messageID, userID) {

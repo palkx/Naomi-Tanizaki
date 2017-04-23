@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 module.exports = class CleanCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -49,7 +49,7 @@ module.exports = class CleanCommand extends Command {
 		return this.client.isOwner(msg.author) || msg.member.roles.exists('name', 'Server Staff');
 	}
 
-	async run(msg, args) { // eslint-disable-line consistent-return
+	async run(msg, args) {
 		const { filter, limit } = args;
 		let messageFilter;
 
@@ -63,7 +63,10 @@ module.exports = class CleanCommand extends Command {
 					const user = member.user;
 					messageFilter = message => message.author.id === user.id;
 				} else {
-					return msg.say(`${msg.author}, you have to mention someone.`);
+					return msg.embed({
+						color: colors.red,
+						description: `${msg.author}, you have to mention someone.`
+					});
 				}
 			} else if (filter === 'bots') {
 				messageFilter = message => message.author.bot;
@@ -74,16 +77,23 @@ module.exports = class CleanCommand extends Command {
 			} else if (filter === 'links') {
 				messageFilter = message => message.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1; // eslint-disable-line
 			} else {
-				return msg.say(`${msg.author}, this is not a valid filter. \`help clean\` for all available filters.`);
+				return msg.embed({
+					color: colors.red,
+					description: `${msg.author}, this is not a valid filter. \`help clean\` for all available filters.`
+				});
 			}
 
 			/* eslint-disable no-unused-vars, handle-callback-err */
 			const messages = await msg.channel.fetchMessages({ limit: limit }).catch(err => null);
 			const messagesToDelete = messages.filter(messageFilter);
 			msg.channel.bulkDelete(messagesToDelete.array().reverse()).catch(err => null);
+
+			return null;
 		}
 
 		const messagesToDelete = await msg.channel.fetchMessages({ limit: limit }).catch(err => null);
 		msg.channel.bulkDelete(messagesToDelete.array().reverse()).catch(err => null);
+
+		return null;
 	}
 };

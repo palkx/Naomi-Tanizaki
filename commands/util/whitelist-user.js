@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 module.exports = class WhitelistUserCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -30,13 +30,18 @@ module.exports = class WhitelistUserCommand extends Command {
 	run(msg, args) {
 		const { user } = args;
 		const blacklist = this.client.provider.get('global', 'userBlacklist', []);
-		if (!blacklist.includes(user.id)) return msg.reply('that user is not blacklisted.');
+		if (!blacklist.includes(user.id)) {
+			return msg.embed({ color: colors.blue, description: `${msg.author}, that user is not blacklisted.` });
+		}
 
 		const index = blacklist.indexOf(user.id);
 		blacklist.splice(index, 1);
 
 		if (blacklist.length === 0) this.client.provider.remove('global', 'userBlacklist');
 		else this.client.provider.set('global', 'userBlacklist', blacklist);
-		return msg.reply(`${user.username}#${user.discriminator} has been removed from the blacklist.`);
+		return msg.embed({
+			color: colors.green,
+			description: `${msg.author}, ${user.username}#${user.discriminator} has been removed from the blacklist.`
+		});
 	}
 };

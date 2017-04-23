@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const Currency = require('../../structures/currency/Currency');
 
 module.exports = class MoneyTradeCommand extends Command {
@@ -54,20 +54,40 @@ module.exports = class MoneyTradeCommand extends Command {
 	async run(msg, args) {
 		const { member, donuts } = args;
 
-		if (member.id === msg.author.id) return msg.reply(`you can't trade ${Currency.textPlural} with yourself, ya dingus.`); // eslint-disable-line
-		if (member.user.bot) return msg.reply(`don't give your ${Currency.textPlural} to bots: they're bots, man.`);
-		if (donuts <= 0) return msg.reply(`you can't trade 0 or less ${Currency.convert(0)}.`);
+		if (member.id === msg.author.id) {
+			return msg.embed({
+				color: colors.red,
+				description: `${msg.author}, you can't trade ${Currency.textPlural} with yourself, ya dingus.`
+			});
+		}
+		if (member.user.bot) {
+			return msg.embed({
+				color: colors.red,
+				description: `${msg.author}, don't give your ${Currency.textPlural} to bots: they're bots, man.`
+			});
+		}
+		if (donuts <= 0) {
+			return msg.embed({
+				color: colors.red,
+				description: `${msg.author}, you can't trade 0 or less ${Currency.convert(0)}.`
+			});
+		}
 
 		const userBalance = await Currency.getBalance(msg.author.id);
 		if (userBalance < donuts) {
-			return msg.reply(stripIndents`
-				you don't have that many ${Currency.textPlural} to trade!
-				You currently have ${Currency.convert(userBalance)} on hand.
-			`);
+			return msg.embed({
+				color: colors.red,
+				description: stripIndents`
+				${msg.author}, you don't have that many ${Currency.textPlural} to trade!
+				You currently have ${Currency.convert(userBalance)} on hand.`
+			});
 		}
 
 		Currency.removeBalance(msg.author.id, donuts);
 		Currency.addBalance(member.id, donuts);
-		return msg.reply(`${member.displayName} successfully received your ${Currency.convert(donuts)}!`);
+		return msg.embed({
+			color: colors.green,
+			description: `${msg.author}, ${member.displayName} successfully received your ${Currency.convert(donuts)}!`
+		});
 	}
 };

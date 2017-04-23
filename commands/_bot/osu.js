@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
-const { osukey, version } = require('../../settings.json');
+const { osuKey, version } = require('../../assets/_data/settings.json');
+const colors = require('../../assets/_data/colors.json');
 const request = require('request-promise');
 
 module.exports = class OsuCommand extends Command {
@@ -25,31 +26,31 @@ module.exports = class OsuCommand extends Command {
 	}
 
 	async run(msg, args) {
-		if (!osukey) {
+		if (!osuKey) {
 			return msg.embed({
-				color: 3447003,
-				description: `I dont have osu key!`
+				color: colors.red,
+				description: `I don't have osu key`
 			});
 		}
 		const { username } = args;
 		const response = await request({
-			uri: `https://osu.ppy.sh/api/get_user?k=${osukey}&u=${username}`,
+			uri: `https://osu.ppy.sh/api/get_user?k=${osuKey}&u=${username}`,
 			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});
 		if (response.length === 0) {
 			return msg.embed({
-				color: 0x3498DB,
+				color: colors.red,
 				description: 'your request returned no results.'
 			});
 		}
-		const userbest = await request({
-			uri: `https://osu.ppy.sh/api/get_user_best?k=${osukey}&u=${username}&limit=1`,
+		const userBest = await request({
+			uri: `https://osu.ppy.sh/api/get_user_best?k=${osuKey}&u=${username}&limit=1`,
 			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});
-		const _userbest = await request({
-			uri: `https://osu.ppy.sh/api/get_beatmaps?k=${osukey}&limit=1&b=${userbest[0].beatmap_id}`,
+		const _userBest = await request({
+			uri: `https://osu.ppy.sh/api/get_beatmaps?k=${osuKey}&limit=1&b=${userBest[0].beatmap_id}`,
 			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});
@@ -59,7 +60,7 @@ module.exports = class OsuCommand extends Command {
 				name: 'osu!',
 				url: `https://osu.ppy.sh/u/${response[0].user_id}`
 			},
-			color: 0xFF66AA,
+			color: colors.green,
 			fields: [
 				{
 					name: '**Username**',
@@ -103,7 +104,7 @@ module.exports = class OsuCommand extends Command {
 				},
 				{
 					name: '**Best play**',
-					value: `:flag_${response[0].country.toLowerCase()}: ${response[0].country} ${_userbest[0].title} \`${userbest[0].pp}\``, // eslint-disable-line
+					value: `:flag_${response[0].country.toLowerCase()}: ${response[0].country} ${_userBest[0].title} \`${userBest[0].pp}\``, // eslint-disable-line
 					inline: true
 				}
 			],

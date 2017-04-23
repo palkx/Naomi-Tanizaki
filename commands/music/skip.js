@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { oneLine } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 module.exports = class SkipSongCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -27,34 +27,65 @@ module.exports = class SkipSongCommand extends Command {
 
 	run(msg, args) {
 		const queue = this.queue.get(msg.guild.id);
-		if (!queue) return msg.reply('there isn\'t a song playing right now, silly.');
-		if (!queue.voiceChannel.members.has(msg.author.id)) {
-			return msg.reply('you\'re not in the voice channel. You better not be trying to mess with their mojo, man.');
+		if (!queue) {
+			return msg.embed({
+				color: colors.red,
+				description: `${msg.author}, there isn't a song playing right now, silly.`
+			});
 		}
-		if (!queue.songs[0].dispatcher) return msg.reply('the song hasn\'t even begun playing yet. Why not give it a chance?'); // eslint-disable-line max-len
+		if (!queue.voiceChannel.members.has(msg.author.id)) {
+			return msg.embed({
+				color: colors.red,
+				description: `
+				${msg.author}, you're not in the voice channel. You better not be trying to mess with their mojo, man.`
+			});
+		}
+		if (!queue.songs[0].dispatcher) {
+			return msg.embed({
+				color: colors.blue,
+				description: `${msg.author}, the song hasn't even begun playing yet. Why not give it a chance?`
+			});
+		}
 
 		const threshold = Math.ceil((queue.voiceChannel.members.size - 1) / 3);
 		const force = threshold <= 1
 			|| queue.voiceChannel.members.size < threshold
 			|| (msg.member.hasPermission('MANAGE_MESSAGES')
 			&& args.toLowerCase() === 'force');
-		if (force) return msg.reply(this.skip(msg.guild, queue));
+		if (force) {
+			return msg.embed({
+				color: colors.green,
+				description: `${msg.author}, ${this.skip(msg.guild, queue)}`
+			});
+		}
 
 		const vote = this.votes.get(msg.guild.id);
 		if (vote && vote.count >= 1) {
-			if (vote.users.some(user => user === msg.author.id)) return msg.reply('you\'ve already voted to skip the song.');
+			if (vote.users.some(user => user === msg.author.id)) {
+				return msg.embed({
+					color: colors.blue,
+					description: `${msg.author}, you've already voted to skip the song.`
+				});
+			}
 
 			vote.count++;
 			vote.users.push(msg.author.id);
-			if (vote.count >= threshold) return msg.reply(this.skip(msg.guild, queue));
+			if (vote.count >= threshold) {
+				return msg.embed({
+					color: colors.green,
+					description: `${msg.author}, ${this.skip(msg.guild, queue)}`
+				});
+			}
 
 			const time = this.setTimeout(vote);
 			const remaining = threshold - vote.count;
-			return msg.say(oneLine`
+			return msg.embed({
+				color: colors.blue,
+				description: oneLine`
 				${vote.count} vote${vote.count > 1 ? 's' : ''} received so far,
 				${remaining} more ${remaining > 1 ? 'are' : 'is'} needed to skip.
-				Five more seconds on the clock! The vote will end in ${time} seconds.
-			`);
+				Five more seconds on the clock! The vote will end in ${time} seconds.`
+			});
 		} else {
 			const newVote = {
 				count: 1,
@@ -68,11 +99,13 @@ module.exports = class SkipSongCommand extends Command {
 			const time = this.setTimeout(newVote);
 			this.votes.set(msg.guild.id, newVote);
 			const remaining = threshold - 1;
-			return msg.say(oneLine`
+			return msg.embed({
+				color: colors.blue,
+				description: oneLine`
 				Starting a voteskip.
 				${remaining} more vote${remaining > 1 ? 's are' : ' is'} required for the song to be skipped.
-				The vote will end in ${time} seconds.
-			`);
+				The vote will end in ${time} seconds.`
+			});
 		}
 	}
 
@@ -92,7 +125,12 @@ module.exports = class SkipSongCommand extends Command {
 		clearTimeout(vote.timeout);
 		vote.timeout = setTimeout(() => {
 			this.votes.delete(vote.guild);
-			vote.queue.textChannel.sendMessage('The vote to skip the current song has ended. Get outta here, party poopers.');
+			vote.queue.textChannel.sendMessage('', {
+				embed: {
+					color: colors.blue,
+					description: 'The vote to skip the current song has ended. Get outta here, party poopers.'
+				}
+			});
 		}, time);
 		return Math.round(time / 1000);
 	}

@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const request = require('request-promise');
 const { oneLine, stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const { version } = require('../../package');
 
 module.exports = class FortuneCommand extends Command {
@@ -36,7 +36,7 @@ module.exports = class FortuneCommand extends Command {
 					}
 				},
 				{
-					key: 'option',
+					key: 'options',
 					prompt: oneLine`
 						what options would you like to have?
 						Every message you send will be interpreted as a single option.\n
@@ -59,14 +59,18 @@ module.exports = class FortuneCommand extends Command {
 
 	async run(msg, args) {
 		const { title, options } = args;
-		if (options.length < 2) return msg.reply('please provide 2 or more options.');
-		if (options.length > 31) return msg.reply('please provide less than 31 options.');
+		if (options.length < 2) {
+			return msg.embed({ color: colors.blue, description: `${msg.author}, please provide 2 or more options.` });
+		}
+		if (options.length > 31) {
+			return msg.embed({ color: colors.blue, description: `${msg.author}, please provide less than 31 options.` });
+		}
 
 		const response = await request({
 			method: 'POST',
 			uri: `https://strawpoll.me/api/v2/polls`,
 			followAllRedirects: true,
-			headers: { 'User-Agent': `Commando v${version} (https://github.com/WeebDev/Commando/)` },
+			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			body: {
 				title: title,
 				options: options,
@@ -74,8 +78,10 @@ module.exports = class FortuneCommand extends Command {
 			},
 			json: true
 		});
-		return msg.say(stripIndents`🗳 ${response.title}
-			<http://strawpoll.me/${response.id}>
-		`);
+		return msg.embed({
+			color: colors.green,
+			description: stripIndents`🗳 ${response.title}
+			<http://strawpoll.me/${response.id}>`
+		});
 	}
 };

@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 module.exports = class SaveQueueCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -19,12 +19,20 @@ module.exports = class SaveQueueCommand extends Command {
 
 	run(msg) {
 		const queue = this.queue.get(msg.guild.id);
-		if (!queue) return msg.reply('there isn\'t any music playing right now. You should get on that.');
+		if (!queue) {
+			return msg.embed({
+				color: colors.blue,
+				description: `${msg.author}, there isn't any music playing right now. You should get on that.`
+			});
+		}
 		const song = queue.songs[0];
 
-		msg.reply('✔ Check your inbox!');
+		msg.embed({
+			color: colors.green,
+			description: `${msg.author}, ✔ Check your inbox!`
+		});
 		let embed = {
-			color: 3447003,
+			color: colors.blue,
 			author: {
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 				icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase

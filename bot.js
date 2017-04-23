@@ -4,12 +4,12 @@ const { CommandoClient, FriendlyError } = require('discord.js-commando');
 const { oneLine } = require('common-tags');
 const path = require('path');
 const winston = require('winston');
-
+const colors = require('./assets/_data/colors.json');
 const Database = require('./structures/PostgreSQL');
 const Redis = require('./structures/Redis');
 const SequelizeProvider = require('./providers/Sequelize');
 const Starboard = require('./structures/stars/Starboard');
-const { owner, token, commandPrefix } = require('./settings');
+const { owner, token, commandPrefix } = require('./assets/_data/settings');
 const { version, build } = require('./package.json');
 
 const database = new Database();
@@ -36,7 +36,7 @@ client.setProvider(new SequelizeProvider(Database.db));
 client.dispatcher.addInhibitor(msg => {
 	const blacklist = client.provider.get('global', 'userBlacklist', []);
 	if (!blacklist.includes(msg.author.id)) return false;
-	return `User ${msg.author.username}#${msg.author.discriminator} (${msg.author.id}) has been blacklisted.`;
+	return `User ${msg.author.tag} (${msg.author.id}) has been blacklisted.`;
 });
 
 client.on('error', winston.error)
@@ -44,23 +44,24 @@ client.on('error', winston.error)
 	.once('ready', () => Currency.leaderboard())
 	.on('ready', () => {
 		winston.info(oneLine`
-			Client ready... Logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})
+			Client ready... 
+			Logged in as ${client.user.tag} (${client.user.id}))
 		`);
 		client.user.setGame(`v${version} b${build}`);
 	})
 	.on('disconnect', () => winston.warn('Disconnected!'))
 	.on('reconnect', () => winston.warn('Reconnecting...'))
 	.on('commandRun', (cmd, promise, msg, args) => {
-		winston.info(oneLine`${msg.author.username}#${msg.author.discriminator} (${msg.author.id})
+		winston.info(oneLine`${msg.author.tag} (${msg.author.id})
 			> ${msg.guild ? `${msg.guild.name} (${msg.guild.id})` : 'DM'}
 			>> ${cmd.groupID}:${cmd.memberName}
-			${Object.values(args)[0] !== '' || [] ? `>>> ${Object.values(args)}` : ''}
+			${Object.values(args)[0] !== '' || !Object.values(args).length ? `>>> ${Object.values(args)}` : ''}
 		`);
 	})
 	.on('guildMemberAdd', async member => {
 		await member.guild.defaultChannel.send({
 			embed: {
-				color: 0x00D824,
+				color: colors.green,
 				description: `New user joined. Welcome, ${member.user}, to this server.`
 			}
 		}).catch(err => null); // eslint-disable-line no-unused-vars, handle-callback-err
@@ -68,7 +69,7 @@ client.on('error', winston.error)
 	.on('guildMemberRemove', async member => {
 		await member.guild.defaultChannel.send({
 			embed: {
-				color: 0xD80000,
+				color: colors.red,
 				description: `User leaved. Bye, ${member.user}.`
 			}
 		}).catch(err => null); // eslint-disable-line no-unused-vars, handle-callback-err
@@ -120,24 +121,29 @@ client.on('error', winston.error)
 		if (reaction.emoji.name !== '⭐') return;
 		const { message } = reaction;
 		const starboard = message.guild.channels.find('name', 'starboard');
-		if (!starboard) return message.channel.send(`${user}, can't star things without a #starboard...`); // eslint-disable-line
+		if (!starboard) {
+			return message.channel.send({ // eslint-disable-line consistent-return
+				embed: {
+					color: colors.blue,
+					description: `${user}, can't star things without a #starboard...`
+				}
+			});
+		}
 		const isAuthor = await Starboard.isAuthor(message.id, user.id);
- 		if (isAuthor || message.author.id === user.id) return message.channel.send(`${user}, you can't star your own messages.`); // eslint-disable-line
+		if (isAuthor || message.author.id === user.id) {
+			return message.channel.send({ // eslint-disable-line consistent-return
+				embed: {
+					color: colors.red,
+					description: `${user}, you can't star your own messages.`
+				}
+			});
+		}
 		const hasStarred = await Starboard.hasStarred(message.id, user.id);
-		if (hasStarred) return message.channel.send(`${user}, you've already starred this message.`); // eslint-disable-line
+		if (hasStarred) return; // eslint-disable-line consistent-return
 		const isStarred = await Starboard.isStarred(message.id);
 		if (isStarred) return Starboard.addStar(message, starboard, user.id); // eslint-disable-line
 		Starboard.createStar(message, starboard, user.id);
 	})
-		.on('messageReactionRemove', async (reaction, user) => {
-			if (reaction.emoji.name !== '⭐') return;
-			const { message } = reaction;
-			const starboard = message.guild.channels.find('name', 'starboard');
-			if (!starboard) return message.channel.send(`${user}, you can't unstar things without a #starboard...`); // eslint-disable-line
-			const hasStarred = await Starboard.hasStarred(message.id, user.id);
-			if (!hasStarred) return message.channel.send(`${user}, you never starred this message.`); // eslint-disable-line
-			Starboard.removeStar(message, starboard, user.id);
-		})
 	.on('unknownCommand', msg => {
 		if (msg.channel.type === 'dm') return;
 		if (msg.author.bot) return;
@@ -152,7 +158,7 @@ client.on('error', winston.error)
 	.on('commandBlocked', (msg, reason) => {
 		winston.info(oneLine`
 			Command ${msg.command ? `${msg.command.groupID}:${msg.command.memberName}` : ''}
-			blocked; User ${msg.author.username}#${msg.author.discriminator} (${msg.author.id}): ${reason}
+			blocked; User ${msg.author.tag} (${msg.author.id}): ${reason}
 		`);
 	})
 	.on('commandPrefixChange', (guild, prefix) => {

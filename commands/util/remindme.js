@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando');
 const moment = require('moment');
 const sherlock = require('Sherlock');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const Util = require('../../util/Util');
 
 module.exports = class RemindMeCommand extends Command {
@@ -40,13 +40,17 @@ module.exports = class RemindMeCommand extends Command {
 	async run(msg, args) {
 		const { remind } = args;
 		const time = remind.startDate.getTime() - Date.now();
-		const preRemind = await msg.say(stripIndents`
-			I will remind you '${Util.cleanContent(remind.eventTitle, msg)}' ${moment().add(time, 'ms').fromNow()}.
-		`);
+		const preRemind = await msg.embed({
+			color: colors.green,
+			description: stripIndents`
+			I will remind you '${Util.cleanContent(remind.eventTitle, msg)}' ${moment().add(time, 'ms').fromNow()}.`
+		});
 		const remindMessage = await new Promise(resolve => {
-			setTimeout(() => resolve(msg.say(stripIndents`
-				${msg.author} you wanted me to remind you of: '${Util.cleanContent(remind.eventTitle, msg)}'
-			`)), time);
+			setTimeout(() => resolve(msg.embed({
+				color: colors.blue,
+				description: stripIndents`
+				${msg.author} you wanted me to remind you of: '${Util.cleanContent(remind.eventTitle, msg)}'`
+			})), time);
 		});
 		return [preRemind, remindMessage];
 	}

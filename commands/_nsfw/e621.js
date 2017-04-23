@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
-const { version } = require('../../settings.json');
+const { version, permittedGroup } = require('../../assets/_data/settings.json');
+const colors = require('../../assets/_data/colors.json');
 const request = require('request-promise');
 
 module.exports = class E621Command extends Command {
@@ -24,13 +25,12 @@ module.exports = class E621Command extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.provider.get(msg.author.id, 'userLevel', [])[0] >= 1
-		|| msg.member.roles.exists('name', 'Server Staff')
-		|| msg.member.hasPermission('ADMINISTRATOR');
+		return this.client.provider.get(msg.author.id, 'userLevel') >= 1
+		|| msg.member.roles.exists('name', permittedGroup);
 	}
 
 	async run(msg, args) {
-		const { tags } = args;
+		const tags = args.tags.replace(' ', '+');
 		const page = tags === '' ? Math.floor((Math.random() * 13500) + 1) : 1;
 		const response = await request({
 			uri: `https://e621.net/post/index.json?tags=${tags}&page=${page}`,
@@ -39,7 +39,7 @@ module.exports = class E621Command extends Command {
 		});
 		if (response.length === 0) {
 			return msg.embed({
-				color: 0x3498DB,
+				color: colors.red,
 				description: 'your request returned no results.'
 			});
 		}
@@ -50,7 +50,7 @@ module.exports = class E621Command extends Command {
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 				url: response[_id].file_url !== undefined ? response[_id].file_url : response[_id].sample_url
 			},
-			color: 0x3498DB,
+			color: colors.green,
 			fields: [
 				{
 					name: 'ID',

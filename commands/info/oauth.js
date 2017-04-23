@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-
-const { oAuthLink } = require('../../settings');
+const colors = require('../../assets/_data/colors.json');
+const { oAuthLink } = require('../../assets/_data/settings');
 
 module.exports = class AboutCommand extends Command {
 	constructor(client) {
@@ -18,13 +18,18 @@ module.exports = class AboutCommand extends Command {
 		});
 	}
 
-	async run(msg) {
+	async run(msg) { // eslint-disable-line require-await
 		if (!oAuthLink) {
-			return msg.say(`I don't have an invite link for you at the moment. Sorry, ${msg.author}.`);
+			return msg.embed({
+				color: colors.red,
+				description: `I don't have an invite link for you at the moment. Sorry, ${msg.author}.`
+			});
 		}
-		return msg.say(stripIndents`Use this to add me to a server, ${msg.author}:
+		return msg.embed({
+			color: colors.blue,
+			description: stripIndents`Use this to add me to a server, ${msg.author}:
 			${oAuthLink}
-			Make sure you are logged in!
-		`);
+			Make sure you are logged in!`
+		});
 	}
 };

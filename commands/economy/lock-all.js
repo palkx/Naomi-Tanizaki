@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
+const colors = require('../../assets/_data/colors.json');
 const { stripIndents } = require('common-tags');
-
 const Currency = require('../../structures/currency/Currency');
 
 module.exports = class LockAllCommand extends Command {
@@ -32,8 +32,12 @@ module.exports = class LockAllCommand extends Command {
 		}
 
 		this.client.provider.set(msg.guild.id, 'locks', channelLocks);
-		return msg.reply(stripIndents`
-			all channels on this server have been locked. You can no longer earn xp or ${Currency.textPlural} anywhere.
-		`);
+		return msg.embed({
+			color: colors.green,
+			description: stripIndents`
+			${msg.author}, all channels on this server have been locked.
+			You can no longer earn xp or ${Currency.textPlural} anywhere.
+		`
+		});
 	}
 };

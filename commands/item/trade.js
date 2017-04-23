@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-
+const colors = require('../../assets/_data/colors.json');
 const Currency = require('../../structures/currency/Currency');
 const Inventory = require('../../structures/currency/Inventory');
 const ItemGroup = require('../../structures/currency/ItemGroup');
@@ -57,9 +57,24 @@ module.exports = class ItemTradeCommand extends Command {
 		const offerItem = this.isDonuts(args.offerItem, offerAmount);
 		const receiveItem = this.isDonuts(args.receiveItem, receiveAmount);
 
-		if (user.id === msg.author.id) return msg.reply('what are you trying to achieve by trading with yourself?');
-		if (user.user.bot) return msg.reply('bots got nothing to trade, man.');
-		if (!offerItem && !receiveItem) return msg.reply("you can't trade donuts for donuts.");
+		if (user.id === msg.author.id) {
+			return msg.embed({
+				color: colors.blue,
+				description: `${msg.author}, giving items to yourself won't change anything.`
+			});
+		}
+		if (user.user.bot) {
+			return msg.embed({
+				color: colors.grey,
+				description: `${msg.author}, don't give your items to bots: they're bots, man.`
+			});
+		}
+		if (!offerItem && !receiveItem) {
+			return msg.embed({
+				color: colors.grey,
+				description: `${msg.author},you can't trade donuts for donuts.`
+			});
+		}
 
 		const offerBalance = Currency.getBalance(msg.author.id);
 		const receiveBalance = Currency.getBalance(user.id);
@@ -69,10 +84,11 @@ module.exports = class ItemTradeCommand extends Command {
 		const receiveItemBalance = receiveInv.content[receiveItem] ? receiveInv.content[receiveItem].amount : null;
 		const offerValidation = this.validate(offerItem, offerAmount, offerBalance, offerItemBalance, 'you');
 		const receiveValidation = this.validate(receiveItem, receiveAmount, receiveBalance, receiveItemBalance, user.displayName); // eslint-disable-line max-len
-		if (offerValidation) return msg.reply(offerValidation);
-		if (receiveValidation) return msg.reply(receiveValidation);
+		if (offerValidation) return msg.embed({ color: colors.blue, description: `${msg.author}, ${offerValidation}` });
+		if (receiveValidation) return msg.embed({ color: colors.blue, description: `${msg.author}, ${receiveValidation}` });
 
 		const embed = {
+			color: colors.blue,
 			title: `${msg.member.displayName} < -- > ${user.displayName}`,
 			description: 'Type `accept` within the next 30 seconds to accept this trade.',
 			fields: [
@@ -91,12 +107,17 @@ module.exports = class ItemTradeCommand extends Command {
 			]
 		};
 
-		if (!await this.response(msg, user, embed)) return msg.reply(`${user.displayName} declined or failed to respond.`);
+		if (!await this.response(msg, user, embed)) {
+			return msg.embed({
+				color: colors.red,
+				description: `${msg.author}, ${user.displayName} declined or failed to respond.`
+			});
+		}
 		if (!offerItem) this.sendDonuts(msg.author, user, offerAmount);
 		else this.sendItems(offerInv, receiveInv, offerItem, offerAmount);
 		if (!receiveItem) this.sendDonuts(user, msg.author, receiveAmount);
 		else this.sendItems(receiveInv, offerInv, receiveItem, receiveAmount);
-		return msg.say('Trade successful.');
+		return msg.embed({ color: colors.green, description: 'Trade successful.' });
 	}
 
 	validate(item, amount, balance, itemBalance, user) {
@@ -128,20 +149,17 @@ module.exports = class ItemTradeCommand extends Command {
 		Currency.addBalance(toUser, amount);
 	}
 
-	response(msg, user, embed) {
-		return new Promise(async resolve => {
-			msg.say(`${user}, ${msg.member.displayName} wants to trade with you.`);
-			msg.embed(embed);
-
-			const responses = await msg.channel.awaitMessages(response =>
+	async response(msg, user, embed) {
+		msg.say(`${user}, ${msg.member.displayName} wants to trade with you.`);
+		msg.embed(embed);
+		const responses = await msg.channel.awaitMessages(response =>
 				response.author.id === user.id && response.content.toLowerCase() === 'accept',
-				{
-					maxMatches: 1,
-					time: 30e3
-				});
+			{
+				maxMatches: 1,
+				time: 30e3
+			});
 
-			if (responses.size === 0) return resolve(false);
-			return resolve(true);
-		});
+		if (responses.size === 0) return false;
+		return true;
 	}
 };

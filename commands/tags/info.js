@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const moment = require('moment');
-
+const colors = require('../../assets/_data/colors.json');
 const Tag = require('../../models/Tag');
 
 module.exports = class TagWhoCommand extends Command {
@@ -32,9 +32,14 @@ module.exports = class TagWhoCommand extends Command {
 	async run(msg, args) {
 		const { name } = args;
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
-		if (!tag) return msg.say(`A tag with the name **${name}** doesn't exist, ${msg.author}`);
+		if (!tag) {
+			return msg.embed({
+				color: colors.red,
+				description: `A tag with the name **${name}** doesn't exist, ${msg.author}`
+			});
+		}
 		return msg.embed({
-			color: 3447003,
+			color: colors.green,
 			fields: [
 				{
 					name: 'Username',

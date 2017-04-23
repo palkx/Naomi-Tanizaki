@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-
+const colors = require('../../assets/_data/colors.json');
 const Currency = require('../../structures/currency/Currency');
 
 module.exports = class UnlockAllCommand extends Command {
@@ -24,9 +24,11 @@ module.exports = class UnlockAllCommand extends Command {
 
 	run(msg) {
 		this.client.provider.set(msg.guild.id, 'locks', []);
-		return msg.reply(stripIndents`
-			the lock on all channels has been lifted.
-			You can now earn xp and ${Currency.textPlural} on the entire server again.
-		`);
+		return msg.embed({
+			color: colors.green,
+			description: stripIndents`
+			${msg.author}, the lock on all channels has been lifted.
+			You can now earn xp and ${Currency.textPlural} on the entire server again.`
+		});
 	}
 };

@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { winston } = require('winston');
+const colors = require('../../assets/_data/colors.json');
 const { stripIndents } = require('common-tags');
 
 module.exports = class SuggestCommand extends Command {
@@ -27,7 +28,7 @@ module.exports = class SuggestCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
+	async run(msg, args) { // eslint-disable-line require-await
 		try {
 			this.client.channels.find('id', '279240881607933953').send({
 				embed: {
@@ -35,7 +36,7 @@ module.exports = class SuggestCommand extends Command {
 						name: `${msg.author.username} (${msg.channel.guild.name})`,
 						icon_url: msg.author.avatarURL // eslint-disable-line camelcase
 					},
-					color: 3447003,
+					color: colors.blue,
 					description: args.suggestion,
 					footer: {
 						text: stripIndents`
@@ -46,7 +47,7 @@ module.exports = class SuggestCommand extends Command {
 				}
 			}).then(() => {
 				msg.embed({
-					color: 3447003,
+					color: colors.blue,
 					description: stripIndents`
 	                            Your request was successfully sent, **${msg.author.username}#${msg.author.discriminator}**
 	                        `

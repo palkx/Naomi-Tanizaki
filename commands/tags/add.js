@@ -1,10 +1,7 @@
 const { Command } = require('discord.js-commando');
-
-const Redis = require('../../structures/Redis');
+const colors = require('../../assets/_data/colors.json');
 const Tag = require('../../models/Tag');
 const Util = require('../../util/Util');
-
-const redis = new Redis();
 
 module.exports = class TagAddCommand extends Command {
 	constructor(client) {
@@ -43,23 +40,26 @@ module.exports = class TagAddCommand extends Command {
 		const name = Util.cleanContent(args.name.toLowerCase(), msg);
 		const content = Util.cleanContent(args.content, msg);
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
-		if (tag) return msg.say(`A tag with the name **${name}** already exists, ${msg.author}`);
-
-		return Tag.sync()
-			.then(() => {
-				Tag.create({
-					userID: msg.author.id,
-					userName: `${msg.author.username}#${msg.author.discriminator}`,
-					guildID: msg.guild.id,
-					guildName: msg.guild.name,
-					channelID: msg.channel.id,
-					channelName: msg.channel.name,
-					name: name,
-					content: content
-				});
-
-				redis.db.setAsync(`tag${name}${msg.guild.id}`, content);
-				return msg.say(`A tag with the name **${name}** has been added, ${msg.author}`);
+		if (tag) {
+			return msg.embed({
+				color: colors.red,
+				description: `A tag with the name **${name}** already exists, ${msg.author}`
 			});
+		}
+
+		await Tag.create({
+			userID: msg.author.id,
+			userName: `${msg.author.username}#${msg.author.discriminator}`,
+			guildID: msg.guild.id,
+			guildName: msg.guild.name,
+			channelID: msg.channel.id,
+			channelName: msg.channel.name,
+			name: name,
+			content: content
+		});
+		return msg.embed({
+			color: colors.green,
+			description: `A tag with the name **${name}** has been added, ${msg.author}`
+		});
 	}
 };

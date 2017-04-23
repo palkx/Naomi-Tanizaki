@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
-
+const { oneLine } = require('common-tags');
+const colors = require('../../assets/_data/colors.json');
 module.exports = class BlacklistUserCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -29,13 +30,24 @@ module.exports = class BlacklistUserCommand extends Command {
 
 	run(msg, args) {
 		const { user } = args;
-		if (this.client.options.owner === user.id) return msg.reply('the bot owner can not be blacklisted.');
+		if (this.client.isOwner(user.id)) {
+			return msg.embed({
+				color: colors.blue,
+				description: `${msg.author},  the bot owner can not be blacklisted.`
+			});
+		}
 
 		const blacklist = this.client.provider.get('global', 'userBlacklist', []);
-		if (blacklist.includes(user.id)) return msg.reply('that user is already blacklisted.');
+		if (blacklist.includes(user.id)) {
+			return msg.embed({ color: colors.blue, description: `${msg.author},  that user is already blacklisted.` });
+		}
 
 		blacklist.push(user.id);
 		this.client.provider.set('global', 'userBlacklist', blacklist);
-		return msg.reply(`${user.username}#${user.discriminator} has been blacklisted from using ${this.client.user}.`);
+		return msg.embed({
+			color: colors.blue,
+			description: oneLine`
+			${msg.author},  ${user.username}#${user.discriminator} has been blacklisted from using ${this.client.user}.`
+		});
 	}
 };

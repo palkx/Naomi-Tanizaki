@@ -26,12 +26,8 @@ module.exports = class Daily {
 	}
 
 	static receive(userID, donationID) {
-		if (donationID) {
-			Currency._changeBalance(donationID, Daily.dailyDonationPayout);
-		} else {
-			Currency._changeBalance(userID, Daily.dailyPayout);
-		}
-
+		if (donationID) Currency._changeBalance(donationID, Daily.dailyDonationPayout);
+		else Currency._changeBalance(userID, Daily.dailyPayout);
 		redis.db.setAsync(`daily${userID}`, Date.now());
 		redis.db.expire(`daily${userID}`, DAY_DURATION / 1000);
 	}
