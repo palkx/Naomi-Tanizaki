@@ -64,9 +64,10 @@ module.exports = class ChooseCommand extends Command {
 			}
 		});
 
-		return msg.embed({
+		await msg.embed({
 			color: colors.green,
 			description: `${RESPONSES[Math.floor(Math.random() * RESPONSES.length)](choices[pick])}, ${msg.author}.`
 		});
+		return null;
 	}
 };

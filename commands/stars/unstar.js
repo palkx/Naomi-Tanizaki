@@ -35,6 +35,6 @@ module.exports = class UnstarCommand extends Command {
 			return msg.embed({ color: colors.red, description: `${msg.author}, you never starred this message.'` });
 		}
 		Starboard.removeStar(message, starboard, msg.author.id);
-		return null
+		return null;
 	}
 };

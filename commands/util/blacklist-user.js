@@ -30,7 +30,7 @@ module.exports = class BlacklistUserCommand extends Command {
 
 	run(msg, args) {
 		const { user } = args;
-		if (this.client.options.owner === user.id) {
+		if (this.client.isOwner(user.id)) {
 			return msg.embed({
 				color: colors.blue,
 				description: `${msg.author},  the bot owner can not be blacklisted.`

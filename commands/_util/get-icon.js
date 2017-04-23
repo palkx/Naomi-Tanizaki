@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
 
-module.exports = class SetUserLevelCommand extends Command {
+module.exports = class GetIconCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'get-icon',

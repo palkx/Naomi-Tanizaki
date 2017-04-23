@@ -6,6 +6,8 @@ const Star = require('../../models/Star.js');
 
 module.exports = class Starboard {
 	static async createStar(message, starboardChannel, starBy) {
+		message.content = message.content.length <= 1024 ? message.content : `${message.content.substr(0, 1021)}...`;
+
 		const starboardMessage = await starboardChannel.send({ embed: Starboard._starEmbed(message, 1) });
 		return Star.create({
 			messageID: message.id,
