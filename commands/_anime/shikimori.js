@@ -11,6 +11,10 @@ module.exports = class TestCommand extends Command {
 			group: 'util',
 			memberName: 'test',
 			description: 'Command for testing purposes',
+			throttling: {
+				usages: 1,
+				duration: 5
+			},
 			args: [
 				{
 					key: 'user',
@@ -87,9 +91,7 @@ module.exports = class TestCommand extends Command {
 				headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 				json: true
 			});
-			if (_response > 0) {
-				return _response;
-			}
+			return _response;
 		}
 		return null;
 	}
