@@ -2,15 +2,16 @@ const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
 const { version } = require('../../assets/_data/settings.json');
 const request = require('request-promise');
+const { oneLine } = require('common-tags');
 
 module.exports = class TestCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'shikimori',
 			aliases: ['shiki'],
-			group: 'util',
-			memberName: 'test',
-			description: 'Command for testing purposes',
+			group: 'anime',
+			memberName: 'shikimori',
+			description: 'Get user profile from shikimori.org',
 			throttling: {
 				usages: 1,
 				duration: 5
@@ -19,14 +20,11 @@ module.exports = class TestCommand extends Command {
 				{
 					key: 'user',
 					prompt: 'Username on shikimori.org?\n',
-					type: 'string'
+					type: 'string',
+					parse: user => user.replace(' ', '+')
 				}
 			]
 		});
-	}
-
-	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
 	}
 
 	async run(msg, args) {
@@ -38,7 +36,8 @@ module.exports = class TestCommand extends Command {
 				description: 'Your request has no results.'
 			});
 		}
-		const scores = this._getScores(shikiUser);
+		const scoresA = this._getScores(shikiUser, 'anime');
+		const scoresM = this._getScores(shikiUser, 'manga');
 		return msg.embed({
 			author: {
 				icon_url: 'https://shikimori.org/favicon.ico', // eslint-disable-line
@@ -48,8 +47,10 @@ module.exports = class TestCommand extends Command {
 			color: colors.green,
 			fields: [
 				{
-					name: `**${shikiUser.name !== null ? 'Name / ' : ''}Nickname**`,
-					value: `${shikiUser.name !== '' ? `${shikiUser.name} / ` : 'Private / '} ${shikiUser.nickname}`,
+					name: `**${shikiUser.name !== null && shikiUser.name !== '' ? 'Name / ' : ''}Nickname**`,
+					value: oneLine`${shikiUser.name !== '' && shikiUser.name !== null
+						? `${shikiUser.name} / `
+						: 'Private / '} ${shikiUser.nickname}`,
 					inline: true
 				},
 				{
@@ -59,19 +60,31 @@ module.exports = class TestCommand extends Command {
 				},
 				{
 					name: '**AGE / SEX**',
-					value: `${shikiUser.full_years !== null
+					value: oneLine`${shikiUser.full_years !== null && shikiUser.full_years !== ''
 						? `${shikiUser.full_years} years`
-						: 'Private'} / ${shikiUser.sex !== null ? shikiUser.sex : 'Private'}`,
+						: 'Private'} / 
+						${shikiUser.sex !== null && shikiUser.sex !== '' ? shikiUser.sex : 'Private'}`,
 					inline: true
 				},
 				{
 					name: '**LOCATION**',
-					value: `${shikiUser.location !== '' ? shikiUser.location : 'Private'}`,
+					value: oneLine`${shikiUser.location !== '' && shikiUser.location !== null
+						? shikiUser.location : 'Private'}`,
 					inline: true
 				},
 				{
-					name: `**Scores**`,
-					value: scores,
+					name: `**Anime ratings**`,
+					value: scoresA,
+					inline: true
+				},
+				{
+					name: `**Manga ratings**`,
+					value: scoresM,
+					inline: true
+				},
+				{
+					name: `**Last online**`,
+					value: shikiUser.last_online,
 					inline: true
 				}
 			],
@@ -96,38 +109,42 @@ module.exports = class TestCommand extends Command {
 		return null;
 	}
 
-	_getScores(user) { // eslint-disable-line complexity
-		let scores = '', scoresA = [], scoresM = [];
-		const aLength = user.stats.scores.anime.length > 0 ? user.stats.scores.anime.length : false;
-		const mLength = user.stats.scores.manga.length > 0 ? user.stats.scores.manga.length : false;
-		if (aLength) {
-			for (let i = 0; i < aLength; i++) {
-				if (!scoresA[i]) scoresA[i] = [];
-				scoresA.push(user.stats.scores.anime[i].name);
-			}
-		}
-		if (mLength) {
-			for (let i = 0; i < mLength; i++) {
-				if (!scoresM[i]) scoresM[i] = [];
-				scoresM.push(user.stats.scores.manga[i].name);
-			}
-		}
-		if (aLength || mLength) {
-			for (let i = 0; i < 10; i++) {
-				let _tmp = '';
-				if (i === 0) {
-					scores = scores.concat(`${aLength ? 'ANIME' : ''}${mLength ? aLength ? '   |   MANGA' : 'MANGA' : ''}`);
+	_getScores(user, type) { // eslint-disable-line complexity
+		const job = ['anime', 'manga'].includes(type) ? type === 'anime' ? 1 : 2 : 0;
+		let scores = '';
+		switch (job) {
+			case 0:
+				return null;
+			case 1: // eslint-disable-line
+				let scoresA = [];
+				const aLength = user.stats.scores.anime.length > 0 ? user.stats.scores.anime.length : false;
+				if (!aLength) {
+					scores = scores.concat('No ratings');
+					return scores;
 				}
-				_tmp = _tmp.concat(`\n${10 - i} : ${aLength ? scoresA.includes(10 - i) ? user.stats.scores.anime[scoresA.indexOf(10 - i) - 1].value : '0' : ''}`); // eslint-disable-line max-len
-				if (mLength && aLength) {
-					while (_tmp.length < 12) {
-						_tmp = _tmp.concat(' ');
-					}
+				for (let i = 0; i < aLength; i++) {
+					if (!scoresA[i]) scoresA[i] = [];
+					scoresA.push(user.stats.scores.anime[i].name);
 				}
-				scores = scores.concat(`${_tmp}${mLength ? aLength ? `|   ${10 - i} : ` : `${10 - i} : ` : ''}${mLength ? scoresM.includes(10 - i) ? user.stats.scores.manga[scoresM.indexOf(10 - i) - 1].value : '0' : ''}`); // eslint-disable-line max-len
-			}
-		} else {
-			scores = scores.concat('No ratings');
+				for (let i = 0; i < 10; i++) {
+					scores = scores.concat(`\n${10 - i} : ${scoresA.includes(10 - i) ? user.stats.scores.anime[scoresA.indexOf(10 - i) - 1].value : '0'}`); // eslint-disable-line max-len
+				}
+				break;
+			case 2: // eslint-disable-line
+				let scoresM = [];
+				const mLength = user.stats.scores.manga.length > 0 ? user.stats.scores.manga.length : false;
+				if (!mLength) {
+					scores = scores.concat('No ratings');
+					return scores;
+				}
+				for (let i = 0; i < mLength; i++) {
+					if (!scoresM[i]) scoresM[i] = [];
+					scoresM.push(user.stats.scores.manga[i].name);
+				}
+				for (let i = 0; i < 10; i++) {
+					scores = scores.concat(`\n${10 - i} : ${scoresM.includes(10 - i) ? user.stats.scores.manga[scoresM.indexOf(10 - i) - 1].value : '0'}`); // eslint-disable-line max-len
+				}
+				break;
 		}
 		return scores;
 	}
