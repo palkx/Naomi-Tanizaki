@@ -40,18 +40,18 @@ module.exports = class ItemGiveCommand extends Command {
 	}
 
 	async run(msg, args) {
-		const { user, amount } = args;
+		const { member, amount } = args;
 		const item = ItemGroup.convert(args.item, amount);
 		const inventory = await Inventory.fetchInventory(msg.author.id);
 		const itemBalance = inventory.content[item] ? inventory.content[item].amount : 0;
 
-		if (user.id === msg.author.id) {
+		if (member.id === msg.author.id) {
 			return msg.embed({
 				color: colors.blue,
 				description: `${msg.author}, giving items to yourself won't change anything.`
 			});
 		}
-		if (user.user.bot) {
+		if (member.user.bot) {
 			return msg.embed({
 				color: colors.grey,
 				description: `${msg.author}, don't give your items to bots: they're bots, man.`
@@ -65,13 +65,13 @@ module.exports = class ItemGiveCommand extends Command {
 		}
 
 		const itemGroup = new ItemGroup(item, amount);
-		const receiveInv = await Inventory.fetchInventory(user.id);
+		const receiveInv = await Inventory.fetchInventory(member.id);
 
 		inventory.removeItems(itemGroup);
 		receiveInv.addItems(itemGroup);
 		return msg.embed({
 			color: colors.green,
-			description: `${msg.author}, ${user.displayName} successfully received your item(s)!`
+			description: `${msg.author}, ${member.displayName} successfully received your item(s)!`
 		});
 	}
 };
