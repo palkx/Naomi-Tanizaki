@@ -26,8 +26,9 @@ module.exports = class YandereCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.provider.get(msg.author.id, 'userLevel') >= 1
-		|| msg.member.roles.exists('name', permittedGroup);
+		return (this.client.provider.get(msg.author.id, 'userLevel') >= 1
+			&& msg.channel.name.toLowerCase().indexOf('nsfw') > -1)
+				|| msg.member.roles.exists('name', permittedGroup);
 	}
 
 	async run(msg, args) {
