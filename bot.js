@@ -49,7 +49,10 @@ client.on('error', winston.error)
 		`);
 		client.user.setGame(`v${version} b${build}`);
 	})
-	.on('disconnect', () => winston.warn('Disconnected!'))
+	.on('disconnect', () => {
+		winston.warn(`[${Date.now()}]Disconnected! Exiting app in 10s.`);
+		setTimeout(() => { process.exit('1'); }, 10000);
+	})
 	.on('reconnect', () => winston.warn('Reconnecting...'))
 	.on('commandRun', (cmd, promise, msg, args) => {
 		winston.info(oneLine`${msg.author.tag} (${msg.author.id})
