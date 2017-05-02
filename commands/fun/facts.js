@@ -38,10 +38,7 @@ module.exports = class FactsCommand extends Command {
 		});
 	}
 
-	async run(msg, args) { // eslint-disable-line consistent-return, require-await
-		const category = args.category;
-		const subcategory = args.subcategory;
-
+	async run(msg, { category, subcategory }) { // eslint-disable-line consistent-return, require-await
 		if (category === 'random' || category === 'rng') return this.getRandom(msg, subcategory);
 		else if (category === 'number') return this.getFact(msg, subcategory, 'trivia');
 		else if (category === 'math') return this.getFact(msg, subcategory, 'math');

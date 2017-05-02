@@ -34,13 +34,12 @@ module.exports = class GetIconCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
-		const { user } = args;
-		const obj = args.obj === 'user';
+	async run(msg, { obj, user }) {
+		const _obj = obj === 'user';
 		await msg.embed({
 			color: colors.green,
-			description: `Here **${obj ? user.tag : msg.guild.name}\`s** avatar:`,
-			image: { url: obj ? user.avatarURL : msg.guild.iconURL || undefined }
+			description: `Here **${_obj ? user.tag : msg.guild.name}\`s** avatar:`,
+			image: { url: _obj ? user.avatarURL : msg.guild.iconURL || undefined }
 		});
 		return null;
 	}

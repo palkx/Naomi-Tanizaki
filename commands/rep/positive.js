@@ -29,8 +29,7 @@ module.exports = class RepPositiveCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
-		const { member, message } = args;
+	async run(msg, { member, message }) {
 		if (member.id === msg.author.id) {
 			return msg.embed({
 				color: colors.red,

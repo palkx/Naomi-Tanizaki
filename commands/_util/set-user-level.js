@@ -51,11 +51,10 @@ module.exports = class SetUserLevelCommand extends Command {
 		return this.client.isOwner(msg.author);
 	}
 
-	async run(msg, args) { // eslint-disable-line require-await
-		const job = args.job.toLowerCase() === 'get';
-		const { user, level } = args;
+	async run(msg, { job, user, level }) { // eslint-disable-line require-await
+		const _job = job.toLowerCase() === 'get';
 		const userLevel = this.client.provider.get(user.id, 'userLevel');
-		if (job) {
+		if (_job) {
 			if (userLevel === undefined) {
 				return this.client.provider.set(user.id, 'userLevel', 0).then(() => {
 					msg.embed({ color: colors.blue, description: `${user} doesn't have ul. Setting ul to 0` });

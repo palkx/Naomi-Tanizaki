@@ -1,9 +1,8 @@
 const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
-const { exampleChannel } = require('../../assets/_data/settings');
+const { EXAMPLE_CHANNEL, PERMITTED_GROUP } = process.env;
 const Tag = require('../../models/Tag');
 const Util = require('../../util/Util');
-
 
 module.exports = class ExampleAddCommand extends Command {
 	constructor(client) {
@@ -39,12 +38,12 @@ module.exports = class ExampleAddCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author) || msg.member.roles.exists('name', 'Server Staff');
+		return this.client.isOwner(msg.author) || msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
 	async run(msg, args) {
-		const name = Util.cleanContent(args.name.toLowerCase(), msg);
-		const content = Util.cleanContent(args.content, msg);
+		const name = Util.cleanContent(msg, args.name.toLowerCase());
+		const content = Util.cleanContent(msg, args.content);
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
 		if (tag) {
 			return msg.embed({
@@ -60,18 +59,18 @@ module.exports = class ExampleAddCommand extends Command {
 			guildName: msg.guild.name,
 			channelID: msg.channel.id,
 			channelName: msg.channel.name,
-			name: name,
-			content: content,
+			name,
+			content,
 			type: true,
 			example: true
 		});
-		const msgID = await msg.guild.channels.get(exampleChannel).sendMessage('', {
+		const message = await msg.guild.channels.get(EXAMPLE_CHANNEL).send('', {
 			embed: {
 				color: colors.blue,
 				description: content
 			}
 		});
-		Tag.update({ exampleID: msgID }, { where: { name, guildID: msg.guild.id } });
+		Tag.update({ exampleID: message.id }, { where: { name, guildID: msg.guild.id } });
 		return msg.embed({
 			color: colors.green,
 			description: `An example with the name **${name}** has been added, ${msg.author}`

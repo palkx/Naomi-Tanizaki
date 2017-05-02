@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
 const colors = require('../../assets/_data/colors.json');
-const { oAuthLink } = require('../../assets/_data/settings');
+const { OAUTH_LINK } = process.env;
 
 module.exports = class AboutCommand extends Command {
 	constructor(client) {
@@ -19,7 +19,7 @@ module.exports = class AboutCommand extends Command {
 	}
 
 	async run(msg) { // eslint-disable-line require-await
-		if (!oAuthLink) {
+		if (!OAUTH_LINK) {
 			return msg.embed({
 				color: colors.red,
 				description: `I don't have an invite link for you at the moment. Sorry, ${msg.author}.`
@@ -28,7 +28,7 @@ module.exports = class AboutCommand extends Command {
 		return msg.embed({
 			color: colors.blue,
 			description: stripIndents`Use this to add me to a server, ${msg.author}:
-			${oAuthLink}
+			${OAUTH_LINK}
 			Make sure you are logged in!`
 		});
 	}

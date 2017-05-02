@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
-const config = require('../../assets/_data/settings');
+const { DEFAULT_VOLUME } = process.env;
 
 module.exports = class DefaultVolumeCommand extends Command {
 	constructor(client) {
@@ -25,7 +25,7 @@ module.exports = class DefaultVolumeCommand extends Command {
 
 	run(msg, args) {
 		if (!args) {
-			const defaultVolume = this.client.provider.get(msg.guild.id, 'defaultVolume', config.defaultVolume);
+			const defaultVolume = this.client.provider.get(msg.guild.id, 'defaultVolume', DEFAULT_VOLUME);
 			return msg.embed({
 				color: colors.blue,
 				description: `${msg.author}, the default volume level is ${defaultVolume}.`
@@ -37,7 +37,7 @@ module.exports = class DefaultVolumeCommand extends Command {
 			return msg.embed({
 				color: colors.green,
 				description: `
-				${msg.member}, set the default volume level to the bot's default (currently ${config.defaultVolume}).`
+				${msg.member}, set the default volume level to the bot's default (currently ${DEFAULT_VOLUME}).`
 			});
 		}
 

@@ -30,14 +30,14 @@ module.exports = class FortuneCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
+	async run(msg, { category }) {
 		const regex = /^(all|computers|cookie|definitions|miscellaneous|people|platitudes|politics|science|wisdom)$/i;
-		const category = regex.test(args.category)
-		? args.category.toLowerCase()
+		const _category = regex.test(category)
+		? category.toLowerCase()
 		: 'wisdom';
 
 		const response = await request({
-			uri: `http://www.yerkee.com/api/fortune/${category}`,
+			uri: `http://www.yerkee.com/api/fortune/${_category}`,
 			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});

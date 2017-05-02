@@ -1,7 +1,7 @@
 const { Command, util } = require('discord.js-commando');
 const { oneLine, stripIndents } = require('common-tags');
 const colors = require('../../assets/_data/colors.json');
-const config = require('../../assets/_data/settings');
+const { PAGINATED_ITEMS } = process.env;
 const Song = require('../../structures/Song');
 
 module.exports = class ViewQueueCommand extends Command {
@@ -29,8 +29,7 @@ module.exports = class ViewQueueCommand extends Command {
 		});
 	}
 
-	run(msg, args) {
-		const { page } = args;
+	run(msg, { page }) {
 		const queue = this.queue.get(msg.guild.id);
 		if (!queue) {
 			return msg.embed({
@@ -39,7 +38,7 @@ module.exports = class ViewQueueCommand extends Command {
 			});
 		}
 
-		const paginated = util.paginate(queue.songs, page, Math.floor(config.paginationItems));
+		const paginated = util.paginate(queue.songs, page, Math.floor(PAGINATED_ITEMS));
 		const totalLength = queue.songs.reduce((prev, song) => prev + song.length, 0);
 		const currentSong = queue.songs[0];
 		const currentTime = currentSong.dispatcher ? currentSong.dispatcher.time / 1000 : 0;

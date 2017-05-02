@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
-const { version } = require('../../assets/_data/settings.json');
+const { version } = require('../../package.json');
 const request = require('request-promise');
 const { oneLine } = require('common-tags');
 
@@ -27,8 +27,7 @@ module.exports = class TestCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
-		const { user } = args;
+	async run(msg, { user }) {
 		const shikiUser = await this._getUser(user);
 		if (shikiUser === null) {
 			return msg.embed({

@@ -1,11 +1,11 @@
 const { Command } = require('discord.js-commando');
 const winston = require('winston');
-const { cleverBotApiKey, cleverBotApiUser } = require('../../assets/_data/settings.json');
+const { CLEVERBOT_API_KEY, CLEVERBOT_API_USER } = process.env;
 const colors = require('../../assets/_data/colors.json');
 const Clever = require('cleverbot.io');
 let re = /<@[0-9].*>/g;
 if (typeof cleverbots === 'undefined') { var cleverbots = []; }
-if (typeof cb === 'undefined') { var cb = new Clever(cleverBotApiUser, cleverBotApiKey); }
+if (typeof cb === 'undefined') { var cb = new Clever(CLEVERBOT_API_USER, CLEVERBOT_API_KEY); }
 
 module.exports = class CleverbotCommand extends Command {
 	constructor(client) {
@@ -31,10 +31,10 @@ module.exports = class CleverbotCommand extends Command {
 		});
 	}
 
-	async run(msg, args) { // eslint-disable-line require-await
+	async run(msg, { message }) { // eslint-disable-line require-await
 		try {
 			let _id = msg.guild ? msg.guild.id : msg.message.author.id;
-			let msgClean = args.message.replace(re, '');
+			let msgClean = message.replace(re, '');
 			cb.setNick(`naomi_${_id}`);
 
 			if (cleverbots.find(element => { // eslint-disable-line arrow-body-style

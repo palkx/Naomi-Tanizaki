@@ -8,13 +8,13 @@
 
 ## Installation guide for Ubuntu 16.04.2 LTS && Debian >7
 
-#### Install node.js version >7.8.0
+#### Install node.js version >7.6.0
 
 ```bash
 curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
 sudo apt install -y nodejs
 node -v
-> 7.8.0
+> 7.6.0
 ```
 
 #### Install PostgresSQL

@@ -5,7 +5,7 @@ const djscversion = require('discord.js-commando').version;
 const colors = require('../../assets/_data/colors.json');
 const { version } = require('../../package.json');
 
-const { commandoVersion } = require('../../assets/_data/settings.json');
+const { COMMANDO_VERSION } = process.env;
 
 module.exports = class AboutCommand extends Command {
 	constructor(client) {
@@ -27,7 +27,7 @@ module.exports = class AboutCommand extends Command {
 			description: stripIndents`
 				**Naomi Tanizaki**
 				**❯ CREATOR:** <@${this.client.options.owner}> (ID: ${this.client.options.owner})
-				**❯ BASED ON:** [Commando v${commandoVersion}](https://github.com/WeebDev/Commando)
+				**❯ BASED ON:** [Commando v${COMMANDO_VERSION}](https://github.com/WeebDev/Commando)
 				**❯ LIBRARY:** Discord.js v${djsversion}, Discord.js-Commando v${djscversion}
 				**❯ VERSION:** v${version}
 				**Naomi Tanizaki is a multipurpose bot.**

@@ -28,7 +28,7 @@ module.exports = class SuggestCommand extends Command {
 		});
 	}
 
-	async run(msg, args) { // eslint-disable-line require-await
+	async run(msg, { suggestion }) { // eslint-disable-line require-await
 		try {
 			this.client.channels.find('id', '279240881607933953').send({
 				embed: {
@@ -37,7 +37,7 @@ module.exports = class SuggestCommand extends Command {
 						icon_url: msg.author.avatarURL // eslint-disable-line camelcase
 					},
 					color: colors.blue,
-					description: args.suggestion,
+					description: suggestion,
 					footer: {
 						text: stripIndents`
 						User: ${msg.author.username}#${msg.author.discriminator}

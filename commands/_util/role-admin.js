@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const { permittedGroup } = require('../../assets/_data/settings.json');
+const { PERMITTED_GROUP } = process.env;
 const colors = require('../../assets/_data/colors.json');
 const { oneLine } = require('common-tags');
 
@@ -47,56 +47,55 @@ module.exports = class RoleWhitelistCommand extends Command {
 
 	hasPermission(msg) {
 		return this.client.provider.get(msg.author.id, 'userLevel') >= 3
-			|| msg.member.roles.exists('name', permittedGroup);
+			|| msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
-	async run(msg, args) {  // eslint-disable-line consistent-return, require-await
-		let role = msg.guild.roles.find('name', args.role);
-		if (!role) { return msg.embed({ color: colors.red, description: `${args.role} group is not exist on server` }); }
-		const job = args.job.toLowerCase() === 'add';
-		const { aMember } = args;
+	async run(msg, { job, aMember, role }) {  // eslint-disable-line consistent-return, require-await
+		let _role = msg.guild.roles.find('name', role);
+		if (!_role) { return msg.embed({ color: colors.red, description: `${role} group is not exist on server` }); }
+		const _job = job.toLowerCase() === 'add';
 
 		const roleWhitelist = this.client.provider.get(msg.guild.id, 'roleWhitelist', []);
-		if (!roleWhitelist.includes(role.id)) {
-			return msg.embed({ color: colors.red, description: `Whitelist ${role} first.` });
+		if (!roleWhitelist.includes(_role.id)) {
+			return msg.embed({ color: colors.red, description: `Whitelist ${_role} first.` });
 		}
 
-		const roleAdminList = this.client.provider.get(msg.guild.id, `${role.id}_admins`, []);
+		const roleAdminList = this.client.provider.get(msg.guild.id, `${_role.id}_admins`, []);
 		if (roleAdminList.length !== 0) {
 			if (!roleAdminList.includes(msg.member.id) && !this.client.isOwner(msg.member)) {
 				return msg.embed({
 					color: colors.red,
 					description: oneLine`
-					${msg.member}, you cant add admin to ${role}.This role already have 
+					${msg.member}, you cant add admin to ${_role}.This role already have 
 					an a admin (${msg.guild.members.find('id', roleAdminList[0])}), ask him to add you.`
 				});
 			}
 		}
 
-		if (job) {
+		if (_job) {
 			if (roleAdminList.includes(aMember.id)) {
-				return msg.embed({ color: colors.red, description: `${aMember} you already admin of ${role}.` });
+				return msg.embed({ color: colors.red, description: `${aMember} you already admin of ${_role}.` });
 			}
 
 			roleAdminList.push(aMember.id);
-			this.client.provider.set(msg.guild.id, `${role.id}_admins`, roleAdminList);
+			this.client.provider.set(msg.guild.id, `${_role.id}_admins`, roleAdminList);
 
-			return msg.embed({ color: colors.green, description: `${aMember} has been added to the ${role} admins.` });
+			return msg.embed({ color: colors.green, description: `${aMember} has been added to the ${_role} admins.` });
 		} else {
 			if (!roleAdminList.includes(aMember.id)) {
-				return msg.embed({ color: colors.red, description: `${aMember} is not an a admin on ${role}.` });
+				return msg.embed({ color: colors.red, description: `${aMember} is not an a admin on ${_role}.` });
 			}
 
 			const index = roleAdminList.indexOf(aMember.id);
 			roleAdminList.splice(index, 1);
 
 			if (roleAdminList.length === 0) {
-				this.client.provider.remove(msg.guild.id, `${role.id}_admins`);
+				this.client.provider.remove(msg.guild.id, `${_role.id}_admins`);
 			} else {
-				this.client.provider.set(msg.guild.id, `${role.id}_admins`, roleAdminList);
+				this.client.provider.set(msg.guild.id, `${_role.id}_admins`, roleAdminList);
 			}
 
-			return msg.embed({ color: colors.green, description: `${aMember} has been removed from the ${role} admins.` });
+			return msg.embed({ color: colors.green, description: `${aMember} has been removed from the ${_role} admins.` });
 		}
 	}
 };

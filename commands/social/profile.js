@@ -1,7 +1,6 @@
 const Canvas = require('canvas');
 const { Command } = require('discord.js-commando');
 
-const fs = global.Promise.promisifyAll(require('fs'));
 const path = require('path');
 const request = require('request-promise');
 
@@ -9,6 +8,8 @@ const Bank = require('../../structures/currency/Bank');
 const Currency = require('../../structures/currency/Currency');
 const Experience = require('../../structures/currency/Experience');
 const UserProfile = require('../../models/UserProfile');
+const { promisifyAll } = require('tsubaki');
+const fs = promisifyAll(require('fs'));
 
 module.exports = class ProfileCommand extends Command {
 	constructor(client) {
@@ -159,7 +160,7 @@ module.exports = class ProfileCommand extends Command {
 			encoding: null
 		});
 		generate();
-		return msg.channel.sendFile(canvas.toBuffer(), `profile.png`);
+		return msg.channel.send({ files: [{ attachment: canvas.toBuffer(), name: 'profile.png' }] });
 	}
 
 	_wrapText(ctx, text, maxWidth) {

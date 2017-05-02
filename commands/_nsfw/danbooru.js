@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
-const { version, permittedGroup } = require('../../assets/_data/settings.json');
+const { version } = require('../../package.json');
+const { PERMITTED_GROUP } = process.env;
 const colors = require('../../assets/_data/colors.json');
 const request = require('request-promise');
 
@@ -28,15 +29,15 @@ module.exports = class DanbooruCommand extends Command {
 	hasPermission(msg) {
 		return (this.client.provider.get(msg.author.id, 'userLevel') >= 1
 			&& msg.channel.name.toLowerCase().indexOf('nsfw') > -1)
-				|| msg.member.roles.exists('name', permittedGroup)
+				|| msg.member.roles.exists('name', PERMITTED_GROUP)
 				|| msg.channel.type === 'dm';
 	}
 
-	async run(msg, args) {
-		const tags = args.tags.replace(' ', '+');
-		const _random = tags === '';
+	async run(msg, { tags }) {
+		const _tags = tags.replace(' ', '+');
+		const _random = _tags === '';
 		const response = await request({
-			uri: `https://danbooru.donmai.us/posts.json?random=${_random}&tags=${tags}`,
+			uri: `https://danbooru.donmai.us/posts.json?random=${_random}&tags=${_tags}`,
 			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});

@@ -1,15 +1,14 @@
-language: node_js
-node_js:
-  - "7"
 dist: trusty
-cache:
-  directories:
-    - node_modules
+sudo: required
+services:
+  - docker
 addons:
   apt:
     sources:
+      - git-core
       - ubuntu-toolchain-r-test
     packages:
+      - git
       - libcairo2-dev
       - libjpeg8-dev
       - libpango1.0-dev
@@ -18,4 +17,11 @@ addons:
 env:
   - CXX=g++-4.9
 before_install:
-  - npm explore npm -g -- npm install node-gyp@latest
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
+language: node_js
+node_js:
+  - '7'
+install: npm install
+script:
+  - bash ./deploy/deploy.sh

@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
-const { osuKey, version } = require('../../assets/_data/settings.json');
+const { version } = require('../../package.json');
+const { OSU_API_KEY } = process.env;
 const colors = require('../../assets/_data/colors.json');
 const request = require('request-promise');
 
@@ -25,16 +26,15 @@ module.exports = class OsuCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
-		if (!osuKey) {
+	async run(msg, { username }) {
+		if (!OSU_API_KEY) {
 			return msg.embed({
 				color: colors.red,
 				description: `I don't have osu key`
 			});
 		}
-		const { username } = args;
 		const response = await request({
-			uri: `https://osu.ppy.sh/api/get_user?k=${osuKey}&u=${username}`,
+			uri: `https://osu.ppy.sh/api/get_user?k=${OSU_API_KEY}&u=${username}`,
 			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});
@@ -45,12 +45,12 @@ module.exports = class OsuCommand extends Command {
 			});
 		}
 		const userBest = await request({
-			uri: `https://osu.ppy.sh/api/get_user_best?k=${osuKey}&u=${username}&limit=1`,
+			uri: `https://osu.ppy.sh/api/get_user_best?k=${OSU_API_KEY}&u=${username}&limit=1`,
 			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});
 		const _userBest = await request({
-			uri: `https://osu.ppy.sh/api/get_beatmaps?k=${osuKey}&limit=1&b=${userBest[0].beatmap_id}`,
+			uri: `https://osu.ppy.sh/api/get_beatmaps?k=${OSU_API_KEY}&limit=1&b=${userBest[0].beatmap_id}`,
 			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 			json: true
 		});

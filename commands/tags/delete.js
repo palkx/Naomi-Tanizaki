@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
-const { exampleChannel } = require('../../assets/_data/settings');
+const { EXAMPLE_CHANNEL, PERMITTED_GROUP } = process.env;
 const Tag = require('../../models/Tag');
 
 module.exports = class TagDeleteCommand extends Command {
@@ -49,9 +49,8 @@ module.exports = class TagDeleteCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
-		const { name } = args;
-		const staffRole = this.client.isOwner(msg.author) || await msg.member.roles.exists('name', 'Server Staff');
+	async run(msg, { name }) {
+		const staffRole = this.client.isOwner(msg.author) || await msg.member.roles.exists('name', PERMITTED_GROUP);
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
 		if (!tag) {
 			return msg.embed({
@@ -68,7 +67,7 @@ module.exports = class TagDeleteCommand extends Command {
 		}
 		Tag.destroy({ where: { name, guildID: msg.guild.id } });
 		if (tag.example) {
-			const messageToDelete = await msg.guild.channels.get(exampleChannel).fetchMessage(tag.exampleID);
+			const messageToDelete = await msg.guild.channels.get(EXAMPLE_CHANNEL).fetchMessage(tag.exampleID);
 			messageToDelete.delete();
 		}
 		return msg.embed({

@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
+const { PERMITTED_GROUP } = process.env;
 module.exports = class CleanCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -46,11 +47,10 @@ module.exports = class CleanCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author) || msg.member.roles.exists('name', 'Server Staff');
+		return this.client.isOwner(msg.author) || msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
-	async run(msg, args) {
-		const { filter, limit } = args;
+	async run(msg, { filter, limit, member }) {
 		let messageFilter;
 
 		if (filter) {
@@ -58,8 +58,7 @@ module.exports = class CleanCommand extends Command {
 				messageFilter = message => message.content.search(/(discord\.gg\/.+|discordapp\.com\/invite\/.+)/i)
 				!== -1;
 			} else if (filter === 'user') {
-				if (args.member) {
-					const member = args.member;
+				if (member) {
 					const user = member.user;
 					messageFilter = message => message.author.id === user.id;
 				} else {

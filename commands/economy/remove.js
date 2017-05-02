@@ -47,8 +47,7 @@ module.exports = class MoneyRemoveCommand extends Command {
 		return this.client.isOwner(msg.author);
 	}
 
-	run(msg, args) {
-		const { member, donuts } = args;
+	run(msg, { member, donuts }) {
 		Currency._changeBalance(member.id, donuts);
 		return msg.embed({
 			color: colors.green,

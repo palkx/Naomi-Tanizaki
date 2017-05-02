@@ -1,19 +1,18 @@
 const Redis = require('../Redis');
 const UserProfile = require('../../models/UserProfile');
 
-const redis = new Redis();
-
 const UPDATE_DURATION = 30 * 60 * 1000;
 
-redis.db.hgetAsync('money', 'bank').then(async balance => {
-	if (!balance) await redis.db.hsetAsync('money', 'bank', 5000);
+Redis.db.hgetAsync('money', 'bank').then(async balance => {
+	if (!balance) await Redis.db.hsetAsync('money', 'bank', 5000);
 });
 
 class Currency {
 	static _changeBalance(user, amount) {
-		redis.db.hgetAsync('money', user).then(balance => {
+		Redis.db.hgetAsync('money', user).then(balance => {
 			const bal = parseInt(balance) || 0;
-			return redis.db.hsetAsync('money', user, amount + parseInt(bal));
+
+			return Redis.db.hsetAsync('money', user, amount + parseInt(bal));
 		});
 	}
 
@@ -31,13 +30,14 @@ class Currency {
 	}
 
 	static async getBalance(user) {
-		const money = await redis.db.hgetAsync('money', user) || 0;
+		const money = await Redis.db.hgetAsync('money', user) || 0;
+
 		return parseInt(money);
 	}
 
 	static async leaderboard() {
-		const balances = await redis.db.hgetallAsync('money') || {};
-		const bankBalances = await redis.db.hgetallAsync('ledger') || {};
+		const balances = await Redis.db.hgetallAsync('money') || {};
+		const bankBalances = await Redis.db.hgetallAsync('ledger') || {};
 
 		const ids = Object.keys(balances || {});
 
@@ -65,30 +65,31 @@ class Currency {
 		}
 		/* eslint-enable no-await-in-loop */
 
-		await redis.db.setAsync('moneyleaderboardreset', Date.now());
+		await Redis.db.setAsync('moneyleaderboardreset', Date.now());
 		setTimeout(() => Currency.leaderboard(), UPDATE_DURATION);
 	}
 
 	static convert(amount, text = false) {
 		if (isNaN(amount)) amount = parseInt(amount);
 		if (!text) return `${amount.toLocaleString()} ${Math.abs(amount) === 1 ? Currency.singular : Currency.plural}`;
+
 		return `${amount.toLocaleString()} ${Math.abs(amount) === 1 ? Currency.textSingular : Currency.textPlural}`;
 	}
 
 	static get singular() {
-		return '🍩';
+		return '🧀';
 	}
 
 	static get plural() {
-		return '🍩s';
+		return '🧀';
 	}
 
 	static get textSingular() {
-		return 'donut';
+		return 'cheese';
 	}
 
 	static get textPlural() {
-		return 'donuts';
+		return 'cheese';
 	}
 }
 

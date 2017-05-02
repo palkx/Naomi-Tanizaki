@@ -125,7 +125,7 @@ module.exports = class SkipSongCommand extends Command {
 		clearTimeout(vote.timeout);
 		vote.timeout = setTimeout(() => {
 			this.votes.delete(vote.guild);
-			vote.queue.textChannel.sendMessage('', {
+			vote.queue.textChannel.send('', {
 				embed: {
 					color: colors.blue,
 					description: 'The vote to skip the current song has ended. Get outta here, party poopers.'

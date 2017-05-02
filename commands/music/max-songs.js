@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { oneLine } = require('common-tags');
 const colors = require('../../assets/_data/colors.json');
-const config = require('../../assets/_data/settings');
+const { MAX_SONGS } = process.env;
 
 module.exports = class MaxSongsCommand extends Command {
 	constructor(client) {
@@ -13,7 +13,7 @@ module.exports = class MaxSongsCommand extends Command {
 			format: '[amount|"default"]',
 			details: oneLine`
 				This is the maximum number of songs a user may have in the queue.
-				The default is ${config.maxSongs}.
+				The default is ${MAX_SONGS}.
 				Only administrators may change this setting.
 			`,
 			guildOnly: true,
@@ -30,7 +30,7 @@ module.exports = class MaxSongsCommand extends Command {
 
 	run(msg, args) {
 		if (!args) {
-			const maxSongs = this.client.provider.get(msg.guild.id, 'maxSongs', config.maxSongs);
+			const maxSongs = this.client.provider.get(msg.guild.id, 'maxSongs', MAX_SONGS);
 			return msg.embed({
 				color: colors.blue,
 				description: `${msg.author}, the maximum songs a user may have in the queue at one time is ${maxSongs}.`
@@ -41,7 +41,7 @@ module.exports = class MaxSongsCommand extends Command {
 			this.client.provider.remove(msg.guild.id, 'maxSongs');
 			return msg.embed({
 				color: colors.green,
-				description: `${msg.author}, set the maximum songs to the default (currently ${config.maxSongs}).`
+				description: `${msg.author}, set the maximum songs to the default (currently ${MAX_SONGS}).`
 			});
 		}
 
