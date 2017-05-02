@@ -23,7 +23,7 @@ if [ -n "$TRAVIS_TAG" ]; then
 	test
 	docker login --username="$DOCKER_USERNAME" --password="$DOCKER_PASSWORD"
 	docker build -t naomi-tanizaki .
-	docker tag naomi-tanizaki:latest isml1e/naomi-tanizaki:$DOCKER_RELEASE
+	docker tag naomi-tanizaki:latest ism1le/naomi-tanizaki:$DOCKER_RELEASE
 	docker push ism1le/naomi-tanizaki:$DOCKER_RELEASE
 else
 	echo -e "\e[36m\e[1mBuild triggered for branch \"${TRAVIS_BRANCH}\"."
