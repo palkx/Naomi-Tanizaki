@@ -5,8 +5,9 @@
 [![dependencies Status](https://david-dm.org/iSm1le/Naomi-Tanizaki/status.svg?style=flat-square)](https://david-dm.org/iSm1le/Naomi-Tanizaki)
 [![Build Status](https://travis-ci.org/iSm1le/Naomi-Tanizaki.svg?branch=master)](https://travis-ci.org/iSm1le/Naomi-Tanizaki)
 # Naomi-Tanizaki
+## Dont use this instruction. Wait till i update
 
-## Installation guide for Ubuntu 16.04.2 LTS && Debian >7
+## Installation guide for Ubuntu 16.04.2 LTS and Debian >7
 
 #### Install node.js version >7.6.0
 

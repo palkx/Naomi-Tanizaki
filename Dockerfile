@@ -1,4 +1,4 @@
-FROM ubuntu:zesty
+FROM ubuntu:xenial
 
 RUN apt update
 RUN apt upgrade -y
