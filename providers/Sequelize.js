@@ -26,7 +26,7 @@ class SequelizeProvider extends SettingProvider {
         /**
          * Client that the provider is for (set once the client is ready, after using {@link BotClient#setProvider})
          * @name SequelizeProvider#client
-         * @type {CommandoClient}
+         * @type {BotClient}
          * @readonly
          */
 		Object.defineProperty(this, 'client', { value: null, writable: true });

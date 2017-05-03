@@ -26,10 +26,10 @@ module.exports = class E621Command extends Command {
 	}
 
 	hasPermission(msg) {
+		if (msg.channel.type === 'dm') return true;
 		return (this.client.provider.get(msg.author.id, 'userLevel') >= 1
 			&& msg.channel.name.toLowerCase().indexOf('nsfw') > -1)
-				|| msg.member.roles.exists('name', PERMITTED_GROUP)
-				|| msg.channel.type === 'dm';
+			|| msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
 	async run(msg, { tags }) {

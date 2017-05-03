@@ -23,23 +23,23 @@ createdb db_name
 ```
 
 ## Launch bot
-####So, if you dont have pm2 you can just write
+#### So, if you dont have pm2 you can just write
 ```bash
 node bot.js
 ```
-####You can install pm2. It also helps run it in other process than terminal.
+#### You can install pm2. It also helps run it in other process than terminal.
 ```bash
 sudo npm i  -g pm2
 ```
-####Add pm2 to startup. Run the command from output of this command.
+#### Add pm2 to startup. Run the command from output of this command.
 ```bash
 pm2 startup
 ```
-####Run with pm2
+#### Run with pm2
 ```bash
 pm2 start bot.js
 ```
-####And you can autolaunch bot.
+#### And you can autolaunch bot.
 ```bash
 pm2 save
 ```

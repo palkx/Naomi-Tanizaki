@@ -119,7 +119,7 @@ module.exports = class ProfileCommand extends Command {
 			// Global Rank Number
 			ctx.font = '14px Roboto';
 			ctx.fillStyle = '#E5E5E5';
-			ctx.fillText('#1', 86, 270); */
+			ctx.fillText('#1', 86, 270);*/
 
 			// Currency
 			ctx.font = '14px Roboto';
