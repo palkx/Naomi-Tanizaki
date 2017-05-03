@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
 const Tag = require('../../models/Tag');
 const Util = require('../../util/Util');
-const { PERMITTED_GROUP } = process.env;
+const { PERMITTED_GROUP } = require('../../assets/_data/settings.json');
 
 module.exports = class ServerTagAddCommand extends Command {
 	constructor(client) {

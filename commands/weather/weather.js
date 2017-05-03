@@ -7,7 +7,7 @@ const request = require('request-promise');
 const { promisifyAll } = require('tsubaki');
 const fs = promisifyAll(require('fs'));
 
-const { GOOGLE_API, WEATHER_API } = process.env;
+const { GOOGLE_API, WEATHER_API } = require('../../assets/_data/settings.json');
 const { version } = require('../../package');
 
 module.exports = class WeatherCommand extends Command {

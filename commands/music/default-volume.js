@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
-const { DEFAULT_VOLUME } = process.env;
+const { DEFAULT_VOLUME } = require('../../assets/_data/settings.json');
 
 module.exports = class DefaultVolumeCommand extends Command {
 	constructor(client) {

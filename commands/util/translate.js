@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const request = require('request-promise');
 const colors = require('../../assets/_data/colors.json');
-const { SHERLOCK_API } = process.env;
+const { SHERLOCK_API } = require('../../assets/_data/settings.json');
 const { version } = require('../../package');
 
 module.exports = class TranslateCommand extends Command {

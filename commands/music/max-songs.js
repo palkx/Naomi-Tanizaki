@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { oneLine } = require('common-tags');
 const colors = require('../../assets/_data/colors.json');
-const { MAX_SONGS } = process.env;
+const { MAX_SONGS } = require('../../assets/_data/settings.json');
 
 module.exports = class MaxSongsCommand extends Command {
 	constructor(client) {

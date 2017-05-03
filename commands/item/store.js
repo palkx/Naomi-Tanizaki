@@ -1,6 +1,6 @@
 const { Command, util } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
-const { PAGINATED_ITEMS } = process.env;
+const { PAGINATED_ITEMS } = require('../../assets/_data/settings.json');
 const Store = require('../../structures/currency/Store');
 
 module.exports = class StoreInfoCommand extends Command {

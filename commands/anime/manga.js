@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando');
 const moment = require('moment');
 const nani = require('nani');
 
-const { ANILIST_ID, ANILIST_SECRET } = process.env;
+const { ANILIST_ID, ANILIST_SECRET } = require('../../assets/_data/settings.json');
 const colors = require('../../assets/_data/colors.json');
 
 module.exports = class MangaCommand extends Command {

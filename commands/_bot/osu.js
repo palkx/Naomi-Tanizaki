@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { version } = require('../../package.json');
-const { OSU_API_KEY } = process.env;
+const { OSU_API_KEY } = require('../../assets/_data/settings.json');
 const colors = require('../../assets/_data/colors.json');
 const request = require('request-promise');
 

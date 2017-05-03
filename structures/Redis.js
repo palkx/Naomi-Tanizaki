@@ -2,7 +2,7 @@ const { promisifyAll } = require('tsubaki');
 const redisClient = require('redis');
 const winston = require('winston');
 
-const { REDIS } = process.env;
+const { REDIS } = require('../../assets/_data/settings.json');
 
 promisifyAll(redisClient.RedisClient.prototype);
 promisifyAll(redisClient.Multi.prototype);

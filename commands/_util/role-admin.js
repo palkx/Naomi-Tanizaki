@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const { PERMITTED_GROUP } = process.env;
+const { PERMITTED_GROUP } = require('../../assets/_data/settings.json');
 const colors = require('../../assets/_data/colors.json');
 const { oneLine } = require('common-tags');
 

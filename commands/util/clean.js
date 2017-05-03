@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
-const { PERMITTED_GROUP } = process.env;
+const { PERMITTED_GROUP } = require('../../assets/_data/settings.json');
 module.exports = class CleanCommand extends Command {
 	constructor(client) {
 		super(client, {

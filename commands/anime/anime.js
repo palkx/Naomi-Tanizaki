@@ -3,7 +3,7 @@ const { Command } = require('discord.js-commando');
 const moment = require('moment');
 const nani = require('nani');
 
-const { ANILIST_ID, ANILIST_SECRET } = process.env;
+const { ANILIST_ID, ANILIST_SECRET } = require('../../assets/_data/settings.json');
 const colors = require('../../assets/_data/colors.json');
 
 let seasons = { 0: 'Winter', 1: 'Spring', 2: 'Summer', 3: 'Fall', Winter: 0, Spring: 1, Summer: 2, Fall: 3 };

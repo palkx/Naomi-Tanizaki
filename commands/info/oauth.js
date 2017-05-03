@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
 const colors = require('../../assets/_data/colors.json');
-const { OAUTH_LINK } = process.env;
+const { OAUTH_LINK } = require('../../assets/_data/settings.json');
 
 module.exports = class AboutCommand extends Command {
 	constructor(client) {

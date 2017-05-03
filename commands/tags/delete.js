@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
-const { EXAMPLE_CHANNEL, PERMITTED_GROUP } = process.env;
+const { EXAMPLE_CHANNEL, PERMITTED_GROUP } = require('../../assets/_data/settings.json');
 const Tag = require('../../models/Tag');
 
 module.exports = class TagDeleteCommand extends Command {

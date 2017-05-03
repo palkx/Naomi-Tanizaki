@@ -5,7 +5,7 @@ const djscversion = require('discord.js-commando').version;
 const colors = require('../../assets/_data/colors.json');
 const { version } = require('../../package.json');
 
-const { COMMANDO_VERSION } = process.env;
+const { COMMANDO_VERSION } = require('../../assets/_data/settings.json');
 
 module.exports = class AboutCommand extends Command {
 	constructor(client) {

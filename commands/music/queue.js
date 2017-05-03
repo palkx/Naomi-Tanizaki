@@ -1,7 +1,7 @@
 const { Command, util } = require('discord.js-commando');
 const { oneLine, stripIndents } = require('common-tags');
 const colors = require('../../assets/_data/colors.json');
-const { PAGINATED_ITEMS } = process.env;
+const { PAGINATED_ITEMS } = require('../../assets/_data/settings.json');
 const Song = require('../../structures/Song');
 
 module.exports = class ViewQueueCommand extends Command {

@@ -4,7 +4,7 @@ const snekfetch = require('snekfetch');
 const querystring = require('querystring');
 const colors = require('../../assets/_data/colors.json');
 
-const { GOOGLE_CUSTOM_SEARCH, GOOGLE_CUSTOM_SEARCH_CX } = process.env;
+const { GOOGLE_CUSTOM_SEARCH, GOOGLE_CUSTOM_SEARCH_CX } = require('../../assets/_data/settings.json');
 
 module.exports = class SearchCommand extends Command {
 	constructor(client) {

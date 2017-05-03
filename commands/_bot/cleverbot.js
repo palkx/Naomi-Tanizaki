@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const winston = require('winston');
-const { CLEVERBOT_API_KEY, CLEVERBOT_API_USER } = process.env;
+const { CLEVERBOT_API_KEY, CLEVERBOT_API_USER } = require('../../assets/_data/settings.json');
 const colors = require('../../assets/_data/colors.json');
 const Clever = require('cleverbot.io');
 let re = /<@[0-9].*>/g;

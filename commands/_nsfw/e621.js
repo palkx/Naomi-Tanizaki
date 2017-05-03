@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { version } = require('../../package.json');
-const { PERMITTED_GROUP } = process.env;
+const { PERMITTED_GROUP } = require('../../assets/_data/settings.json');
 const colors = require('../../assets/_data/colors.json');
 const request = require('request-promise');
 

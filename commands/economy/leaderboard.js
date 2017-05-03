@@ -4,7 +4,7 @@ const { Command, util } = require('discord.js-commando');
 const moment = require('moment');
 const Sequelize = require('sequelize');
 const Currency = require('../../structures/currency/Currency');
-const { PAGINATED_ITEMS } = process.env;
+const { PAGINATED_ITEMS } = require('../../assets/_data/settings.json');
 const UserProfile = require('../../models/UserProfile');
 
 module.exports = class MoneyLeaderboardCommand extends Command {

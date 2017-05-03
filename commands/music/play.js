@@ -6,7 +6,7 @@ const winston = require('winston');
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const colors = require('../../assets/_data/colors.json');
-const { DEFAULT_VOLUME, GOOGLE_API, MAX_LENGTH, MAX_SONGS, PASSES, SOUNDCLOUD_API } = process.env;
+const { DEFAULT_VOLUME, GOOGLE_API, MAX_LENGTH, MAX_SONGS, PASSES, SOUNDCLOUD_API } = require('../../assets/_data/settings.json'); // eslint-disable-line max-len
 const Song = require('../../structures/Song');
 const { version } = require('../../package');
 
