@@ -153,7 +153,6 @@ module.exports = class ProfileCommand extends Command {
 			ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
 			ctx.drawImage(cond, 24, 21, 110, 110);
 		};
-
 		base.src = await fs.readFileAsync(path.join(__dirname, '..', '..', 'assets', 'profile', 'backgrounds', `${profile ? profile.background : 'default'}.png`)); // eslint-disable-line max-len
 		cond.src = await request({
 			uri: user.user.displayAvatarURL.replace(/(png|jpg|jpeg|gif|webp)\?size=1024/, 'png'),

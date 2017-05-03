@@ -33,19 +33,15 @@ module.exports = class SearchCommand extends Command {
 	async run(msg, args) {
 		const { search } = args;
 		if (!GOOGLE_CUSTOM_SEARCH) {
-			return msg.send({
-				embed: {
-					color: colors.red,
-					description: 'Owner has not set the Google API Key. Go yell at him.'
-				}
+			return msg.embed({
+				color: colors.red,
+				description: 'Owner has not set the Google API Key. Go yell at him.'
 			});
 		}
 		if (!GOOGLE_CUSTOM_SEARCH_CX) {
-			return msg.send({
-				embed: {
-					color: colors.red,
-					description: 'Owner has not set the Google API Key. Go yell at him.'
-				}
+			return msg.embed({
+				color: colors.red,
+				description: 'Owner has not set the Google API Key. Go yell at him.'
 			});
 		}
 
@@ -82,11 +78,9 @@ module.exports = class SearchCommand extends Command {
 				.first()
 				.text();
 			if (!href) {
-				return msg.send({
-					embed: {
-						color: colors.red,
-						description: 'No results'
-					}
+				return msg.embed({
+					color: colors.red,
+					description: 'No results'
 				});
 			}
 			href = querystring.parse(href.replace('/url?', ''));
