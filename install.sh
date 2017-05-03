@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 apt update
 apt upgrade
 apt install -y curl
@@ -21,6 +20,11 @@ apt install -y g++
 apt install -y libtool
 apt install -y autoconf
 apt install -y automake
+apt install -y postgresql
+apt install -y postgresql-contrib
+apt install -y redis-server
+python -mplatform | grep -qi Ubuntu && apt install -y ffmpeg
+python -mplatform | grep -qi debian && apt install -y libav-tools
 update-rc.d postgresql enable
 service postgresql start
 update-rc.d redis-server enable
@@ -36,5 +40,4 @@ yarn install
 yarn run test
 
 echo "Now create a database in postgresql and fill out settings.json in assets/_data/"
-echo "For voice support install ffmpeg(ubuntu) or libdav(debian)"
 sleep 10

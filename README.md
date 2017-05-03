@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.org/iSm1le/Naomi-Tanizaki.svg?branch=master)](https://travis-ci.org/iSm1le/Naomi-Tanizaki)
 # Naomi-Tanizaki
 
-## Installation guide for Ubuntu 16.04 LTS and Debian >7
+## Installation guide for Ubuntu 16.04 LTS and Debian 8
 
 #### Run install.sh
 ```bash
