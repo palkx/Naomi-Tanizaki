@@ -27,10 +27,10 @@ module.exports = class DanbooruCommand extends Command {
 	}
 
 	hasPermission(msg) {
+		if (msg.channel.type === 'dm') return true;
 		return (this.client.provider.get(msg.author.id, 'userLevel') >= 1
 			&& msg.channel.name.toLowerCase().indexOf('nsfw') > -1)
-				|| msg.member.roles.exists('name', PERMITTED_GROUP)
-				|| msg.channel.type === 'dm';
+			|| msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
 	async run(msg, { tags }) {
@@ -52,7 +52,7 @@ module.exports = class DanbooruCommand extends Command {
 			author: {
 				icon_url: msg.author.displayAvatarURL, // eslint-disable-line camelcase
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
-				url: response[_id].large_file_url !== undefined ? `https://danbooru.donmai.us${response[_id].large_file_url}` : `https://danbooru.donmai.us${response[_id].preview_file_url}` // eslint-disable-line
+				url: `https://danbooru.donmai.us/posts/${response[_id].id}`
 			},
 			color: colors.green,
 			fields: [

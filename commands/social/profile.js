@@ -112,14 +112,13 @@ module.exports = class ProfileCommand extends Command {
 			ctx.fillText(totalExp, 86, 254);
 
 			/* // Global Rank
-			ctx.font = '14px Roboto';
-			ctx.fillStyle = '#E5E5E5';
-			ctx.fillText('Rank', 12, 270);
-
-			// Global Rank Number
-			ctx.font = '14px Roboto';
-			ctx.fillStyle = '#E5E5E5';
-			ctx.fillText('#1', 86, 270); */
+			 ctx.font = '14px Roboto';
+			 ctx.fillStyle = '#E5E5E5';
+			 ctx.fillText('Rank', 12, 270);
+			 // Global Rank Number
+			 ctx.font = '14px Roboto';
+			 ctx.fillStyle = '#E5E5E5';
+			 ctx.fillText('#1', 86, 270);*/
 
 			// Currency
 			ctx.font = '14px Roboto';
@@ -131,17 +130,17 @@ module.exports = class ProfileCommand extends Command {
 			ctx.fillStyle = '#E5E5E5';
 			ctx.fillText(networth, 86, 287);
 
-			// Info title
-			ctx.font = '12px Roboto';
-			ctx.fillStyle = '#333333';
-			ctx.shadowColor = 'rgba(0, 0, 0, 0)';
-			ctx.fillText('Info Box', 182, 207);
+			/* // Info title
+			 ctx.font = '12px Roboto';
+			 ctx.fillStyle = '#333333';
+			 ctx.shadowColor = 'rgba(0, 0, 0, 0)';
+			 ctx.fillText('Info Box', 182, 30);*/
 
 			// Info
-			ctx.font = '12px Roboto';
+			ctx.font = '14px Roboto';
 			ctx.fillStyle = '#333333';
 			lines.forEach((line, i) => {
-				ctx.fillText(line, 162, (i + 18.6) * parseInt(12, 0));
+				ctx.fillText(line, 150, (i + 4) * parseInt(14, 0));
 			});
 
 			// Image
@@ -153,10 +152,9 @@ module.exports = class ProfileCommand extends Command {
 			ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
 			ctx.drawImage(cond, 24, 21, 110, 110);
 		};
-
 		base.src = await fs.readFileAsync(path.join(__dirname, '..', '..', 'assets', 'profile', 'backgrounds', `${profile ? profile.background : 'default'}.png`)); // eslint-disable-line max-len
 		cond.src = await request({
-			uri: user.user.displayAvatarURL.replace(/(png|jpg|jpeg|gif|webp)\?size=1024/, 'png'),
+			uri: user.user.displayAvatarURL.replace(/(png|jpg|jpeg|gif|webp).*/, 'png'),
 			encoding: null
 		});
 		generate();

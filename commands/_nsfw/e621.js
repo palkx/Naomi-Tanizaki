@@ -26,10 +26,10 @@ module.exports = class E621Command extends Command {
 	}
 
 	hasPermission(msg) {
+		if (msg.channel.type === 'dm') return true;
 		return (this.client.provider.get(msg.author.id, 'userLevel') >= 1
 			&& msg.channel.name.toLowerCase().indexOf('nsfw') > -1)
-				|| msg.member.roles.exists('name', PERMITTED_GROUP)
-				|| msg.channel.type === 'dm';
+			|| msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
 	async run(msg, { tags }) {
@@ -51,7 +51,7 @@ module.exports = class E621Command extends Command {
 			author: {
 				icon_url: msg.author.displayAvatarURL, // eslint-disable-line camelcase
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
-				url: response[_id].file_url !== undefined ? response[_id].file_url : response[_id].sample_url
+				url: `https://e621.net/post/show/${response[_id].id}`
 			},
 			color: colors.green,
 			fields: [
