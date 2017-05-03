@@ -23,10 +23,10 @@ module.exports = class PersonalMessageCommand extends Command {
 					prompt: 'what would you like to set as your personal message?\n',
 					type: 'string',
 					validate: value => {
-						if (value.length > 130) {
+						if (value.length > 120) {
 							return `
 								your message was ${value.length} characters long.
-								Please limit your personal message to 130 characters.
+								Please limit your personal message to 120 characters.
 							`;
 						}
 						return true;
