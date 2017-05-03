@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const winston = require('winston');
 
-const { DB } = require('../../assets/_data/settings.json');
+const { DB } = require('../assets/_data/settings.json');
 const database = new Sequelize(DB, { logging: false });
 
 class Database {

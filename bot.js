@@ -5,7 +5,7 @@ const winston = require('winston');
 const colors = require('./assets/_data/colors.json');
 const SequelizeProvider = require('./providers/Sequelize');
 const Starboard = require('./structures/stars/Starboard');
-const { OWNERS, TOKEN, COMMAND_PREFIX } = require('assets/_data/settings.json');
+const { OWNERS, TOKEN, COMMAND_PREFIX } = require('./assets/_data/settings.json');
 const { version, build } = require('./package.json');
 const BotClient = require('./structures/BotClient');
 

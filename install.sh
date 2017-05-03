@@ -9,7 +9,9 @@ sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/source
 sudo apt update
 sudo apt install -y build-essential ffmpeg git python nodejs yarn libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev g++ libtool autoconf automake
 sudo update-rc.d postgresql enable
+sudo service postgresql start
 sudo update-rc.d redis-server enable
+sudo service redis-server start
 sudo yarn global add node-gyp pm2
 sudo apt autoremove -y
 
