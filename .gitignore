@@ -35,3 +35,4 @@ deploy/deploy_key.pub
 docker-compose.yml
 settings.json
 docsdata.json
+build.sh
