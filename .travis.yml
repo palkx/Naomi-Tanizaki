@@ -1,7 +1,11 @@
+language: node_js
+node_js:
+  - '7'
 dist: trusty
+cache:
+  directories:
+    - node_modules
 sudo: required
-services:
-  - docker
 addons:
   apt:
     sources:
@@ -18,10 +22,7 @@ env:
   - CXX=g++-4.9
 before_install:
   - sudo apt-get update
-  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
-language: node_js
-node_js:
-  - '7'
+  - npm explore npm -g -- npm install node-gyp@latest
 install: npm install
 script:
   - bash ./deploy/deploy.sh
