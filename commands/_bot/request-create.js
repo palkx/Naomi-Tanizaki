@@ -12,6 +12,10 @@ module.exports = class RequestCommand extends Command {
 			group: 'bot',
 			memberName: 'request-create',
 			description: 'Request a new feature for any of our projects!',
+			throttling: {
+				usages: 1,
+				duration: 300
+			},
 
 			args: [
 				{
