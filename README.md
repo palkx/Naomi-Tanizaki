@@ -5,4 +5,32 @@
 [![dependencies Status](https://david-dm.org/iSm1le/Naomi-Tanizaki/status.svg?style=flat-square)](https://david-dm.org/iSm1le/Naomi-Tanizaki)
 [![Build Status](https://travis-ci.org/iSm1le/Naomi-Tanizaki.svg?branch=master)](https://travis-ci.org/iSm1le/Naomi-Tanizaki)
 # Naomi-Tanizaki
-## Hello.
+I think if you choosing this version you know how to start it. To start this version you need to:
+
+#### Install Docker
+```bash
+sudo apt-get update
+sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+sudo apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
+sudo apt-get update
+sudo apt-get install -y docker-engine
+```
+
+#### Install docker-compose
+```bash
+sudo pip install docker-compose
+```
+
+#### Clone settings
+```bash
+cp docker-compose.yml.example docker-compose.yml
+```
+
+Fill out all the needed ENV variables.
+
+#### Launch docker-compose
+Make sure docker.sh is executeable.
+
+```bash
+docker.sh
+```
