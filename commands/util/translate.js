@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const request = require('request-promise');
 const colors = require('../../assets/_data/colors.json');
-const { sherlockAPIKey } = require('../../assets/_data/settings');
+const { SHERLOCK_API } = require('../../assets/_data/settings.json');
 const { version } = require('../../package');
 
 module.exports = class TranslateCommand extends Command {
@@ -38,13 +38,11 @@ module.exports = class TranslateCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
-		const { query, to, from } = args;
-
-		if (!sherlockAPIKey) {
+	async run(msg, { query, to, from }) {
+		if (!SHERLOCK_API) {
 			return msg.embed({
 				color: colors.blue,
-				description: `${msg.author}, my Commander has not set the Sherlock API Key. Go yell at him.`
+				description: `${msg.author}, my owner has not set the Sherlock API Key. Go yell at him.`
 			});
 		}
 
@@ -54,7 +52,7 @@ module.exports = class TranslateCommand extends Command {
 				method: 'POST',
 				headers: {
 					'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)`,
-					Authorization: sherlockAPIKey
+					Authorization: SHERLOCK_API
 				},
 				uri: `https://api.kurisubrooks.com/api/translate`,
 				body: { to, from, query },

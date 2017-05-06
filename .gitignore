@@ -30,5 +30,9 @@ node_modules
 .idea
 .vscode
 commands/_util/test.js
+deploy/deploy_key
+deploy/deploy_key.pub
+docker-compose.yml
 settings.json
 docsdata.json
+build.sh

@@ -6,7 +6,7 @@ const winston = require('winston');
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const colors = require('../../assets/_data/colors.json');
-const { defaultVolume, googleAPIKey, maxLength, maxSongs, passes, soundcloudID } = require('../../assets/_data/settings'); // eslint-disable-line max-len
+const { DEFAULT_VOLUME, GOOGLE_API, MAX_LENGTH, MAX_SONGS, PASSES, SOUNDCLOUD_API } = require('../../assets/_data/settings.json'); // eslint-disable-line max-len
 const Song = require('../../structures/Song');
 const { version } = require('../../package');
 
@@ -33,7 +33,7 @@ module.exports = class PlaySongCommand extends Command {
 		});
 
 		this.queue = new Map();
-		this.youtube = new YouTube(googleAPIKey);
+		this.youtube = new YouTube(GOOGLE_API);
 	}
 
 	async run(msg, args) {
@@ -75,7 +75,7 @@ module.exports = class PlaySongCommand extends Command {
 		if (url.match(/^https?:\/\/(soundcloud.com|snd.sc)\/(.*)$/)) {
 			try {
 				const video = await request({
-					uri: `http://api.soundcloud.com/resolve.json?url=${url}&client_id=${soundcloudID}`,
+					uri: `http://api.soundcloud.com/resolve.json?url=${url}&client_id=${SOUNDCLOUD_API}`,
 					headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },
 					json: true
 				});
@@ -137,7 +137,7 @@ module.exports = class PlaySongCommand extends Command {
 				voiceChannel: voiceChannel,
 				connection: null,
 				songs: [],
-				volume: this.client.provider.get(msg.guild.id, 'defaultVolume', defaultVolume)
+				volume: this.client.provider.get(msg.guild.id, 'defaultVolume', DEFAULT_VOLUME)
 			};
 			this.queue.set(msg.guild.id, queue);
 
@@ -215,7 +215,7 @@ module.exports = class PlaySongCommand extends Command {
 					voiceChannel: voiceChannel,
 					connection: null,
 					songs: [],
-					volume: this.client.provider.get(msg.guild.id, 'defaultVolume', defaultVolume)
+					volume: this.client.provider.get(msg.guild.id, 'defaultVolume', DEFAULT_VOLUME)
 				};
 				this.queue.set(msg.guild.id, queue);
 
@@ -248,17 +248,19 @@ module.exports = class PlaySongCommand extends Command {
 			}
 		}
 
-		queue.textChannel.sendEmbed({
-			color: colors.green,
-			author: {
-				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
-				icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase
-			},
-			description: stripIndents`
+		queue.textChannel.send({
+			embed: {
+				color: colors.green,
+				author: {
+					name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
+					icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase
+				},
+				description: stripIndents`
 				Playlist: [${playlist.title}](https://www.youtube.com/playlist?list=${playlist.id}) has been added to the queue!
 
 				Check what's been added with: ${this.client.registry.commands.get('queue').usage()}!
 			`
+			}
 		});
 		return null;
 	}
@@ -267,7 +269,7 @@ module.exports = class PlaySongCommand extends Command {
 		const queue = this.queue.get(msg.guild.id);
 
 		if (!this.client.isOwner(msg.author)) {
-			const songMaxLength = this.client.provider.get(msg.guild.id, 'maxLength', maxLength);
+			const songMaxLength = this.client.provider.get(msg.guild.id, 'maxLength', MAX_LENGTH);
 			if (songMaxLength > 0 && video.durationSeconds > songMaxLength * 60) {
 				return msg.embed({
 					color: colors.red,
@@ -283,7 +285,7 @@ module.exports = class PlaySongCommand extends Command {
 					description: `👎 ${escapeMarkdown(video.title)} is already queued.`
 				});
 			}
-			const songMaxSongs = this.client.provider.get(msg.guild.id, 'maxSongs', maxSongs);
+			const songMaxSongs = this.client.provider.get(msg.guild.id, 'maxSongs', MAX_SONGS);
 			if (songMaxSongs > 0
 				&& queue.songs.reduce((prev, song) => prev + song.member.id === msg.author.id, 0)
 				>= songMaxSongs) {
@@ -316,7 +318,7 @@ module.exports = class PlaySongCommand extends Command {
 		}
 
 		if (!song) {
-			queue.textChannel.sendMessage('', {
+			queue.textChannel.send({
 				embed: {
 					color: colors.blue,
 					description: 'We\'ve run out of songs! Better queue up some more tunes.'
@@ -328,18 +330,20 @@ module.exports = class PlaySongCommand extends Command {
 			return;
 		}
 
-		const playing = queue.textChannel.sendEmbed({
-			color: colors.blue,
-			author: {
-				name: song.username,
-				icon_url: song.avatar // eslint-disable-line camelcase
-			},
-			description: `
+		const playing = queue.textChannel.send({
+			embed: {
+				color: colors.blue,
+				author: {
+					name: song.username,
+					icon_url: song.avatar // eslint-disable-line camelcase
+				},
+				description: `
 				${song.url.match(/^https?:\/\/(api.soundcloud.com)\/(.*)$/)
-				? `${song}`
-				: `[${song}](${`${song.url}`})`}
+                ? `${song}`
+                : `[${song}](${`${song.url}`})`}
 			`,
-			image: { url: song.thumbnail }
+				image: { url: song.thumbnail }
+			}
 		});
 		let stream;
 		let streamErrored = false;
@@ -364,7 +368,7 @@ module.exports = class PlaySongCommand extends Command {
 					this.play(guild, queue.songs[0]);
 				});
 		}
-		const dispatcher = queue.connection.playStream(stream, { passes })
+		const dispatcher = queue.connection.playStream(stream, { PASSES })
 			.on('end', () => {
 				if (streamErrored) return;
 				queue.songs.shift();
@@ -372,9 +376,9 @@ module.exports = class PlaySongCommand extends Command {
 			})
 			.on('error', err => {
 				winston.error('Error occurred in stream dispatcher:', err);
-				queue.textChannel.sendMessage('', {
+				queue.textChannel.send('', {
 					embed: {
-						color: colors.blue,
+						color: colors.red,
 						description: `An error occurred while playing the song: \`${err}\``
 					}
 				});

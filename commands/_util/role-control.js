@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const { permittedGroup } = require('../../assets/_data/settings.json');
+const { PERMITTED_GROUP } = require('../../assets/_data/settings.json');
 const { oneLine } = require('common-tags');
 const colors = require('../../assets/_data/colors.json');
 
@@ -47,58 +47,57 @@ module.exports = class RoleControlCommand extends Command {
 
 	hasPermission(msg) {
 		return this.client.provider.get(msg.author.id, 'userLevel') >= 2
-			|| msg.member.roles.exists('name', permittedGroup);
+			|| msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
-	async run(msg, args) { // eslint-disable-line consistent-return, require-await
+	async run(msg, { member, role, job }) { // eslint-disable-line consistent-return, require-await
 			// Checks
 		if (!msg.guild.member(this.client.user).hasPermission('MANAGE_ROLES_OR_PERMISSIONS')) {
 			return 	msg.embed({ color: colors.red, description: `I don't have **MANAGE_ROLES_OR_PERMISSIONS** permission.` });
 		}
 
-		const { member } = args;
-		const job = args.job.toLowerCase() === 'add';
+		const _job = job.toLowerCase() === 'add';
 
 		if (msg.author.id === member.id) {
 			return msg.embed({ color: colors.red, description: 'You cant operate with himself' });
 		}
 
-		let role = msg.guild.roles.find('name', args.role);
-		if (!role) { return msg.embed({ color: colors.red, description: `${args.role} role does not exist on server.` }); }
+		let _role = msg.guild.roles.find('name', role);
+		if (!_role) { return msg.embed({ color: colors.red, description: `${role} role does not exist on server.` }); }
 
 		const roleWhitelist = this.client.provider.get(msg.guild.id, 'roleWhitelist', []);
-		if (!roleWhitelist.includes(role.id)) {
+		if (!roleWhitelist.includes(_role.id)) {
 			return msg.embed(
 				{
 					color: colors.red,
-					description: `${role} is not whitelisted to manage. Add it to whitelist first.`
+					description: `${_role} is not whitelisted to manage. Add it to whitelist first.`
 				});
 		}
 
-		const roleAdminList = this.client.provider.get(msg.guild.id, `${role.id}_admins`, []);
+		const roleAdminList = this.client.provider.get(msg.guild.id, `${_role.id}_admins`, []);
 
 		if (roleAdminList.length !== 0 && !this.client.isOwner(msg.member)) {
 			if (!roleAdminList.includes(msg.member.id)) {
-				return msg.embed({ color: colors.red, description: `${msg.author}, you are not admin of ${role}.` });
+				return msg.embed({ color: colors.red, description: `${msg.author}, you are not admin of ${_role}.` });
 			}
 		}
 
 		const userRoleLvl = msg.member.highestRole.position;
 		const targetUserRoleLvl = member.highestRole.position;
-		const userRoleLvlWant = role.position;
-		if (!job && !member.roles.has(role.id)) {
+		const userRoleLvlWant = _role.position;
+		if (!_job && !member.roles.has(_role.id)) {
 			return msg.embed({
 				color: colors.blue,
-				description: `${member} already don't have ${role} role on this server.`
+				description: `${member} already don't have ${_role} role on this server.`
 			});
-		} else if (job && member.roles.has(role.id)) {
-			return msg.embed({ color: colors.blue, description: `${member} already have ${role} role on this server.` });
+		} else if (_job && member.roles.has(_role.id)) {
+			return msg.embed({ color: colors.blue, description: `${member} already have ${_role} role on this server.` });
 		}
 		if (userRoleLvl <= targetUserRoleLvl) {
 			return msg.embed({
 				color: colors.red,
 				description: oneLine`
-					You cant ${job ? 'add' : 'remove'} ${role} ${job ? 'to' : 'from'} ${member} because your highest
+					You cant ${_job ? 'add' : 'remove'} ${_role} ${_job ? 'to' : 'from'} ${member} because your highest
 					role is ${msg.member.highestRole}
 					and his highest role is biggest or equal to yours(${member.highestRole})`
 			});
@@ -106,25 +105,25 @@ module.exports = class RoleControlCommand extends Command {
 			return msg.embed({
 				color: colors.red,
 				description: oneLine`
-					You cant ${job ? 'add' : 'remove'} ${role} ${job ? 'to' : 'from'} ${member} because your highest
+					You cant ${_job ? 'add' : 'remove'} ${_role} ${_job ? 'to' : 'from'} ${member} because your highest
 					role is ${msg.member.highestRole}`
 			});
 		}
 			// Checks end
-		if (job) {
-			member.addRole(role).then(() => {
+		if (_job) {
+			member.addRole(_role).then(() => {
 				msg.embed(
 					{
 						color: colors.green,
-						description: `${msg.author} successfully added ${role} to ${member}`
+						description: `${msg.author} successfully added ${_role} to ${member}`
 					});
 			});
 		} else {
-			member.removeRole(role).then(() => {
+			member.removeRole(_role).then(() => {
 				msg.embed(
 					{
 						color: colors.green,
-						description: `${msg.author} successfully removed ${role} from ${member}`
+						description: `${msg.author} successfully removed ${_role} from ${member}`
 					});
 			});
 		}

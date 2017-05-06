@@ -51,9 +51,7 @@ module.exports = class MoneyTradeCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
-		const { member, donuts } = args;
-
+	async run(msg, { member, donuts }) {
 		if (member.id === msg.author.id) {
 			return msg.embed({
 				color: colors.red,

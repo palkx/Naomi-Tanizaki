@@ -27,8 +27,8 @@ module.exports = class CatgirlCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
-		const { nsfw } = args;
+	/* Command will be deleted soon */
+	async run(msg, { nsfw }) {
 		const response = await request({
 			uri: `http://catgirls.brussell98.tk/api${nsfw === '-nsfw' ? '/nsfw' : ''}/random`,
 			headers: { 'User-Agent': `Naomi Tanizaki v${version} (https://github.com/iSm1le/Naomi-Tanizaki/)` },

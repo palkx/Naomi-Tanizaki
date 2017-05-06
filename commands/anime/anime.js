@@ -3,7 +3,7 @@ const { Command } = require('discord.js-commando');
 const moment = require('moment');
 const nani = require('nani');
 
-const { aniListID, aniListSecret } = require('../../assets/_data/settings.json');
+const { ANILIST_ID, ANILIST_SECRET } = require('../../assets/_data/settings.json');
 const colors = require('../../assets/_data/colors.json');
 
 let seasons = { 0: 'Winter', 1: 'Spring', 2: 'Summer', 3: 'Fall', Winter: 0, Spring: 1, Summer: 2, Fall: 3 };
@@ -29,11 +29,10 @@ module.exports = class AnimeCommand extends Command {
 				}
 			]
 		});
-		nani.init(aniListID, aniListSecret);
+		nani.init(ANILIST_ID, ANILIST_SECRET);
 	}
 
-	async run(msg, args) {
-		const { anime } = args;
+	async run(msg, { anime }) {
 		let data = await nani.get(`anime/search/${anime}`);
 		if (!Array.isArray(data)) {
 			return msg.embed({ color: colors.red, description: data.error.messages[0] });

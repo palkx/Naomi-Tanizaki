@@ -2,13 +2,11 @@ const UserProfile = require('../../models/UserProfile');
 const ItemGroup = require('./ItemGroup');
 const Redis = require('../Redis');
 
-const redis = new Redis();
-
 setInterval(async () => {
-	const inventories = await redis.db.hgetallAsync('inventory');
+	const inventories = await Redis.db.hgetallAsync('inventory');
 	const ids = Object.keys(inventories || {});
 
-		/* eslint-disable no-await-in-loop */
+	/* eslint-disable no-await-in-loop */
 	for (const id of ids) {
 		const user = UserProfile.findOne({ where: { userID: id } });
 		if (!user) {
@@ -17,10 +15,10 @@ setInterval(async () => {
 				inventory: JSON.stringify(inventories[id])
 			});
 		} else {
-			await user.update({ inventory: JSON.stringify(inventories[id]) });
+			user.update({ inventory: JSON.stringify(inventories[id]) });
 		}
 	}
-		/* eslint-enable no-await-in-loop */
+	/* eslint-enable no-await-in-loop */
 }, 30 * 60 * 1000);
 
 class Inventory {
@@ -36,7 +34,6 @@ class Inventory {
 
 	addItems(itemGroup) {
 		const amountInInventory = this.content[itemGroup.item.name] ? this.content[itemGroup.item.name].amount : 0;
-
 		itemGroup.amount += amountInInventory;
 		this.content[itemGroup.item.name] = itemGroup;
 	}
@@ -58,12 +55,12 @@ class Inventory {
 	}
 
 	save() {
-		return redis.db.hsetAsync('inventory', this.user, JSON.stringify(this.content));
+		return Redis.db.hsetAsync('inventory', this.user, JSON.stringify(this.content));
 	}
 
 	static fetchInventory(user) {
 		return new Promise((resolve, reject) => {
-			redis.db.hgetAsync('inventory', user).then(content => {
+			Redis.db.hgetAsync('inventory', user).then(content => {
 				resolve(new Inventory(user, JSON.parse(content)));
 			}).catch(reject);
 		});

@@ -37,8 +37,7 @@ module.exports = class RemindMeCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
-		const { remind } = args;
+	async run(msg, { remind }) {
 		const time = remind.startDate.getTime() - Date.now();
 		const preRemind = await msg.embed({
 			color: colors.green,

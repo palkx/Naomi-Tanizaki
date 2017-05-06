@@ -57,8 +57,7 @@ module.exports = class FortuneCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
-		const { title, options } = args;
+	async run(msg, { title, options }) {
 		if (options.length < 2) {
 			return msg.embed({ color: colors.blue, description: `${msg.author}, please provide 2 or more options.` });
 		}

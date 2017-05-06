@@ -35,8 +35,7 @@ module.exports = class WidthdrawCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
-		const { donuts } = args;
+	async run(msg, { donuts }) {
 		if (donuts <= 0) {
 			return msg.embed({
 				color: colors.red,

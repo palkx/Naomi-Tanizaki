@@ -2,8 +2,9 @@ const { Command } = require('discord.js-commando');
 const cheerio = require('cheerio');
 const snekfetch = require('snekfetch');
 const querystring = require('querystring');
+const colors = require('../../assets/_data/colors.json');
 
-const { googleCustomSearchAPIKey, googleCustomSearchCX } = require('../../assets/_data/settings.json');
+const { GOOGLE_CUSTOM_SEARCH, GOOGLE_CUSTOM_SEARCH_CX } = require('../../assets/_data/settings.json');
 
 module.exports = class SearchCommand extends Command {
 	constructor(client) {
@@ -31,12 +32,22 @@ module.exports = class SearchCommand extends Command {
 
 	async run(msg, args) {
 		const { search } = args;
-		if (!googleCustomSearchAPIKey) return msg.reply('Owner has not set the Google API Key. Go yell at him.');
-		if (!googleCustomSearchCX) return msg.reply('Owner has not set the Google API Key. Go yell at him.');
+		if (!GOOGLE_CUSTOM_SEARCH) {
+			return msg.embed({
+				color: colors.red,
+				description: 'Owner has not set the Google API Key. Go yell at him.'
+			});
+		}
+		if (!GOOGLE_CUSTOM_SEARCH_CX) {
+			return msg.embed({
+				color: colors.red,
+				description: 'Owner has not set the Google API Key. Go yell at him.'
+			});
+		}
 
 		const queryParams = {
-			key: googleCustomSearchAPIKey,
-			cx: googleCustomSearchCX,
+			key: GOOGLE_CUSTOM_SEARCH,
+			cx: GOOGLE_CUSTOM_SEARCH_CX,
 			safe: 'medium',
 			q: encodeURI(search) // eslint-disable-line id-length
 		};
@@ -46,6 +57,7 @@ module.exports = class SearchCommand extends Command {
 			if (res.body.queries.request[0].totalResults === '0') throw new Error('No results');
 			return msg.embed({
 				title: res.body.items[0].title,
+				color: colors.green,
 				url: res.body.items[0].link,
 				description: res.body.items[0].snippet,
 				thumbnail: { url: res.body.items[0].pagemap.cse_image[0].src }
@@ -65,10 +77,16 @@ module.exports = class SearchCommand extends Command {
 			const description = $('.st')
 				.first()
 				.text();
-			if (!href) return msg.say('No results');
+			if (!href) {
+				return msg.embed({
+					color: colors.red,
+					description: 'No results'
+				});
+			}
 			href = querystring.parse(href.replace('/url?', ''));
 			return msg.embed({
 				title,
+				color: colors.green,
 				url: href.q,
 				description
 			});

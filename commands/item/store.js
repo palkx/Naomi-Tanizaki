@@ -1,6 +1,6 @@
 const { Command, util } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
-const { paginationItems } = require('../../assets/_data/settings');
+const { PAGINATED_ITEMS } = require('../../assets/_data/settings.json');
 const Store = require('../../structures/currency/Store');
 
 module.exports = class StoreInfoCommand extends Command {
@@ -27,10 +27,9 @@ module.exports = class StoreInfoCommand extends Command {
 		});
 	}
 
-	run(msg, args) {
-		const { page } = args;
+	run(msg, { page }) {
 		const storeItems = Store.getItems().array();
-		const paginated = util.paginate(storeItems, page, Math.floor(paginationItems));
+		const paginated = util.paginate(storeItems, page, Math.floor(PAGINATED_ITEMS));
 		if (storeItems.length === 0) {
 			return msg.embed({ color: colors.red, description: `${msg.author}, can't show what you don't have, man.` });
 		}

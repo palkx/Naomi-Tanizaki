@@ -2,6 +2,7 @@ const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
 const Tag = require('../../models/Tag');
 const Util = require('../../util/Util');
+const { PERMITTED_GROUP } = require('../../assets/_data/settings.json');
 
 module.exports = class ServerTagAddCommand extends Command {
 	constructor(client) {
@@ -37,12 +38,12 @@ module.exports = class ServerTagAddCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author) || msg.member.roles.exists('name', 'Server Staff');
+		return this.client.isOwner(msg.author) || msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
 	async run(msg, args) {
-		const name = Util.cleanContent(args.name.toLowerCase(), msg);
-		const content = Util.cleanContent(args.content, msg);
+		const name = Util.cleanContent(msg, args.name.toLowerCase());
+		const content = Util.cleanContent(msg, args.content);
 
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
 		if (tag) {
@@ -58,8 +59,8 @@ module.exports = class ServerTagAddCommand extends Command {
 			guildName: msg.guild.name,
 			channelID: msg.channel.id,
 			channelName: msg.channel.name,
-			name: name,
-			content: content,
+			name,
+			content,
 			type: true
 		});
 		return msg.embed({

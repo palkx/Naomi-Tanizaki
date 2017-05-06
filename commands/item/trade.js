@@ -53,17 +53,17 @@ module.exports = class ItemTradeCommand extends Command {
 	}
 
 	async run(msg, args) {
-		const { user, offerAmount, receiveAmount } = args;
+		const { member, offerAmount, receiveAmount } = args;
 		const offerItem = this.isDonuts(args.offerItem, offerAmount);
 		const receiveItem = this.isDonuts(args.receiveItem, receiveAmount);
 
-		if (user.id === msg.author.id) {
+		if (member.id === msg.author.id) {
 			return msg.embed({
 				color: colors.blue,
 				description: `${msg.author}, giving items to yourself won't change anything.`
 			});
 		}
-		if (user.user.bot) {
+		if (member.user.bot) {
 			return msg.embed({
 				color: colors.grey,
 				description: `${msg.author}, don't give your items to bots: they're bots, man.`
@@ -77,19 +77,19 @@ module.exports = class ItemTradeCommand extends Command {
 		}
 
 		const offerBalance = Currency.getBalance(msg.author.id);
-		const receiveBalance = Currency.getBalance(user.id);
+		const receiveBalance = Currency.getBalance(member.id);
 		const offerInv = Inventory.fetchInventory(msg.author.id);
-		const receiveInv = Inventory.fetchInventory(user.id);
+		const receiveInv = Inventory.fetchInventory(member.id);
 		const offerItemBalance = offerInv.content[offerItem] ? offerInv.content[offerItem].amount : null;
 		const receiveItemBalance = receiveInv.content[receiveItem] ? receiveInv.content[receiveItem].amount : null;
 		const offerValidation = this.validate(offerItem, offerAmount, offerBalance, offerItemBalance, 'you');
-		const receiveValidation = this.validate(receiveItem, receiveAmount, receiveBalance, receiveItemBalance, user.displayName); // eslint-disable-line max-len
+		const receiveValidation = this.validate(receiveItem, receiveAmount, receiveBalance, receiveItemBalance, member.displayName); // eslint-disable-line max-len
 		if (offerValidation) return msg.embed({ color: colors.blue, description: `${msg.author}, ${offerValidation}` });
 		if (receiveValidation) return msg.embed({ color: colors.blue, description: `${msg.author}, ${receiveValidation}` });
 
 		const embed = {
 			color: colors.blue,
-			title: `${msg.member.displayName} < -- > ${user.displayName}`,
+			title: `${msg.member.displayName} < -- > ${member.displayName}`,
 			description: 'Type `accept` within the next 30 seconds to accept this trade.',
 			fields: [
 				{
@@ -99,7 +99,7 @@ module.exports = class ItemTradeCommand extends Command {
 						: Currency.convert(offerAmount)
 				},
 				{
-					name: user.displayName,
+					name: member.displayName,
 					value: receiveItem
 						? `${receiveAmount} ${receiveItem}`
 						: Currency.convert(receiveAmount)
@@ -107,15 +107,15 @@ module.exports = class ItemTradeCommand extends Command {
 			]
 		};
 
-		if (!await this.response(msg, user, embed)) {
+		if (!await this.response(msg, member, embed)) {
 			return msg.embed({
 				color: colors.red,
-				description: `${msg.author}, ${user.displayName} declined or failed to respond.`
+				description: `${msg.author}, ${member.displayName} declined or failed to respond.`
 			});
 		}
-		if (!offerItem) this.sendDonuts(msg.author, user, offerAmount);
+		if (!offerItem) this.sendDonuts(msg.author, member, offerAmount);
 		else this.sendItems(offerInv, receiveInv, offerItem, offerAmount);
-		if (!receiveItem) this.sendDonuts(user, msg.author, receiveAmount);
+		if (!receiveItem) this.sendDonuts(member, msg.author, receiveAmount);
 		else this.sendItems(receiveInv, offerInv, receiveItem, receiveAmount);
 		return msg.embed({ color: colors.green, description: 'Trade successful.' });
 	}

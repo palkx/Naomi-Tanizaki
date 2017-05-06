@@ -23,15 +23,16 @@ module.exports = class UserInfoCommand extends Command {
 				{
 					key: 'member',
 					prompt: 'what user would you like to have information on?\n',
-					type: 'member'
+					type: 'member',
+					default: ''
 				}
 			]
 		});
 	}
 
-	async run(msg, args) {
-		const { member } = args;
-		const user = member.user;
+	async run(msg, { member }) {
+		const _member = member || msg.member;
+		const user = _member.user;
 		const usernames = await username.findAll({ where: { userID: user.id } });
 
 		return msg.embed({
@@ -40,9 +41,9 @@ module.exports = class UserInfoCommand extends Command {
 				{
 					name: '❯ Member Details',
 					value: stripIndents`
-						${member.nickname !== null ? ` • Nickname: ${member.nickname}` : '• No nickname'}
-						• Roles: ${member.roles.map(roles => `\`${roles.name}\``).join(' ')}
-						• Joined at: ${moment.utc(member.joinedAt).format('dddd, MMMM Do YYYY, HH:mm:ss ZZ')}
+						${_member.nickname !== null ? ` • Nickname: ${_member.nickname}` : '• No nickname'}
+						• Roles: ${_member.roles.map(roles => `\`${roles.name}\``).join(' ')}
+						• Joined at: ${moment.utc(_member.joinedAt).format('dddd, MMMM Do YYYY, HH:mm:ss ZZ')}
 					`
 				},
 				{

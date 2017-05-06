@@ -1,7 +1,6 @@
 const Canvas = require('canvas');
 const { Command } = require('discord.js-commando');
 
-const fs = global.Promise.promisifyAll(require('fs'));
 const path = require('path');
 const request = require('request-promise');
 
@@ -9,6 +8,8 @@ const Bank = require('../../structures/currency/Bank');
 const Currency = require('../../structures/currency/Currency');
 const Experience = require('../../structures/currency/Experience');
 const UserProfile = require('../../models/UserProfile');
+const { promisifyAll } = require('tsubaki');
+const fs = promisifyAll(require('fs'));
 
 module.exports = class ProfileCommand extends Command {
 	constructor(client) {
@@ -111,14 +112,13 @@ module.exports = class ProfileCommand extends Command {
 			ctx.fillText(totalExp, 86, 254);
 
 			/* // Global Rank
-			ctx.font = '14px Roboto';
-			ctx.fillStyle = '#E5E5E5';
-			ctx.fillText('Rank', 12, 270);
-
-			// Global Rank Number
-			ctx.font = '14px Roboto';
-			ctx.fillStyle = '#E5E5E5';
-			ctx.fillText('#1', 86, 270); */
+			 ctx.font = '14px Roboto';
+			 ctx.fillStyle = '#E5E5E5';
+			 ctx.fillText('Rank', 12, 270);
+			 // Global Rank Number
+			 ctx.font = '14px Roboto';
+			 ctx.fillStyle = '#E5E5E5';
+			 ctx.fillText('#1', 86, 270); */
 
 			// Currency
 			ctx.font = '14px Roboto';
@@ -152,14 +152,13 @@ module.exports = class ProfileCommand extends Command {
 			ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
 			ctx.drawImage(cond, 24, 21, 110, 110);
 		};
-
 		base.src = await fs.readFileAsync(path.join(__dirname, '..', '..', 'assets', 'profile', 'backgrounds', `${profile ? profile.background : 'default'}.png`)); // eslint-disable-line max-len
 		cond.src = await request({
-			uri: user.user.displayAvatarURL.replace(/(png|jpg|jpeg|gif|webp)\?size=1024/, 'png'),
+			uri: user.user.avatarURL() ? user.user.avatarURL('png') : user.user.displayAvatarURL,
 			encoding: null
 		});
 		generate();
-		return msg.channel.sendFile(canvas.toBuffer(), `profile.png`);
+		return msg.channel.send({ files: [{ attachment: canvas.toBuffer(), name: 'profile.png' }] });
 	}
 
 	_wrapText(ctx, text, maxWidth) {

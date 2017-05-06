@@ -1,7 +1,7 @@
 const { Util } = require('discord.js');
 const { oneLineTrim } = require('common-tags');
 
-const { soundcloudID } = require('../assets/_data/settings');
+const { SOUNDCLOUD_API } = require('../assets/_data/settings.json');
 
 module.exports = class Song {
 	constructor(video, member) {
@@ -14,22 +14,25 @@ module.exports = class Song {
 	}
 
 	get url() {
-		if (!isNaN(Number(this.id))) return `https://api.soundcloud.com/tracks/${this.id}/stream?client_id=${soundcloudID}`;
+		if (!isNaN(Number(this.id))) return `https://api.soundcloud.com/tracks/${this.id}/stream?client_id=${SOUNDCLOUD_API}`; // eslint-disable-line max-len
 		else return `https://www.youtube.com/watch?v=${this.id}`;
 	}
 
 	get thumbnail() {
 		const thumbnail = `https://img.youtube.com/vi/${this.id}/mqdefault.jpg`;
+
 		return thumbnail;
 	}
 
 	get username() {
 		const name = `${this.member.user.tag} (${this.member.user.id})`;
+
 		return Util.escapeMarkdown(name);
 	}
 
 	get avatar() {
 		const avatar = `${this.member.user.displayAvatarURL}`;
+
 		return avatar;
 	}
 
@@ -48,6 +51,7 @@ module.exports = class Song {
 	static timeString(seconds, forceHours = false) {
 		const hours = Math.floor(seconds / 3600);
 		const minutes = Math.floor(seconds % 3600 / 60);
+
 		return oneLineTrim`
 			${forceHours || hours >= 1 ? `${hours}:` : ''}
 			${hours >= 1 ? `0${minutes}`.slice(-2) : minutes}:

@@ -9,7 +9,7 @@ module.exports = class SuggestCommand extends Command {
 			name: 'suggest',
 			group: 'bot',
 			memberName: 'suggest',
-			description: 'Send a **feature request** to the Bot Developer. Request text max length - **1900 characters**',
+			description: 'Send a **feature request** to the Bot Developer. Request text max length - **1000 characters**',
 			guildOnly: true,
 			throttling: {
 				usages: 1,
@@ -20,7 +20,7 @@ module.exports = class SuggestCommand extends Command {
 				{
 					key: 'suggestion',
 					prompt: 'what you want to suggest?\n',
-					max: 1900,
+					max: 1000,
 					wait: 60,
 					type: 'string'
 				}
@@ -28,7 +28,7 @@ module.exports = class SuggestCommand extends Command {
 		});
 	}
 
-	async run(msg, args) { // eslint-disable-line require-await
+	async run(msg, { suggestion }) { // eslint-disable-line require-await
 		try {
 			this.client.channels.find('id', '279240881607933953').send({
 				embed: {
@@ -37,7 +37,7 @@ module.exports = class SuggestCommand extends Command {
 						icon_url: msg.author.avatarURL // eslint-disable-line camelcase
 					},
 					color: colors.blue,
-					description: args.suggestion,
+					description: suggestion,
 					footer: {
 						text: stripIndents`
 						User: ${msg.author.username}#${msg.author.discriminator}
@@ -47,7 +47,7 @@ module.exports = class SuggestCommand extends Command {
 				}
 			}).then(() => {
 				msg.embed({
-					color: colors.blue,
+					color: colors.green,
 					description: stripIndents`
 	                            Your request was successfully sent, **${msg.author.username}#${msg.author.discriminator}**
 	                        `

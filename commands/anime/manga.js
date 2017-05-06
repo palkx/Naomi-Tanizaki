@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando');
 const moment = require('moment');
 const nani = require('nani');
 
-const { aniListID, aniListSecret } = require('../../assets/_data/settings.json');
+const { ANILIST_ID, ANILIST_SECRET } = require('../../assets/_data/settings.json');
 const colors = require('../../assets/_data/colors.json');
 
 module.exports = class MangaCommand extends Command {
@@ -26,11 +26,10 @@ module.exports = class MangaCommand extends Command {
 				}
 			]
 		});
-		nani.init(aniListID, aniListSecret);
+		nani.init(ANILIST_ID, ANILIST_SECRET);
 	}
 
-	async run(msg, args) {
-		const { manga } = args;
+	async run(msg, { manga }) {
 		let data = await nani.get(`manga/search/${manga}`);
 		if (!Array.isArray(data)) {
 			return msg.embed({ color: colors.red, description: data.error.messages[0] });

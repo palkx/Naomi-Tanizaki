@@ -36,9 +36,7 @@ module.exports = class LaunchCybernukeCommand extends Command {
 		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
 	}
 
-	async run(msg, args) {
-		const { age, join } = args;
-
+	async run(msg, { age, join }) {
 		const statusMsg = await msg.embed({
 			color: colors.blue,
 			description: `${msg.author},  Calculating targeting parameters for cybernuke...`
@@ -101,7 +99,7 @@ module.exports = class LaunchCybernukeCommand extends Command {
 
 		for (const member of members.values()) {
 			promises.push(
-				member.sendMessage('', {
+				member.send('', {
 					embed: {
 						color: colors.red,
 						description: stripIndents`

@@ -32,8 +32,7 @@ module.exports = class ChooseCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
-		const choices = args.choices;
+	async run(msg, { choices }) {
 		if (choices.length < 2) {
 			return msg.embed({
 				color: colors.red,

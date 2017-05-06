@@ -25,8 +25,7 @@ module.exports = class EchoCommand extends Command {
 		});
 	}
 
-	async run(msg, args) { // eslint-disable-line require-await
-		const { message } = args;
+	async run(msg, { message }) { // eslint-disable-line require-await
 		msg.delete();
 
 		return msg.embed({ color: colors.dark_grey, description: message });

@@ -48,7 +48,7 @@ module.exports = class SaveQueueCommand extends Command {
 			`,
 			image: { url: song.thumbnail }
 		};
-		return msg.author.sendMessage('', { embed });
+		return msg.author.send('', { embed });
 	}
 
 	get queue() {

@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const colors = require('../../assets/_data/colors.json');
-const { permittedGroup } = require('../../assets/_data/settings.json');
+const { PERMITTED_GROUP } = require('../../assets/_data/settings.json');
 const Starboard = require('../../structures/stars/Starboard');
 
 module.exports = class DeleteStarCommand extends Command {
@@ -24,11 +24,10 @@ module.exports = class DeleteStarCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return msg.member.roles.exists('name', permittedGroup);
+		return msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
-	async run(msg, args) {
-		const { message } = args;
+	async run(msg, { message }) {
 		const starboard = msg.guild.channels.find('name', 'starboard');
 		if (!starboard) {
 			return msg.embed({

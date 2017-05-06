@@ -28,8 +28,7 @@ module.exports = class BlacklistUserCommand extends Command {
 		return this.client.isOwner(msg.author);
 	}
 
-	run(msg, args) {
-		const { user } = args;
+	run(msg, { user }) {
 		if (this.client.isOwner(user.id)) {
 			return msg.embed({
 				color: colors.blue,
