@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
 const djsversion = require('discord.js').version;
 const djscversion = require('discord.js-commando').version;
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { version } = require('../../package.json');
 
 const { COMMANDO_VERSION } = process.env;
@@ -13,7 +13,7 @@ module.exports = class AboutCommand extends Command {
 			name: 'about',
 			group: 'info',
 			memberName: 'about',
-			description: 'Displays info about the bot.',
+			description: '`AL: zero` Displays info about the bot.',
 			throttling: {
 				usages: 1,
 				duration: 60
@@ -21,9 +21,13 @@ module.exports = class AboutCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.zero;
+	}
+
 	async run(msg) { // eslint-disable-line require-await
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			description: stripIndents`
 				**Naomi Tanizaki**
 				**❯ CREATOR:** <@${this.client.options.owner}> (ID: ${this.client.options.owner})

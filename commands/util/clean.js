@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { PERMITTED_GROUP } = process.env;
 module.exports = class CleanCommand extends Command {
 	constructor(client) {
@@ -8,7 +8,7 @@ module.exports = class CleanCommand extends Command {
 			aliases: ['purge', 'prune', 'clear'],
 			group: 'util',
 			memberName: 'clean',
-			description: 'Deletes messages.',
+			description: '`AL: owner, high, perm_group` Deletes messages.',
 			details: `Deletes messages. Here is a list of filters:
 				__invites:__ Messages containing an invite
 				__user @user:__ Messages sent by @user
@@ -47,7 +47,9 @@ module.exports = class CleanCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author) || msg.member.roles.exists('name', PERMITTED_GROUP);
+		return this.client.isOwner(msg.author)
+			|| msg.member.roles.exists('name', PERMITTED_GROUP)
+			|| this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.high;
 	}
 
 	async run(msg, { filter, limit, member }) {
@@ -63,7 +65,7 @@ module.exports = class CleanCommand extends Command {
 					messageFilter = message => message.author.id === user.id;
 				} else {
 					return msg.embed({
-						color: colors.red,
+						color: _sdata.colors.red,
 						description: `${msg.author}, you have to mention someone.`
 					});
 				}
@@ -77,7 +79,7 @@ module.exports = class CleanCommand extends Command {
 				messageFilter = message => message.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1; // eslint-disable-line
 			} else {
 				return msg.embed({
-					color: colors.red,
+					color: _sdata.colors.red,
 					description: `${msg.author}, this is not a valid filter. \`help clean\` for all available filters.`
 				});
 			}

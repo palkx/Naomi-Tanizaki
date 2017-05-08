@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { version } = require('../../package.json');
 const { OSU_API_KEY } = process.env;
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const request = require('request-promise');
 
 module.exports = class OsuCommand extends Command {
@@ -11,7 +11,7 @@ module.exports = class OsuCommand extends Command {
 			aliases: ['osuuser', 'osudata', 'osuinfo'],
 			group: 'bot',
 			memberName: 'osu',
-			description: 'Searches Osu user data.',
+			description: '`AL: low` Searches Osu user data.',
 			throttling: {
 				usages: 3,
 				duration: 30
@@ -26,10 +26,14 @@ module.exports = class OsuCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { username }) {
 		if (!OSU_API_KEY) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `I don't have osu key`
 			});
 		}
@@ -40,7 +44,7 @@ module.exports = class OsuCommand extends Command {
 		});
 		if (response.length === 0) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: 'your request returned no results.'
 			});
 		}
@@ -60,7 +64,7 @@ module.exports = class OsuCommand extends Command {
 				name: 'osu!',
 				url: `https://osu.ppy.sh/u/${response[0].user_id}`
 			},
-			color: colors.green,
+			color: _sdata.colors.green,
 			fields: [
 				{
 					name: '**Username**',

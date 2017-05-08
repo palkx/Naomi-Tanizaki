@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents, oneLine } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Blackjack = require('../../structures/games/Blackjack');
 const Currency = require('../../structures/currency/Currency');
 
@@ -10,7 +10,7 @@ module.exports = class BlackjackCommand extends Command {
 			name: 'blackjack',
 			group: 'games',
 			memberName: 'blackjack',
-			description: `Play a game of blackjack for ${Currency.textPlural}!`,
+			description: `\`AL: low\` Play a game of blackjack for ${Currency.textPlural}!`,
 			details: `Play a game of blackjack for ${Currency.textPlural}.`,
 			guildOnly: true,
 			throttling: {
@@ -48,15 +48,22 @@ module.exports = class BlackjackCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	run(msg, { bet }) {
 		if (Blackjack.gameExists(msg.author.id)) {
-			return msg.embed({ color: colors.red, description: `you can't start 2 games of blackjack at the same time.` });
+			return msg.embed({
+				color: _sdata.colors.red,
+				description: `you can't start 2 games of blackjack at the same time.`
+			});
 		}
 
 		const blackjack = new Blackjack(msg);
 
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			description: oneLine`
 			New game of blackjack started with ${msg.member.displayName} with a bet of ${Currency.convert(bet)}!`
 		}).then(async () => {

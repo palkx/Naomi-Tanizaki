@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Request = require('../../models/Request');
 const { REQUEST_CHANNEL } = process.env;
 
@@ -10,7 +10,8 @@ module.exports = class RejectRequestCommand extends Command {
 			aliases: ['req-r'],
 			group: 'bot',
 			memberName: 'request-reject',
-			description: 'Reject a requested feature.',
+			description: '`AL: full` Reject a requested feature.',
+			guarded: true,
 
 			args: [
 				{
@@ -28,20 +29,21 @@ module.exports = class RejectRequestCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
+		return this.client.isOwner(msg.author)
+			|| this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.full;
 	}
 
 	async run(msg, { requestID, reason }) {
 		if (msg.channel.id !== REQUEST_CHANNEL) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, this command can only be used in the requests channel.`
 			});
 		}
 
 		const request = await Request.findById(requestID);
 		if (!request) {
-			return msg.embed({ color: colors.red, description: `${msg.author}, you provided an invalid request id.` });
+			return msg.embed({ color: _sdata.colors.red, description: `${msg.author}, you provided an invalid request id.` });
 		}
 		await request.save({
 			processed: true,
@@ -52,7 +54,7 @@ module.exports = class RejectRequestCommand extends Command {
 
 		await this.client.users.get(request.requester).send({
 			embed: {
-				color: colors.red,
+				color: _sdata.colors.red,
 				author: {
 					name: 'Request rejected',
 					icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase
@@ -68,7 +70,7 @@ module.exports = class RejectRequestCommand extends Command {
 		});
 
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, successfully rejected request #${request.id}!`
 		})
 			.then(async () => {

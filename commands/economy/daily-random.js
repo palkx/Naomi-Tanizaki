@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const moment = require('moment');
 const { oneLine, stripIndents } = require('common-tags');
 const Currency = require('../../structures/currency/Currency');
@@ -12,13 +12,17 @@ module.exports = class DailyRandomCommand extends Command {
 			aliases: ['daily-ran', 'daily-rng'],
 			group: 'economy',
 			memberName: 'daily-random',
-			description: `Gift your daily ${Currency.textPlural} to a random online user.`,
+			description: `\`AL: low\` Gift your daily ${Currency.textPlural} to a random online user.`,
 			guildOnly: true,
 			throttling: {
 				usages: 2,
 				duration: 3
 			}
 		});
+	}
+
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
 	}
 
 	async run(msg) {
@@ -29,7 +33,7 @@ module.exports = class DailyRandomCommand extends Command {
 		if (received) {
 			const nextDaily = await Daily.nextDaily(msg.author.id);
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: stripIndents`
 				${msg.author}, you have already gifted your daily ${Currency.textPlural}.
 				You can gift away your next daily in ${moment.duration(nextDaily).format('hh [hours] mm [minutes]')}`
@@ -38,7 +42,7 @@ module.exports = class DailyRandomCommand extends Command {
 
 		Daily.receive(msg.author.id, member.id);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: oneLine`
 			${msg.author}, ${member.displayName}#${member.user.discriminator} (${member.id}) has 
 			successfully received your daily ${Currency.convert(Daily.dailyDonationPayout)}.`

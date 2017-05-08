@@ -1,7 +1,8 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
+const { PERMITTED_GROUP } = process.env;
 const winston = require('winston');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 module.exports = class LaunchCybernukeCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -9,7 +10,7 @@ module.exports = class LaunchCybernukeCommand extends Command {
 			aliases: ['cybernuke'],
 			group: 'util',
 			memberName: 'cybernuke',
-			description: 'Bans all members that have joined recently, with new accounts.',
+			description: '`AL: owner, full, perm_group` Bans all members that have joined recently, with new accounts.',
 			guildOnly: true,
 
 			args: [
@@ -33,12 +34,14 @@ module.exports = class LaunchCybernukeCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
+		return this.client.isOwner(msg.author)
+			|| msg.member.roles.exists('name', PERMITTED_GROUP)
+			|| this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.full;
 	}
 
 	async run(msg, { age, join }) {
 		const statusMsg = await msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			description: `${msg.author},  Calculating targeting parameters for cybernuke...`
 		});
 		await msg.guild.fetchMembers();
@@ -52,7 +55,7 @@ module.exports = class LaunchCybernukeCommand extends Command {
 
 		await statusMsg.edit('', {
 			embed: {
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: `Cybernuke will strike ${members.size} members; proceed?`
 			}
 		});
@@ -67,24 +70,24 @@ module.exports = class LaunchCybernukeCommand extends Command {
 			});
 
 			if (!responses || responses.size !== 1) {
-				await msg.embed({ color: colors.blue, description: `${msg.author},  Cybernuke cancelled.` });
+				await msg.embed({ color: _sdata.colors.blue, description: `${msg.author},  Cybernuke cancelled.` });
 				return null;
 			}
 			response = responses.first();
 
 			if (booleanType.validate(response.content)) {
 				if (!booleanType.parse(response.content)) {
-					await response.embed({ color: colors.blue, description: `${msg.author},  Cybernuke cancelled.` });
+					await response.embed({ color: _sdata.colors.blue, description: `${msg.author},  Cybernuke cancelled.` });
 					return null;
 				}
 
 				statusMsg2 = await response.embed({
-					color: colors.green,
+					color: _sdata.colors.green,
 					description: `${msg.author},  Launching cybernuke...`
 				});
 			} else {
 				await response.embed({
-					color: colors.blue,
+					color: _sdata.colors.blue,
 					description: stripIndents`
 					Unknown response. Please confirm the cybernuke launch with a simple "yes" or "no".
 					Awaiting your input, commander...`
@@ -101,7 +104,7 @@ module.exports = class LaunchCybernukeCommand extends Command {
 			promises.push(
 				member.send('', {
 					embed: {
-						color: colors.red,
+						color: _sdata.colors.red,
 						description: stripIndents`
 					Sorry, but you've been automatically targetted by the cybernuke in the "${msg.guild.name}" server.
 					This means that you have been banned, likely in the case of a server raid.
@@ -124,7 +127,7 @@ module.exports = class LaunchCybernukeCommand extends Command {
 						if (promises.length % 5 === 0) {
 							statusMsg2.edit('', {
 								embed: {
-									color: colors.green,
+									color: _sdata.colors.green,
 									description: `Launching cybernuke (${Math.round(promises.length / members.size * 100)}%)...`
 								}
 							});
@@ -136,12 +139,12 @@ module.exports = class LaunchCybernukeCommand extends Command {
 		await Promise.all(promises);
 		await statusMsg2.edit('', {
 			embed: {
-				color: colors.green,
+				color: _sdata.colors.green,
 				description: 'Cybernuke impact confirmed. Casualty report incoming...'
 			}
 		});
 		await response.embed({
-			color: colors.blue, description: stripIndents`
+			color: _sdata.colors.blue, description: stripIndents`
 			__**Fatalities**__
 			${fatalities.length > 0 ? stripIndents`
 				${fatalities.length} confirmed KIA.

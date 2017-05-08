@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const { PERMITTED_GROUP } = process.env;
+const _sdata = require('../../assets/_data/static_data.json');
 const Currency = require('../../structures/currency/Currency');
 
 module.exports = class UnlockAllCommand extends Command {
@@ -9,7 +10,7 @@ module.exports = class UnlockAllCommand extends Command {
 			name: 'unlock-all',
 			group: 'economy',
 			memberName: 'unlock-all',
-			description: `Enable xp and ${Currency.textSingular} earning on all channels in the server.`,
+			description: `\`AL: owner, perm_group\` Enable xp and ${Currency.textSingular} earning on all channels.`,
 			guildOnly: true,
 			throttling: {
 				usages: 2,
@@ -19,13 +20,14 @@ module.exports = class UnlockAllCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('MANAGE_GUILD');
+		return this.client.isOwner(msg.author)
+			|| msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
 	run(msg) {
 		this.client.provider.set(msg.guild.id, 'locks', []);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: stripIndents`
 			${msg.author}, the lock on all channels has been lifted.
 			You can now earn xp and ${Currency.textPlural} on the entire server again.`

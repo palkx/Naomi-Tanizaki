@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Currency = require('../../structures/currency/Currency');
 const Inventory = require('../../structures/currency/Inventory');
 const ItemGroup = require('../../structures/currency/ItemGroup');
@@ -32,7 +32,7 @@ module.exports = class SlotMachineCommand extends Command {
 			aliases: ['slot', 'slots'],
 			group: 'games',
 			memberName: 'slot-machine',
-			description: 'Let\'s you play a round with the slot machine',
+			description: '`AL: low` Let\'s you play a round with the slot machine',
 			details: stripIndents`
 				Bet some amount of coins, and enjoy a round with the slot machine.
 			`,
@@ -74,6 +74,10 @@ module.exports = class SlotMachineCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { coins }) {
 		const inventory = await Inventory.fetchInventory(msg.author.id);
 		const item = Store.getItem('coin');
@@ -94,7 +98,7 @@ module.exports = class SlotMachineCommand extends Command {
 
 		if (winnings === 0) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: stripIndents`
 					**${msg.member.displayName}, you rolled:**
 
@@ -108,7 +112,7 @@ module.exports = class SlotMachineCommand extends Command {
 
 		Currency.addBalance(msg.author.id, coins * winnings);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: stripIndents`
 				**${msg.member.displayName}, you rolled:**
 

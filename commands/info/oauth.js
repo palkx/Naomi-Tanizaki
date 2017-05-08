@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { OAUTH_LINK } = process.env;
 
 module.exports = class AboutCommand extends Command {
@@ -10,7 +10,7 @@ module.exports = class AboutCommand extends Command {
 			aliases: ['invite'],
 			group: 'info',
 			memberName: 'oauth',
-			description: 'The link to add Hamakaze to a server.',
+			description: '`AL: low` The link to add Naomi to a server.',
 			throttling: {
 				usages: 2,
 				duration: 3
@@ -18,15 +18,19 @@ module.exports = class AboutCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg) { // eslint-disable-line require-await
 		if (!OAUTH_LINK) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `I don't have an invite link for you at the moment. Sorry, ${msg.author}.`
 			});
 		}
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			description: stripIndents`Use this to add me to a server, ${msg.author}:
 			${OAUTH_LINK}
 			Make sure you are logged in!`

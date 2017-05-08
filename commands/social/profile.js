@@ -1,6 +1,6 @@
 const Canvas = require('canvas');
 const { Command } = require('discord.js-commando');
-
+const _sdata = require('../../assets/_data/static_data.json');
 const path = require('path');
 const request = require('request-promise');
 
@@ -18,7 +18,7 @@ module.exports = class ProfileCommand extends Command {
 			aliases: ['p'],
 			group: 'social',
 			memberName: 'profile',
-			description: 'Display your profile.',
+			description: '`AL: low` Display your profile.',
 			guildOnly: true,
 			throttling: {
 				usages: 1,
@@ -34,6 +34,10 @@ module.exports = class ProfileCommand extends Command {
 				}
 			]
 		});
+	}
+
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
 	}
 
 	async run(msg, args) {

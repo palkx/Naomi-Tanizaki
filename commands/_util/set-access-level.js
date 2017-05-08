@@ -1,15 +1,16 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 
 module.exports = class SetUserLevelCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'set-user-level',
-			aliases: ['sul'],
+			name: 'set-access-level',
+			aliases: ['sal'],
 			group: 'util',
-			memberName: 'set-user-level',
-			description: 'Set command access level',
+			memberName: 'set-access-level',
+			description: '`AL: owner` Set command access level',
 			guildOnly: true,
+			guarded: true,
 			throttling: {
 				usages: 2,
 				duration: 5
@@ -24,19 +25,19 @@ module.exports = class SetUserLevelCommand extends Command {
 						if (['get', 'set'].includes(job)) {
 							return true;
 						}
-						return `Job name must be **add** or **remove**`;
+						return `Job name must be **get** or **set**`;
 					}
 				},
 
 				{
 					key: 'user',
-					prompt: 'what user level should get changed?\n',
+					prompt: 'change access level to?\n',
 					type: 'user'
 				},
 
 				{
 					key: 'level',
-					prompt: 'what level you want to set?(from 0 to 100)',
+					prompt: 'what AL you want to set?(from 0 to 100)',
 					type: 'integer',
 					default: 0,
 					min: 0,
@@ -57,15 +58,15 @@ module.exports = class SetUserLevelCommand extends Command {
 		if (_job) {
 			if (userLevel === undefined) {
 				return this.client.provider.set(user.id, 'userLevel', 0).then(() => {
-					msg.embed({ color: colors.blue, description: `${user} doesn't have ul. Setting ul to 0` });
+					msg.embed({ color: _sdata.colors.blue, description: `${user} doesn't have ul. Setting ul to 0` });
 				});
 			}
-			return msg.embed({ color: colors.green, description: `${user} ul - ${userLevel}` });
+			return msg.embed({ color: _sdata.colors.green, description: `${user} ul - ${userLevel}` });
 		} else {
 			this.client.provider.set(user.id, 'userLevel', level);
 			return msg.embed(
 				{
-					color: colors.green,
+					color: _sdata.colors.green,
 					description: `You have been set ${level} ul to ${user.username}#${user.discriminator}`
 				});
 		}

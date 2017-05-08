@@ -3,7 +3,7 @@ const moment = require('moment');
 const nani = require('nani');
 
 const { ANILIST_ID, ANILIST_SECRET } = process.env;
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 
 module.exports = class MangaCommand extends Command {
 	constructor(client) {
@@ -12,7 +12,7 @@ module.exports = class MangaCommand extends Command {
 			aliases: ['mango'],
 			group: 'anime',
 			memberName: 'manga',
-			description: 'Get info on an manga.',
+			description: '`AL: low` Get info on an manga.',
 			throttling: {
 				usages: 2,
 				duration: 3
@@ -29,10 +29,14 @@ module.exports = class MangaCommand extends Command {
 		nani.init(ANILIST_ID, ANILIST_SECRET);
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { manga }) {
 		let data = await nani.get(`manga/search/${manga}`);
 		if (!Array.isArray(data)) {
-			return msg.embed({ color: colors.red, description: data.error.messages[0] });
+			return msg.embed({ color: _sdata.colors.red, description: data.error.messages[0] });
 		}
 		data = data.length === 1
 			? data[0]
@@ -47,7 +51,7 @@ module.exports = class MangaCommand extends Command {
 			: 'No description';
 		const score = data.average_score / 10;
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			author: {
 				name: title,
 				url: `https://www.anilist.co/manga/${data.id}`

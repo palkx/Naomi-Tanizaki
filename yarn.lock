@@ -159,7 +159,7 @@ boom@2.x.x:
   dependencies:
     hoek "2.x.x"
 
-brace-expansion@^1.0.0:
+brace-expansion@^1.1.7:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.7.tgz#3effc3c50e000531fb720eaff80f0ae8ef23cf59"
   dependencies:
@@ -193,8 +193,8 @@ callsites@^0.2.0:
   resolved "https://registry.yarnpkg.com/callsites/-/callsites-0.2.0.tgz#afab96262910a7f33c19a5775825c69f34e350ca"
 
 canvas@automattic/node-canvas:
-  version "2.0.0-alpha.1"
-  resolved "https://codeload.github.com/automattic/node-canvas/tar.gz/6b72722ca65013e4303769e5551aa877fd5d92b4"
+  version "2.0.0-alpha.2"
+  resolved "https://codeload.github.com/automattic/node-canvas/tar.gz/82aedcdfad0a83a4cf681a7b34dc258138578a0b"
   dependencies:
     nan "^2.4.0"
     parse-css-font "^2.0.2"
@@ -431,7 +431,7 @@ depd@^1.1.0:
 
 discord.js-commando@gawdl3y/discord.js-commando:
   version "0.9.0"
-  resolved "https://codeload.github.com/gawdl3y/discord.js-commando/tar.gz/12f7ee2c240d867ef17ef17c527ded38972b24fb"
+  resolved "https://codeload.github.com/gawdl3y/discord.js-commando/tar.gz/fe878072989d4ce2d286d62bf324ea38357aad2a"
   dependencies:
     common-tags "^1.4.0"
     escape-string-regexp "^1.0.0"
@@ -439,7 +439,7 @@ discord.js-commando@gawdl3y/discord.js-commando:
 
 discord.js@hydrabolt/discord.js:
   version "12.0.0"
-  resolved "https://codeload.github.com/hydrabolt/discord.js/tar.gz/2a23941020bd60876a2d4efc0f1004a9a373a445"
+  resolved "https://codeload.github.com/hydrabolt/discord.js/tar.gz/6566c0d3c5ecf7a0eab1739b2b98d03fa1ac31b7"
   dependencies:
     long "^3.2.0"
     prism-media "^0.0.1"
@@ -470,8 +470,8 @@ domelementtype@~1.1.1:
   resolved "https://registry.yarnpkg.com/domelementtype/-/domelementtype-1.1.3.tgz#bd28773e2642881aec51544924299c5cd822185b"
 
 domhandler@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/domhandler/-/domhandler-2.3.0.tgz#2de59a0822d5027fabff6f032c2b25a2a8abe738"
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/domhandler/-/domhandler-2.4.1.tgz#892e47000a99be55bbf3774ffea0561d8879c259"
   dependencies:
     domelementtype "1"
 
@@ -514,7 +514,7 @@ entities@^1.1.1, entities@~1.1.1:
 
 erlpack@hammerandchisel/erlpack:
   version "0.1.0"
-  resolved "https://codeload.github.com/hammerandchisel/erlpack/tar.gz/fcb5637f87d8631292f639bda98232ca4266b98e"
+  resolved "https://codeload.github.com/hammerandchisel/erlpack/tar.gz/ad84c69355f03770a84d4bd8a20b981dd168fcf4"
   dependencies:
     bindings "^1.2.1"
     nan "^2.1.0"
@@ -629,8 +629,8 @@ eslint@^3.19.0:
     user-home "^2.0.0"
 
 espree@^3.4.0:
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/espree/-/espree-3.4.2.tgz#38dbdedbedc95b8961a1fbf04734a8f6a9c8c592"
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/espree/-/espree-3.4.3.tgz#2910b5ccd49ce893c2ffffaab4fd8b3a31b82374"
   dependencies:
     acorn "^5.0.1"
     acorn-jsx "^3.0.0"
@@ -734,7 +734,7 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
 
-gauge@~2.7.1:
+gauge@~2.7.3:
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/gauge/-/gauge-2.7.4.tgz#2c03405c7538c39d7eb37b317022e325fb018bf7"
   dependencies:
@@ -1160,10 +1160,10 @@ miniget@^1.0.0:
   resolved "https://registry.yarnpkg.com/miniget/-/miniget-1.0.0.tgz#019743264b33786c459f817df81482663df4941a"
 
 minimatch@^3.0.2:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.3.tgz#2a4e4090b96b2db06a9d7df01055a62a77c9b774"
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
   dependencies:
-    brace-expansion "^1.0.0"
+    brace-expansion "^1.1.7"
 
 minimist@0.0.8:
   version "0.0.8"
@@ -1240,12 +1240,12 @@ noop-logger@^0.1.1:
   resolved "https://registry.yarnpkg.com/noop-logger/-/noop-logger-0.1.1.tgz#94a2b1633c4f1317553007d8966fd0e841b6a4c2"
 
 npmlog@^4.0.1:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/npmlog/-/npmlog-4.0.2.tgz#d03950e0e78ce1527ba26d2a7592e9348ac3e75f"
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/npmlog/-/npmlog-4.1.0.tgz#dc59bee85f64f00ed424efb2af0783df25d1c0b5"
   dependencies:
     are-we-there-yet "~1.1.2"
     console-control-strings "~1.1.0"
-    gauge "~2.7.1"
+    gauge "~2.7.3"
     set-blocking "~2.0.0"
 
 nth-check@~1.0.1:
@@ -1466,7 +1466,7 @@ qs@~6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.0.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
 
-raven@^1.2.0:
+raven@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/raven/-/raven-1.2.1.tgz#949c134db028a190b7bbf8f790aae541b7c020bd"
   dependencies:
@@ -1552,13 +1552,14 @@ request-promise-core@1.1.1:
   dependencies:
     lodash "^4.13.1"
 
-request-promise@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/request-promise/-/request-promise-4.2.0.tgz#684f77748d6b4617bee6a4ef4469906e6d074720"
+request-promise@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/request-promise/-/request-promise-4.2.1.tgz#7eec56c89317a822cbfea99b039ce543c2e15f67"
   dependencies:
     bluebird "^3.5.0"
     request-promise-core "1.1.1"
-    stealthy-require "^1.0.0"
+    stealthy-require "^1.1.0"
+    tough-cookie ">=2.3.0"
 
 request@^2.53.0, request@^2.74.0, request@^2.81.0:
   version "2.81.0"
@@ -1770,7 +1771,7 @@ stack-trace@0.0.9, stack-trace@0.0.x:
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/stack-trace/-/stack-trace-0.0.9.tgz#a8f6eaeca90674c333e7c43953f275b451510695"
 
-stealthy-require@^1.0.0:
+stealthy-require@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.0.tgz#ca61cf38766158ea819a0a1b0070b35de957f9b0"
 
@@ -1874,7 +1875,7 @@ toposort-class@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/toposort-class/-/toposort-class-1.0.1.tgz#7ffd1f78c8be28c3ba45cd4e1a3f5ee193bd9988"
 
-tough-cookie@~2.3.0:
+tough-cookie@>=2.3.0, tough-cookie@~2.3.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-2.3.2.tgz#f081f76e4c85720e6c37a5faced737150d84072a"
   dependencies:
@@ -1945,9 +1946,13 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
-uuid@3.0.0, uuid@^3.0.0:
+uuid@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.0.tgz#6728fc0459c450d796a99c31837569bdf672d728"
+
+uuid@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 
 validator@^5.2.0:
   version "5.7.0"
@@ -2023,9 +2028,9 @@ yallist@^2.0.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-2.1.2.tgz#1c11f9218f076089a47dd512f93c6699a6a81d52"
 
-ytdl-core@^0.13.1:
-  version "0.13.2"
-  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-0.13.2.tgz#5f9a41a6056b544fd9f74b329ed4f6ddfdd882c5"
+ytdl-core@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-0.14.0.tgz#f10e7e0679755b41faf4df9c4c925786bcab9825"
   dependencies:
     html-entities "^1.1.3"
     m3u8stream "^0.1.1"

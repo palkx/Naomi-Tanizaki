@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 module.exports = class SaveQueueCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -8,7 +8,7 @@ module.exports = class SaveQueueCommand extends Command {
 			aliases: ['save-songs', 'save-song-list'],
 			group: 'music',
 			memberName: 'save',
-			description: 'Saves the queued songs.',
+			description: '`AL: zero` Saves the queued songs.',
 			guildOnly: true,
 			throttling: {
 				usages: 2,
@@ -17,22 +17,26 @@ module.exports = class SaveQueueCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.zero;
+	}
+
 	run(msg) {
 		const queue = this.queue.get(msg.guild.id);
 		if (!queue) {
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: `${msg.author}, there isn't any music playing right now. You should get on that.`
 			});
 		}
 		const song = queue.songs[0];
 
 		msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, ✔ Check your inbox!`
 		});
 		let embed = {
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			author: {
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 				icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase

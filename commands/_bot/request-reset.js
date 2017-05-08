@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Request = require('../../models/Request');
 
 module.exports = class RequestCommand extends Command {
@@ -8,7 +8,8 @@ module.exports = class RequestCommand extends Command {
 			name: 'request-reset',
 			group: 'bot',
 			memberName: 'request-reset',
-			description: 'Reset the requests data table.',
+			description: '`AL: owner` Reset the requests data table.',
+			guarded: true,
 
 			args: [
 				{
@@ -34,6 +35,9 @@ module.exports = class RequestCommand extends Command {
 
 	run(msg) {
 		Request.sync({ force: true });
-		return msg.embed({ color: colors.green, description: `${msg.author}, the request data table has been reset.` });
+		return msg.embed({
+			color: _sdata.colors.green,
+			description: `${msg.author}, the request data table has been reset.`
+		});
 	}
 };

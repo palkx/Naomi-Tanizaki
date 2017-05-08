@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Currency = require('../../structures/currency/Currency');
 
 module.exports = class MoneyRemoveCommand extends Command {
@@ -19,7 +19,7 @@ module.exports = class MoneyRemoveCommand extends Command {
 			],
 			group: 'economy',
 			memberName: 'remove',
-			description: `Remove ${Currency.textPlural} from a certain user.`,
+			description: `\`AL: full\` Remove ${Currency.textPlural} from a certain user.`,
 			details: `Remove amount of ${Currency.textPlural} from a certain user.`,
 			guildOnly: true,
 			throttling: {
@@ -44,13 +44,14 @@ module.exports = class MoneyRemoveCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
+		return this.client.isOwner(msg.author)
+			|| this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.full;
 	}
 
 	run(msg, { member, donuts }) {
 		Currency._changeBalance(member.id, donuts);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `
 			${msg.author}, successfully removed ${Currency.convert(donuts)} from ${member.displayName}'s balance.`
 		});

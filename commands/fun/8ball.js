@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const RESPONSES = [
 	'it is certain.',
 	'it is decidedly so.',
@@ -28,7 +28,7 @@ module.exports = class EightBallCommand extends Command {
 			aliases: ['8', '🎱'],
 			group: 'fun',
 			memberName: '8ball',
-			description: 'Ask the magic 8 ball.',
+			description: '`AL: low` Ask the magic 8 ball.',
 			throttling: {
 				usages: 2,
 				duration: 3
@@ -45,9 +45,13 @@ module.exports = class EightBallCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg) { // eslint-disable-line require-await
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			description: `🎱  |  ${msg.author}, ${RESPONSES[Math.floor(Math.random() * RESPONSES.length)]}`
 		});
 	}
