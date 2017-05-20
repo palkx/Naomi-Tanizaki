@@ -7,7 +7,7 @@ services:
     environment:
       - TOKEN=BOT_TOKEN
       - COMMAND_PREFIX=-
-      - COMMANDO_VERSION=0.25.0
+      - COMMANDO_VERSION=0.26.0
       - OAUTH_LINK=LINK_TO_INVITE_YOUR_BOT
       - OSU_API_KEY=YOUR_OSU_API_KEY
       - CLEVERBOT_API_USER=CLEVERBOT.IO_API_USER
@@ -18,7 +18,7 @@ services:
       - PERMITTED_GROUP=THIS_ROLE_ON_SERVER_WILL_HAVE_ADVANCED_ACCESS_TO_BOT_COMMANDS(CASE_SENSITIVE)
       - OWNERS=OWNER_IDS,CAN,BE,SEPERATED,BY,COMMAS
       - DB=postgres://POSTGRES_USER_DEFINED_IN_POSTGRES_ENV:POSTGRES_PW_DEFINED_IN_POSTGRES_ENV@postgres:5432/POSTGRES_DB_EITHER_USER_DEFINED_IN_POSTGRES_ENV_OR_POSTGRES_DB_DEFINED_IN_POSTGRES
-      - REDIS=REDIS_HOSTNAME
+      - REDIS=redis
       - EXAMPLE_CHANNEL=CHANNEL_TO_POST_EXAMPLES_IN
       - ISSUE_CHANNEL=CHANNEL_ID_FOR_ISSUES
       - REQUEST_CHANNEL=CHANNEL_ID_FOR_REQUESTS
@@ -33,17 +33,21 @@ services:
       - MAX_LENGTH=MAXIMUM_LENGTH_PER_SONG
       - MAX_SONGS=HOW_MANY_SONGS_A_USER_CAN_QUEUE_UP
       - PASSES=UPD_PACKET_PASS
+  depends_on:
+    - postgres
+    - redis
+
   postgres:
-    image: "postgres:9"
+    image: "postgres:9-alpine"
     container_name: tanizaki_db
     environment:
       - POSTGRES_USER=naomi
       - POSTGRES_PASSWORD=POSTGRES_PW
       - PGDATA=PATH_TO_DIRECTORY_THAT_SAVES_DATA_ON_THE_SYSTEM
     volumes:
-      - LOCALHOST_VOLUME_PATH:PATH_DEFINED_IN_PGDATA
+      - LOCALHOST_VOLUME_PATH/postgresql/data:/var/lib/postgresql/data
   redis:
-    image: "redis:3"
+    image: "redis:3-alpine"
     container_name: tanizaki_redis
     volumes:
-      - LOCALHOST_VOLUME_PATH:/data
+      - LOCALHOST_VOLUME_PATH/redis/data:/data

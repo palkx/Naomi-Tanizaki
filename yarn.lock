@@ -584,9 +584,9 @@ escope@^3.6.0:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint-config-aqua@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-aqua/-/eslint-config-aqua-1.2.0.tgz#347ecb519a0cf4dd0db089100259abd8207559ed"
+eslint-config-aqua@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/eslint-config-aqua/-/eslint-config-aqua-1.2.1.tgz#04cda5bf6f1d296cc98b0707ed44ee78632383a8"
 
 eslint@^3.19.0:
   version "3.19.0"
@@ -1297,9 +1297,9 @@ os-homedir@^1.0.0, os-homedir@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-homedir/-/os-homedir-1.0.2.tgz#ffbc4988336e0e833de0c168c7ef152121aa7fb3"
 
-packet-reader@0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/packet-reader/-/packet-reader-0.2.0.tgz#819df4d010b82d5ea5671f8a1a3acf039bcd7700"
+packet-reader@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/packet-reader/-/packet-reader-0.3.1.tgz#cd62e60af8d7fea8a705ec4ff990871c46871f27"
 
 parse-css-font@^2.0.2:
   version "2.0.2"
@@ -1358,12 +1358,12 @@ pg-types@1.*:
     postgres-date "~1.0.0"
     postgres-interval "~1.0.0"
 
-pg@^6.1.5:
-  version "6.1.5"
-  resolved "https://registry.yarnpkg.com/pg/-/pg-6.1.5.tgz#204fa40c1252ab7220d7cf6992886b20d77862b8"
+pg@^6.2.2:
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/pg/-/pg-6.2.2.tgz#f778c129e16c6f88da564f76faf854f832c724c0"
   dependencies:
     buffer-writer "1.0.1"
-    packet-reader "0.2.0"
+    packet-reader "0.3.1"
     pg-connection-string "0.1.3"
     pg-pool "1.*"
     pg-types "1.*"
@@ -1466,14 +1466,15 @@ qs@~6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.0.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
 
-raven@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/raven/-/raven-1.2.1.tgz#949c134db028a190b7bbf8f790aae541b7c020bd"
+raven@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/raven/-/raven-2.0.1.tgz#d4e0eda0fc84c11277495b217f6c1ff7c489826e"
   dependencies:
     cookie "0.3.1"
     json-stringify-safe "5.0.1"
     lsmod "1.0.0"
     stack-trace "0.0.9"
+    timed-out "4.0.1"
     uuid "3.0.0"
 
 rc@^1.1.6:
@@ -1726,9 +1727,9 @@ slice-ansi@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-0.0.4.tgz#edbf8903f66f7ce2f8eafd6ceed65e264c831b35"
 
-snekfetch@^3.1.0, snekfetch@^3.1.6:
-  version "3.1.6"
-  resolved "https://registry.yarnpkg.com/snekfetch/-/snekfetch-3.1.6.tgz#3090d5cd3f5bc1e456f8aafa5024f64b7ca5b1e0"
+snekfetch@^3.1.0, snekfetch@^3.1.7:
+  version "3.1.7"
+  resolved "https://registry.yarnpkg.com/snekfetch/-/snekfetch-3.1.7.tgz#5eb980d29c3b455bf0b13359647909b0737315e9"
 
 sntp@1.x.x:
   version "1.0.9"
@@ -1871,6 +1872,10 @@ through@2, through@^2.3.6:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
 
+timed-out@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-4.0.1.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
+
 toposort-class@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/toposort-class/-/toposort-class-1.0.1.tgz#7ffd1f78c8be28c3ba45cd4e1a3f5ee193bd9988"
@@ -1885,9 +1890,9 @@ tryit@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tryit/-/tryit-1.0.3.tgz#393be730a9446fd1ead6da59a014308f36c289cb"
 
-tsubaki@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/tsubaki/-/tsubaki-1.1.0.tgz#fc186f537bf163d72f9d139f6e467b5036cfdb12"
+tsubaki@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/tsubaki/-/tsubaki-1.1.1.tgz#ddf5370e7941574d40b507f47c0e0bdce88930a9"
 
 tunnel-agent@^0.4.3:
   version "0.4.3"
@@ -1946,13 +1951,9 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
-uuid@3.0.0:
+uuid@3.0.0, uuid@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.0.tgz#6728fc0459c450d796a99c31837569bdf672d728"
-
-uuid@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 
 validator@^5.2.0:
   version "5.7.0"
@@ -2028,9 +2029,9 @@ yallist@^2.0.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-2.1.2.tgz#1c11f9218f076089a47dd512f93c6699a6a81d52"
 
-ytdl-core@^0.14.0:
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-0.14.0.tgz#f10e7e0679755b41faf4df9c4c925786bcab9825"
+ytdl-core@^0.14.1:
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-0.14.1.tgz#18eb845591a8351c50da3bd767be3a8aa59179ec"
   dependencies:
     html-entities "^1.1.3"
     m3u8stream "^0.1.1"

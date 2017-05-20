@@ -87,8 +87,8 @@ module.exports = class OsuCommand extends Command {
 					inline: true
 				},
 				{
-					name: '**Global rank**',
-					value: `#${response[0].pp_rank}`,
+					name: '**Country/Global rank**',
+					value: `#${response[0].pp_country_rank}/#${response[0].pp_rank}`,
 					inline: true
 				},
 				{

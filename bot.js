@@ -72,7 +72,7 @@ client.on('error', winston.error)
 					});
 				}
 			}
-		}, 43200000);
+		}, 3600000);
 	})
 	.on('disconnect', () => {
 		winston.warn(`[DISCORD]: [${Date.now()}] Disconnected! Exiting app in 10s.`);

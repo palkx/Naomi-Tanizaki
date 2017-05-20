@@ -62,7 +62,7 @@ module.exports = class UserInfoCommand extends Command {
 					`
 				}
 			],
-			thumbnail: { url: user.avatarURL }
+			thumbnail: { url: user.displayAvatarURL }
 		});
 	}
 };

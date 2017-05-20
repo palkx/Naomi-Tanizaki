@@ -41,7 +41,7 @@ module.exports = class MaxLengthCommand extends Command {
 
 		if (args.toLowerCase() === 'default') {
 			this.client.provider.remove(msg.guild.id, 'maxLength');
-			return msg.msg.embed({
+			return msg.embed({
 				color: _sdata.colors.green,
 				description: `
 				${msg.member}, set the maximum song length to the default (currently ${MAX_LENGTH} minutes).`
@@ -50,14 +50,14 @@ module.exports = class MaxLengthCommand extends Command {
 
 		const maxLength = parseInt(args);
 		if (isNaN(maxLength) || maxLength <= 0) {
-			return msg.msg.embed({
+			return msg.embed({
 				color: _sdata.colors.red,
 				description: `${msg.author}, invalid number provided.`
 			});
 		}
 
 		this.client.provider.set(msg.guild.id, 'maxLength', maxLength);
-		return msg.msg.embed({
+		return msg.embed({
 			color: _sdata.colors.green,
 			description: `${msg.author}, set the maximum song length to ${maxLength} minutes.`
 		});

@@ -58,16 +58,16 @@ module.exports = class SetUserLevelCommand extends Command {
 		if (_job) {
 			if (userLevel === undefined) {
 				return this.client.provider.set(user.id, 'userLevel', 0).then(() => {
-					msg.embed({ color: _sdata.colors.blue, description: `${user} doesn't have ul. Setting ul to 0` });
+					msg.embed({ color: _sdata.colors.blue, description: `${user} doesn't have al. Setting \`AL: zero\` (0)` });
 				});
 			}
-			return msg.embed({ color: _sdata.colors.green, description: `${user} ul - ${userLevel}` });
+			return msg.embed({ color: _sdata.colors.green, description: `${user} \`AL: ${userLevel}\`` });
 		} else {
 			this.client.provider.set(user.id, 'userLevel', level);
 			return msg.embed(
 				{
 					color: _sdata.colors.green,
-					description: `You have been set ${level} ul to ${user.username}#${user.discriminator}`
+					description: `You have been set ${level} al to ${user.username}#${user.discriminator}`
 				});
 		}
 	}

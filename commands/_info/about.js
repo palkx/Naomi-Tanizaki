@@ -40,7 +40,7 @@ module.exports = class AboutCommand extends Command {
 				**❯ WEBSITE:** [WIP](https://naom.me/)
 				**❯ [SERVER](https://s.xaff.ru/devdis)**
 			`,
-			thumbnail: { url: this.client.user.avatarURL }
+			thumbnail: { url: this.client.user.displayAvatarURL }
 		});
 	}
 };

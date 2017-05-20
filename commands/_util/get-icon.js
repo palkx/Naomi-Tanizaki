@@ -43,7 +43,7 @@ module.exports = class GetIconCommand extends Command {
 		await msg.embed({
 			color: _sdata.colors.green,
 			description: `Here **${_obj ? user.tag : msg.guild.name}\`s** avatar:`,
-			image: { url: _obj ? user.avatarURL : msg.guild.iconURL || undefined }
+			image: { url: _obj ? user.displayAvatarURL : msg.guild.iconURL || undefined }
 		});
 		return null;
 	}

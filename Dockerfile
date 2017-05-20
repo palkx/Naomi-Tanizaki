@@ -1,23 +1,24 @@
-FROM ubuntu:xenial
+FROM node:7-alpine
 
-RUN apt update
-RUN apt upgrade -y
-RUN apt install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_7.x | bash
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt update
-RUN apt install -y build-essential ffmpeg git python nodejs yarn
-RUN apt install -y libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev g++ libtool autoconf automake
-RUN yarn global add node-gyp
-RUN apt autoremove -y
+LABEL maintainer "iSm1le <sm1leua@ya.ru>"
 
-RUN mkdir -p /usr/src/NT
-WORKDIR /usr/src/NT
+# Add package.json for Yarn
+WORKDIR /usr/src/iSm1le
+COPY package.json yarn.lock ./
 
+#  Install dependencies
+RUN apk add --update \
+&& apk add --no-cache ffmpeg opus pixman cairo pango giflib ca-certificates \
+&& apk add --no-cache --virtual .build-deps git curl pixman-dev cairo-dev pangomm-dev libjpeg-turbo-dev giflib-dev python g++ make \
+\
+# Install node.js dependencies
+&& yarn install \
+\
+# Clean up build dependencies
+&& apk del .build-deps
+
+# Add project source
 COPY . .
-
-RUN yarn install
 
 ENV TOKEN= \
 	COMMAND_PREFIX= \
@@ -48,4 +49,4 @@ ENV TOKEN= \
 	MAX_SONGS= \
 	PASSES=
 
-CMD node bot.js
+CMD ["node", "bot.js"]
