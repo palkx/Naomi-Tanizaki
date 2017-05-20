@@ -12,7 +12,7 @@ RUN apk add --update \
 && apk add --no-cache --virtual .build-deps build-essential libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev libtool autoconf automake curl pixman-dev cairo-dev pangomm-dev libjpeg-turbo-dev giflib-dev python g++ make \
 \
 # Install node.js dependencies
-&& yarn global add node-gyp
+&& yarn global add node-gyp \
 && yarn install \
 \
 # Clean up build dependencies
