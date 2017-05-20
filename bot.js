@@ -56,23 +56,26 @@ client.on('error', winston.error)
 				}
 			});
 			if (users.length > 0) {
-				if (client.channels.get(EXAMPLE_CHANNEL)) {
-					client.channels.get(EXAMPLE_CHANNEL).send({
-						embed: {
-							color: _sdata.colors.green,
-							author: {
-								name: `${client.user.tag} (${client.user.id})`,
-								icon_url: client.user.displayAvatarURL // eslint-disable-line camelcase
-							},
-							description: `This users will get auto \`AL: low\` permissions: 
-							${users}`,
-							timestamp: new Date(),
-							footer: { text: `AL: low granted` }
-						}
-					});
+				let _users;
+				for (let i = 0, j = users.length; i < j; i += 10) {
+					_users = users.splice(i, i + 10);
+					if (client.channels.get(EXAMPLE_CHANNEL)) {
+						client.channels.get(EXAMPLE_CHANNEL).send({
+							embed: {
+								color: _sdata.colors.green,
+								author: {
+									name: `${client.user.tag} (${client.user.id})`,
+									icon_url: client.user.displayAvatarURL // eslint-disable-line camelcase
+								},
+								description: `This users will get auto \`AL: low\` permissions: ${_users}`,
+								timestamp: new Date(),
+								footer: { text: `AL: low granted` }
+							}
+						});
+					}
 				}
 			}
-		}, 3600000);
+		}, 3 * 60 * 60 * 1000);
 	})
 	.on('disconnect', () => {
 		winston.warn(`[DISCORD]: [${Date.now()}] Disconnected! Exiting app in 10s.`);
