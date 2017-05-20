@@ -1,25 +1,25 @@
-FROM node:7-alpine
+FROM ubuntu:xenial
 
 LABEL maintainer "iSm1le <sm1leua@ya.ru>"
 
-# Add package.json for Yarn
-WORKDIR /usr/src/iSm1le
-COPY package.json yarn.lock ./
+RUN apt update
+RUN apt upgrade -y
+RUN apt install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_7.x | bash
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt update
+RUN apt install -y build-essential ffmpeg git python nodejs yarn
+RUN apt install -y libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev g++ libtool autoconf automake
+RUN yarn global add node-gyp
+RUN apt autoremove -y
 
-#  Install dependencies
-RUN apk add --update \
-&& apk add --no-cache git ffmpeg opus pixman cairo pango giflib ca-certificates \
-&& apk add --no-cache --virtual .build-deps build-essential libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev libtool autoconf automake curl pixman-dev cairo-dev pangomm-dev libjpeg-turbo-dev giflib-dev python g++ make \
-\
-# Install node.js dependencies
-&& yarn global add node-gyp \
-&& yarn install \
-\
-# Clean up build dependencies
-&& apk del .build-deps
+RUN mkdir -p /usr/src/NT
+WORKDIR /usr/src/NT
 
-# Add project source
 COPY . .
+
+RUN yarn install
 
 ENV TOKEN= \
 	COMMAND_PREFIX= \
