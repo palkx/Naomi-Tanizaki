@@ -49,7 +49,8 @@ client.on('error', winston.error)
 					if (firstSeen === undefined) {
 						client.provider.set(el.id, 'firstSeen', Date.now());
 					} else if ((firstSeen + 604800000) < Date.now()) {
-						if (client.provider.get(el.id, 'userLevel') < _sdata.aLevel.low) {
+						const userLevel = client.provider.get(el.id, 'userLevel');
+						if (userLevel < _sdata.aLevel.low || userLevel === undefined) {
 							client.provider.set(el.id, 'userLevel', _sdata.aLevel.low).then(users.push(el));
 						}
 					}
@@ -75,7 +76,7 @@ client.on('error', winston.error)
 					}
 				}
 			}
-		}, 3 * 60 * 60 * 1000);
+		}, 6 * 60 * 60 * 1000);
 	})
 	.on('disconnect', () => {
 		winston.warn(`[DISCORD]: [${Date.now()}] Disconnected! Exiting app in 10s.`);

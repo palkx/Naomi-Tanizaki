@@ -1,5 +1,7 @@
 const { Command } = require('discord.js-commando');
 const _sdata = require('../../assets/_data/static_data.json');
+const { oneLine } = require('common-tags');
+const Util = require('../../util/Util');
 
 module.exports = class SetUserLevelCommand extends Command {
 	constructor(client) {
@@ -55,19 +57,26 @@ module.exports = class SetUserLevelCommand extends Command {
 	async run(msg, { job, user, level }) { // eslint-disable-line require-await
 		const _job = job.toLowerCase() === 'get';
 		const userLevel = this.client.provider.get(user.id, 'userLevel');
+		const perm = Util.getPerm();
+		let _level = Util.getPerm(_job ? userLevel : level);
 		if (_job) {
 			if (userLevel === undefined) {
-				return this.client.provider.set(user.id, 'userLevel', 0).then(() => {
-					msg.embed({ color: _sdata.colors.blue, description: `${user} doesn't have al. Setting \`AL: zero\` (0)` });
+				return this.client.provider.set(user.id, 'userLevel', _sdata.aLevel.zero).then(() => {
+					msg.embed({ color: _sdata.colors.blue, description: `${user} doesn't have al. Setting \`AL: zero\`` });
 				});
 			}
-			return msg.embed({ color: _sdata.colors.green, description: `${user} \`AL: ${userLevel}\`` });
+			return msg.embed({
+				color: _sdata.colors.green,
+				description: oneLine`${user} \`AL: ${_level}
+				${Math.max(...perm.int) < userLevel ? `(${userLevel})` : ``}\``
+			});
 		} else {
 			this.client.provider.set(user.id, 'userLevel', level);
 			return msg.embed(
 				{
 					color: _sdata.colors.green,
-					description: `You have been set ${level} al to ${user.username}#${user.discriminator}`
+					description: oneLine`You have been set \`AL: ${_level}
+					${Math.max(...perm.int) < level ? `(${level})` : ``}\` to ${user.username}#${user.discriminator}`
 				});
 		}
 	}
