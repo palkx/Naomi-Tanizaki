@@ -23,6 +23,6 @@ env:
 before_install:
   - sudo apt-get update
   - npm explore npm -g -- npm install node-gyp@latest
-install: npm install
+install: yarn install
 script:
   - bash ./deploy/deploy.sh
