@@ -6,7 +6,7 @@ const path = require('path');
 const request = require('request-promise');
 const { promisifyAll } = require('tsubaki');
 const fs = promisifyAll(require('fs'));
-
+const _sdata = require('../../assets/_data/static_data.json');
 const { GOOGLE_API, WEATHER_API } = require('../../assets/_data/settings.json');
 const { version } = require('../../package');
 
@@ -17,7 +17,7 @@ module.exports = class WeatherCommand extends Command {
 			aliases: ['w', '☁', '⛅', '⛈', '🌤', '🌥', '🌦', '🌧', '🌨', '🌩', '🌪'],
 			group: 'weather',
 			memberName: 'weather',
-			description: 'Get the weather.',
+			description: '`AL: low` Get the weather.',
 			throttling: {
 				usages: 1,
 				duration: 30
@@ -31,6 +31,10 @@ module.exports = class WeatherCommand extends Command {
 				}
 			]
 		});
+	}
+
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
 	}
 
 	async run(msg, args) {

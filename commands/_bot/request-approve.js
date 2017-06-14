@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Request = require('../../models/Request');
 const { REQUEST_CHANNEL } = require('../../assets/_data/settings.json');
 
@@ -10,7 +10,8 @@ module.exports = class ApproveRequestCommand extends Command {
 			aliases: ['req-a'],
 			group: 'bot',
 			memberName: 'request-approve',
-			description: 'Approve a requested feature.',
+			description: '`AL: full` Approve a requested feature.',
+			guarded: true,
 
 			args: [
 				{
@@ -23,13 +24,14 @@ module.exports = class ApproveRequestCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
+		return this.client.isOwner(msg.author)
+			|| this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.full;
 	}
 
 	async run(msg, { requestID }) {
 		if (msg.channel.id !== REQUEST_CHANNEL) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, this command can only be used in the requests channel.`
 			});
 		}
@@ -37,7 +39,7 @@ module.exports = class ApproveRequestCommand extends Command {
 		const request = await Request.findById(requestID);
 		if (!request) {
 			return msg.embed({
-				color: colors.dark_green,
+				color: _sdata.colors.dark_green,
 				description: `${msg.author}, you provided an invalid request id.`
 			});
 		}
@@ -49,7 +51,7 @@ module.exports = class ApproveRequestCommand extends Command {
 
 		await this.client.users.get(request.requester).send({
 			embed: {
-				color: colors.green,
+				color: _sdata.colors.green,
 				author: {
 					name: 'Request approved',
 					icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase
@@ -65,7 +67,7 @@ module.exports = class ApproveRequestCommand extends Command {
 		});
 
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, successfully approved request #${request.id}!`
 		})
 			.then(async () => {

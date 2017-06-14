@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { stripIndents } = require('common-tags');
 const Bank = require('../../structures/currency/Bank');
 const Currency = require('../../structures/currency/Currency');
@@ -10,7 +10,7 @@ module.exports = class DepositCommand extends Command {
 			name: 'deposit',
 			group: 'economy',
 			memberName: 'deposit',
-			description: `Deposit ${Currency.textPlural} into the bank.`,
+			description: `\`AL: low\` Deposit ${Currency.textPlural} into the bank.`,
 			details: `Deposit ${Currency.textPlural} into the bank.`,
 			guildOnly: true,
 			throttling: {
@@ -35,10 +35,14 @@ module.exports = class DepositCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { donuts }) {
 		if (donuts <= 0) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, you can't deposit 0 or less ${Currency.convert(0)}.
 			`
 			});
@@ -47,7 +51,7 @@ module.exports = class DepositCommand extends Command {
 		const userBalance = await Currency.getBalance(msg.author.id);
 		if (userBalance < donuts) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: stripIndents`
 				${msg.author}, you don't have that many ${Currency.textPlural} to deposit!
 				You currently have ${Currency.convert(userBalance)} on hand.
@@ -57,7 +61,7 @@ module.exports = class DepositCommand extends Command {
 
 		Bank.deposit(msg.author.id, donuts);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, successfully deposited ${Currency.convert(donuts)} to the bank!
 			`
 		});

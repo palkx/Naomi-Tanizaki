@@ -5,7 +5,7 @@ const request = require('request-promise');
 const winston = require('winston');
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { DEFAULT_VOLUME, GOOGLE_API, MAX_LENGTH, MAX_SONGS, PASSES, SOUNDCLOUD_API } = require('../../assets/_data/settings.json'); // eslint-disable-line max-len
 const Song = require('../../structures/Song');
 const { version } = require('../../package');
@@ -16,7 +16,7 @@ module.exports = class PlaySongCommand extends Command {
 			name: 'play',
 			group: 'music',
 			memberName: 'play',
-			description: 'Adds a song to the queue.',
+			description: '`AL: low` Adds a song to the queue.',
 			guildOnly: true,
 			throttling: {
 				usages: 2,
@@ -36,6 +36,10 @@ module.exports = class PlaySongCommand extends Command {
 		this.youtube = new YouTube(GOOGLE_API);
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, args) {
 		const url = args.url.replace(/<(.+)>/g, '$1');
 		const queue = this.queue.get(msg.guild.id);
@@ -45,33 +49,36 @@ module.exports = class PlaySongCommand extends Command {
 			voiceChannel = msg.member.voiceChannel;
 			if (!voiceChannel) {
 				return msg.embed({
-					color: colors.red,
+					color: _sdata.colors.red,
 					description: `${msg.author}, you aren't in a voice channel, ya dingus.`
 				});
 			}
 
 			const permissions = voiceChannel.permissionsFor(msg.client.user);
-			if (!permissions.hasPermission('CONNECT')) {
+			if (!permissions.has('CONNECT')) {
 				return msg.embed({
-					color: colors.red,
+					color: _sdata.colors.red,
 					description: `${msg.author}, I don't have permission to join your voice channel. No parties allowed there.`
 				});
 			}
-			if (!permissions.hasPermission('SPEAK')) {
+			if (!permissions.has('SPEAK')) {
 				return msg.embed({
-					color: colors.red,
+					color: _sdata.colors.red,
 					description: `${msg.author}, I don't have permission to speak in your voice channel. What a disappointment.`
 				});
 			}
 		} else if (!queue.voiceChannel.members.has(msg.author.id)) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: oneLine`
 				${msg.author}, you're not in the voice channel. You better not be trying to mess with their mojo, man.`
 			});
 		}
 
-		const statusMsg = await msg.embed({ color: colors.blue, description: `${msg.author}, obtaining video details...` });
+		const statusMsg = await msg.embed({
+			color: _sdata.colors.blue,
+			description: `${msg.author}, obtaining video details...`
+		});
 		if (url.match(/^https?:\/\/(soundcloud.com|snd.sc)\/(.*)$/)) {
 			try {
 				const video = await request({
@@ -84,7 +91,7 @@ module.exports = class PlaySongCommand extends Command {
 				winston.error(`${error.statusCode}: ${error.statusMessage}`);
 				return statusMsg.edit('', {
 					embed: {
-						color: colors.red,
+						color: _sdata.colors.red,
 						description: `${msg.author}, ❌ This track is not able to be streamed by SoundCloud.`
 					}
 				});
@@ -101,7 +108,7 @@ module.exports = class PlaySongCommand extends Command {
 					const videos = await this.youtube.searchVideos(url, 1)
 						.catch(() => statusMsg.edit('', {
 							embed: {
-								color: colors.red,
+								color: _sdata.colors.red,
 								description: `${msg.author}, there were no search results.`
 							}
 						}));
@@ -111,7 +118,7 @@ module.exports = class PlaySongCommand extends Command {
 					winston.error(err);
 					return statusMsg.edit('', {
 						embed: {
-							color: colors.red,
+							color: _sdata.colors.red,
 							description: `${msg.author}, couldn't obtain the search result video's details.`
 						}
 					});
@@ -124,7 +131,7 @@ module.exports = class PlaySongCommand extends Command {
 		if (video.durationSeconds === 0) {
 			statusMsg.edit('', {
 				embed: {
-					color: colors.red,
+					color: _sdata.colors.red,
 					description: `${msg.author}, you can't play live streams.`
 				}
 			});
@@ -143,7 +150,7 @@ module.exports = class PlaySongCommand extends Command {
 
 			const result = await this.addSong(msg, video);
 			const resultMessage = {
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				author: {
 					name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 					icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase
@@ -159,7 +166,7 @@ module.exports = class PlaySongCommand extends Command {
 
 			statusMsg.edit('', {
 				embed: {
-					color: colors.blue,
+					color: _sdata.colors.blue,
 					description: `${msg.author}, joining your voice channel...`
 				}
 			});
@@ -174,7 +181,7 @@ module.exports = class PlaySongCommand extends Command {
 				this.queue.delete(msg.guild.id);
 				statusMsg.edit('', {
 					embed: {
-						color: colors.red,
+						color: _sdata.colors.red,
 						description: `${msg.author}, unable to join your voice channel.`
 					}
 				});
@@ -183,7 +190,7 @@ module.exports = class PlaySongCommand extends Command {
 		} else {
 			const result = await this.addSong(msg, video);
 			const resultMessage = {
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				author: {
 					name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 					icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase
@@ -202,7 +209,7 @@ module.exports = class PlaySongCommand extends Command {
 			if (video2.durationSeconds === 0) {
 				statusMsg.edit('', {
 					embed: {
-						color: colors.red,
+						color: _sdata.colors.red,
 						description: `${msg.author}, you can't play live streams.`
 					}
 				});
@@ -224,7 +231,7 @@ module.exports = class PlaySongCommand extends Command {
 
 				statusMsg.edit('', {
 					embed: {
-						color: colors.blue,
+						color: _sdata.colors.blue,
 						description: `${msg.author}, joining your voice channel...`
 					}
 				});
@@ -238,7 +245,7 @@ module.exports = class PlaySongCommand extends Command {
 					this.queue.delete(msg.guild.id);
 					statusMsg.edit('', {
 						embed: {
-							color: colors.red,
+							color: _sdata.colors.red,
 							description: `${msg.author}, unable to join your voice channel.`
 						}
 					});
@@ -250,7 +257,7 @@ module.exports = class PlaySongCommand extends Command {
 
 		queue.textChannel.send({
 			embed: {
-				color: colors.green,
+				color: _sdata.colors.green,
 				author: {
 					name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 					icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase
@@ -272,7 +279,7 @@ module.exports = class PlaySongCommand extends Command {
 			const songMaxLength = this.client.provider.get(msg.guild.id, 'maxLength', MAX_LENGTH);
 			if (songMaxLength > 0 && video.durationSeconds > songMaxLength * 60) {
 				return msg.embed({
-					color: colors.red,
+					color: _sdata.colors.red,
 					description: oneLine`
 					👎 ${escapeMarkdown(video.title)}
 					(${Song.timeString(video.durationSeconds)})
@@ -281,7 +288,7 @@ module.exports = class PlaySongCommand extends Command {
 			}
 			if (queue.songs.some(song => song.id === video.id)) {
 				return msg.embed({
-					color: colors.red,
+					color: _sdata.colors.red,
 					description: `👎 ${escapeMarkdown(video.title)} is already queued.`
 				});
 			}
@@ -290,7 +297,7 @@ module.exports = class PlaySongCommand extends Command {
 				&& queue.songs.reduce((prev, song) => prev + song.member.id === msg.author.id, 0)
 				>= songMaxSongs) {
 				return msg.embed({
-					color: colors.red,
+					color: _sdata.colors.red,
 					description: `👎 you already have ${songMaxSongs} songs in the queue. Don't hog all the airtime!`
 				});
 			}
@@ -300,7 +307,7 @@ module.exports = class PlaySongCommand extends Command {
 		const song = new Song(video, msg.member);
 		queue.songs.push(song);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: oneLine`
 			👍 ${song.url.match(/^https?:\/\/(api.soundcloud.com)\/(.*)$/)
 				? `${song}`
@@ -320,7 +327,7 @@ module.exports = class PlaySongCommand extends Command {
 		if (!song) {
 			queue.textChannel.send({
 				embed: {
-					color: colors.blue,
+					color: _sdata.colors.blue,
 					description: 'We\'ve run out of songs! Better queue up some more tunes.'
 				}
 			}
@@ -332,7 +339,7 @@ module.exports = class PlaySongCommand extends Command {
 
 		const playing = queue.textChannel.send({
 			embed: {
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				author: {
 					name: song.username,
 					icon_url: song.avatar // eslint-disable-line camelcase
@@ -360,7 +367,7 @@ module.exports = class PlaySongCommand extends Command {
 					winston.error('Error occurred when streaming video:', err);
 					playing.then(msg => msg.edit('', {
 						embed: {
-							color: colors.red,
+							color: _sdata.colors.red,
 							description: `❌ Couldn't play ${song}. What a drag!`
 						}
 					}));
@@ -378,7 +385,7 @@ module.exports = class PlaySongCommand extends Command {
 				winston.error('Error occurred in stream dispatcher:', err);
 				queue.textChannel.send('', {
 					embed: {
-						color: colors.red,
+						color: _sdata.colors.red,
 						description: `An error occurred while playing the song: \`${err}\``
 					}
 				});

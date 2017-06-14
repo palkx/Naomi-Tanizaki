@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Issue = require('../../models/Issue');
 const { ISSUE_CHANNEL } = require('../../assets/_data/settings.json');
 
@@ -10,7 +10,8 @@ module.exports = class FixIssueCommand extends Command {
 			aliases: ['iss-f'],
 			group: 'bot',
 			memberName: 'fix',
-			description: 'Fix an issue.',
+			description: '`AL: full` Fix an issue.',
+			guarded: true,
 
 			args: [
 				{
@@ -23,13 +24,14 @@ module.exports = class FixIssueCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
+		return this.client.isOwner(msg.author)
+			|| this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.full;
 	}
 
 	async run(msg, { issueID }) {
 		if (msg.channel.id !== ISSUE_CHANNEL) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, this command can only be used in the issues channel.`
 			});
 		}
@@ -37,7 +39,7 @@ module.exports = class FixIssueCommand extends Command {
 		const issue = await Issue.findById(issueID);
 		if (!issue) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, you provided an invalid issue id.`
 			});
 		}
@@ -49,7 +51,7 @@ module.exports = class FixIssueCommand extends Command {
 
 		await this.client.users.get(issue.discoveredBy).send({
 			embed: {
-				color: colors.green,
+				color: _sdata.colors.green,
 				author: {
 					name: 'Issue fixed',
 					icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase
@@ -64,7 +66,10 @@ module.exports = class FixIssueCommand extends Command {
 			}
 		});
 
-		return msg.embed({ color: colors.green, description: `${msg.author}, successfully fixed issue #${issue.id}!` })
+		return msg.embed({
+			color: _sdata.colors.green,
+			description: `${msg.author}, successfully fixed issue #${issue.id}!`
+		})
 			.then(async () => {
 				const messages = await msg.channel.fetchMessages({ after: msg.id });
 				const issueMessage = await msg.channel.fetchMessage(issue.issueMessage);

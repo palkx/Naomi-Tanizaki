@@ -6,7 +6,7 @@ function test {
 	npm test
 }
 
-if [ "$TRAVIS_BRANCH" == revert-* ]; then
+if [[ "$TRAVIS_BRANCH" == revert-* ]]; then
 	echo -e "\e[36m\e[1mBuild triggered for reversion branch \"${TRAVIS_BRANCH}\" - running nothing."
 	exit 0
 fi

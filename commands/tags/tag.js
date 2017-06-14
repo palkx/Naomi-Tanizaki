@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Tag = require('../../models/Tag');
 
 module.exports = class TagCommand extends Command {
@@ -8,7 +8,7 @@ module.exports = class TagCommand extends Command {
 			name: 'tag',
 			group: 'tags',
 			memberName: 'tag',
-			description: 'Displays a tag.',
+			description: '`AL: low` Displays a tag.',
 			guildOnly: true,
 			throttling: {
 				usages: 2,
@@ -27,10 +27,14 @@ module.exports = class TagCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { name }) {
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
 		if (!tag) return null;
 		tag.increment('uses');
-		return msg.embed({ color: colors.blue, description: tag.content });
+		return msg.embed({ color: _sdata.colors.blue, description: tag.content });
 	}
 };

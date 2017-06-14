@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const request = require('request-promise');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const version = require('../../package').version;
 
 module.exports = class FortuneCommand extends Command {
@@ -10,7 +10,7 @@ module.exports = class FortuneCommand extends Command {
 			name: 'fortune',
 			group: 'fun',
 			memberName: 'fortune',
-			description: 'Get a fortune.',
+			description: '`AL: low` Get a fortune.',
 			format: '[category]',
 			details: stripIndents`Get a fortune. The following categories are avaliable:
 				all, computers, cookie, definitions, miscellaneous, people, platitudes, politics, science, and wisdom.`,
@@ -30,6 +30,10 @@ module.exports = class FortuneCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { category }) {
 		const regex = /^(all|computers|cookie|definitions|miscellaneous|people|platitudes|politics|science|wisdom)$/i;
 		const _category = regex.test(category)
@@ -43,7 +47,7 @@ module.exports = class FortuneCommand extends Command {
 		});
 
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			description: response.fortune
 		});
 	}

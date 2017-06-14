@@ -1,5 +1,5 @@
 const { Command, util } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { PAGINATED_ITEMS } = require('../../assets/_data/settings.json');
 const Store = require('../../structures/currency/Store');
 
@@ -9,7 +9,7 @@ module.exports = class StoreInfoCommand extends Command {
 			name: 'store',
 			group: 'item',
 			memberName: 'store',
-			description: 'Displays price of all items.',
+			description: '`AL: low` Displays price of all items.',
 			display: 'Displays price of all items.',
 			throttling: {
 				usages: 2,
@@ -27,14 +27,21 @@ module.exports = class StoreInfoCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	run(msg, { page }) {
 		const storeItems = Store.getItems().array();
 		const paginated = util.paginate(storeItems, page, Math.floor(PAGINATED_ITEMS));
 		if (storeItems.length === 0) {
-			return msg.embed({ color: colors.red, description: `${msg.author}, can't show what you don't have, man.` });
+			return msg.embed({
+				color: _sdata.colors.red,
+				description: `${msg.author}, can't show what you don't have, man.`
+			});
 		}
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `__**Items:**__`,
 			fields: [
 				{

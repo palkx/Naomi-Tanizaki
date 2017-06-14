@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const winston = require('winston');
 const { CLEVERBOT_API_KEY, CLEVERBOT_API_USER } = require('../../assets/_data/settings.json');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Clever = require('cleverbot.io');
 let re = /<@[0-9].*>/g;
 if (typeof cleverbots === 'undefined') { var cleverbots = []; }
@@ -14,7 +14,7 @@ module.exports = class CleverbotCommand extends Command {
 			aliases: ['talk'],
 			group: 'bot',
 			memberName: 'cleverbot',
-			description: 'Talk with bot',
+			description: '`AL: low` Talk with bot',
 			guildOnly: false,
 			throttling: {
 				usages: 2,
@@ -31,6 +31,10 @@ module.exports = class CleverbotCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { message }) { // eslint-disable-line require-await
 		try {
 			let _id = msg.guild ? msg.guild.id : msg.message.author.id;
@@ -45,7 +49,7 @@ module.exports = class CleverbotCommand extends Command {
 				cb.ask(msgClean, (err, response) => {
 					if (err) return winston.error(err);
 					return msg.embed({
-						color: colors.blue,
+						color: _sdata.colors.blue,
 						description: `:pencil: ${response}`
 					});
 				});
@@ -57,7 +61,7 @@ module.exports = class CleverbotCommand extends Command {
 					cb.ask(msgClean, (err, response) => {
 						if (err) return winston.error(err);
 						return msg.embed({
-							color: colors.blue,
+							color: _sdata.colors.blue,
 							description: `:pencil: ${response}`
 						});
 					});

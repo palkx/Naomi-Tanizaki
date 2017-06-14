@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const UserRep = require('../../models/UserRep');
 
 module.exports = class RepPositiveCommand extends Command {
@@ -9,7 +9,7 @@ module.exports = class RepPositiveCommand extends Command {
 			aliases: ['add-rep', 'rep-pos', 'pos-rep', '++'],
 			group: 'rep',
 			memberName: 'positive',
-			description: 'Add a positive reputation point to a user.',
+			description: '`AL: low` Add a positive reputation point to a user.',
 			guildOnly: true,
 
 			args: [
@@ -29,10 +29,14 @@ module.exports = class RepPositiveCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { member, message }) {
 		if (member.id === msg.author.id) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, you can't change your own reputation like that!`
 			});
 		}
@@ -46,7 +50,7 @@ module.exports = class RepPositiveCommand extends Command {
 
 		if (alreadyRepped && alreadyRepped.reputationType === '+') {
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: `${msg.author}, you have already given a positive reputation point to this user.`
 			});
 		}
@@ -59,7 +63,7 @@ module.exports = class RepPositiveCommand extends Command {
 			reputationMessage: message || null
 		});
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, you've successfully added a positive reputation point to ${member.displayName}.`
 		});
 	}

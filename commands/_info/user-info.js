@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const moment = require('moment');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const username = require('../../models/UserName');
 
 module.exports = class UserInfoCommand extends Command {
@@ -11,7 +11,7 @@ module.exports = class UserInfoCommand extends Command {
 			aliases: ['user'],
 			group: 'info',
 			memberName: 'user',
-			description: 'Get info on a user.',
+			description: '`AL: low` Get info on a user.',
 			details: `Get detailed information on the specified user.`,
 			guildOnly: true,
 			throttling: {
@@ -30,13 +30,17 @@ module.exports = class UserInfoCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { member }) {
 		const _member = member || msg.member;
 		const user = _member.user;
 		const usernames = await username.findAll({ where: { userID: user.id } });
 
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			fields: [
 				{
 					name: '❯ Member Details',
@@ -58,7 +62,7 @@ module.exports = class UserInfoCommand extends Command {
 					`
 				}
 			],
-			thumbnail: { url: user.avatarURL }
+			thumbnail: { url: user.displayAvatarURL }
 		});
 	}
 };

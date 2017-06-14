@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Bank = require('../../structures/currency/Bank');
 const Currency = require('../../structures/currency/Currency');
 
@@ -10,7 +10,7 @@ module.exports = class WidthdrawCommand extends Command {
 			name: 'withdraw',
 			group: 'economy',
 			memberName: 'withdraw',
-			description: `Withdraw ${Currency.textPlural} from the bank.`,
+			description: `\`AL: low\` Withdraw ${Currency.textPlural} from the bank.`,
 			details: `Withdraw ${Currency.textPlural} from the bank.`,
 			guildOnly: true,
 			throttling: {
@@ -35,10 +35,14 @@ module.exports = class WidthdrawCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { donuts }) {
 		if (donuts <= 0) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, you can't withdraw 0 or less ${Currency.convert(0)}.`
 			});
 		}
@@ -46,7 +50,7 @@ module.exports = class WidthdrawCommand extends Command {
 		const userBalance = await Bank.getBalance(msg.author.id);
 		if (userBalance < donuts) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: stripIndents`
 				${msg.author}, you do not have that many ${Currency.textPlural} in your balance!
 				Your current balance is ${Currency.convert(userBalance)}.`
@@ -56,7 +60,7 @@ module.exports = class WidthdrawCommand extends Command {
 		const bankBalance = await Currency.getBalance('bank');
 		if (bankBalance < donuts) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: stripIndents`
 				${msg.author}, sorry, but the bank doesn't have enough ${Currency.textPlural} for you to withdraw!
 				Please try again later.`
@@ -65,7 +69,7 @@ module.exports = class WidthdrawCommand extends Command {
 
 		Bank.withdraw(msg.author.id, donuts);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, successfully withdrew ${Currency.convert(donuts)} from the bank!`
 		});
 	}

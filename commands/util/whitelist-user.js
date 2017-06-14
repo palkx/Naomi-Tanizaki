@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 module.exports = class WhitelistUserCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -7,7 +7,7 @@ module.exports = class WhitelistUserCommand extends Command {
 			aliases: ['whitelist'],
 			group: 'util',
 			memberName: 'whitelist-user',
-			description: 'Remove a user from the blacklist',
+			description: '`AL: full` Remove a user from the blacklist',
 			throttling: {
 				usages: 2,
 				duration: 3
@@ -24,13 +24,14 @@ module.exports = class WhitelistUserCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
+		return this.client.isOwner(msg.author)
+			|| this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.full;
 	}
 
 	run(msg, { user }) {
 		const blacklist = this.client.provider.get('global', 'userBlacklist', []);
 		if (!blacklist.includes(user.id)) {
-			return msg.embed({ color: colors.blue, description: `${msg.author}, that user is not blacklisted.` });
+			return msg.embed({ color: _sdata.colors.blue, description: `${msg.author}, that user is not blacklisted.` });
 		}
 
 		const index = blacklist.indexOf(user.id);
@@ -39,7 +40,7 @@ module.exports = class WhitelistUserCommand extends Command {
 		if (blacklist.length === 0) this.client.provider.remove('global', 'userBlacklist');
 		else this.client.provider.set('global', 'userBlacklist', blacklist);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, ${user.username}#${user.discriminator} has been removed from the blacklist.`
 		});
 	}

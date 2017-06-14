@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Currency = require('../../structures/currency/Currency');
 module.exports = class MoneyAddCommand extends Command {
 	constructor(client) {
@@ -18,7 +18,7 @@ module.exports = class MoneyAddCommand extends Command {
 			],
 			group: 'economy',
 			memberName: 'add',
-			description: `Add ${Currency.textPlural} to a certain user.`,
+			description: `\`AL: full\` Add ${Currency.textPlural} to a certain user.`,
 			details: `Add amount of ${Currency.textPlural} to a certain user.`,
 			guildOnly: true,
 			throttling: {
@@ -43,13 +43,14 @@ module.exports = class MoneyAddCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
+		return this.client.isOwner(msg.author)
+			|| this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.full;
 	}
 
 	run(msg, { member, donuts }) {
 		Currency._changeBalance(member.id, donuts);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, successfully added ${Currency.convert(donuts)} to ${member.displayName}'s balance.`
 		});
 	}

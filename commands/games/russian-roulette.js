@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Currency = require('../../structures/currency/Currency');
 const RussianRoulette = require('../../structures/games/RussianRoulette');
 
@@ -11,7 +11,7 @@ module.exports = class RussianRouletteCommand extends Command {
 			aliases: ['rus-roulette'],
 			group: 'games',
 			memberName: 'russian-roulette',
-			description: `Play a game of russian roulette for ${Currency.textPlural}!`,
+			description: `\`AL: low\` Play a game of russian roulette for ${Currency.textPlural}!`,
 			details: `Play a game of russian roulette for ${Currency.textPlural}.`,
 			guildOnly: true,
 			throttling: {
@@ -21,6 +21,10 @@ module.exports = class RussianRouletteCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg) {
 		const donuts = 120;
 		const balance = await Currency.getBalance(msg.author.id);
@@ -28,7 +32,7 @@ module.exports = class RussianRouletteCommand extends Command {
 
 		if (balance < donuts) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: stripIndents`
 				you don't have enough ${Currency.textPlural}.
 				Your current account balance is ${Currency.convert(balance)}.
@@ -39,19 +43,22 @@ module.exports = class RussianRouletteCommand extends Command {
 		if (roulette) {
 			if (roulette.hasPlayer(msg.author.id)) {
 				return msg.embed({
-					color: colors.red,
+					color: _sdata.colors.red,
 					description: `${msg.author}, you have already joined this game of russian roulette.`
 				});
 			}
 			if (roulette.players.length === 6) {
 				return msg.embed({
-					color: colors.red,
+					color: _sdata.colors.red,
 					description: 'only 6 people can join at a time. You\'ll have to wait for the next round'
 				});
 			}
 
 			roulette.join(msg.author, donuts);
-			return msg.embed({ color: colors.green, description: `${msg.author}, you have successfully joined the game.` });
+			return msg.embed({
+				color: _sdata.colors.green,
+				description: `${msg.author}, you have successfully joined the game.`
+			});
 		}
 
 		roulette = new RussianRoulette(msg.guild.id);
@@ -60,20 +67,20 @@ module.exports = class RussianRouletteCommand extends Command {
 		const barrel = this.generateBarrel();
 
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			description: stripIndents`
 			A new game of russian roulette has been initiated!
 
 			Use the ${msg.usage()} command in the next 15 seconds to join!`
 		}).then(async () => {
 			setTimeout(() => msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: '5 more seconds for new people to join'
 			}), 10000);
 			setTimeout(() => {
 				if (roulette.players.length > 1) {
 					msg.embed({
-						color: colors.blue,
+						color: _sdata.colors.blue,
 						description: 'The game begins!'
 					});
 				}
@@ -83,7 +90,7 @@ module.exports = class RussianRouletteCommand extends Command {
 
 			if (players.length === 1) {
 				return msg.embed({
-					color: colors.blue,
+					color: _sdata.colors.blue,
 					description: 'Seems like no one else wanted to join. Ah well, maybe another time.'
 				});
 			}
@@ -102,7 +109,7 @@ module.exports = class RussianRouletteCommand extends Command {
 			survivors.forEach(survivor => Currency.addBalance(survivor.user.id, donuts / survivors.length));
 
 			return msg.embed({
-				color: colors.grey,
+				color: _sdata.colors.grey,
 				description: stripIndents`
 					__**Survivors**__
 					${survivors.map(survivor => survivor.user.username).join('\n')}

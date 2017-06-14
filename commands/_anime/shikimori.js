@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { version } = require('../../package.json');
 const request = require('request-promise');
 const { oneLine } = require('common-tags');
@@ -11,7 +11,7 @@ module.exports = class TestCommand extends Command {
 			aliases: ['shiki'],
 			group: 'anime',
 			memberName: 'shikimori',
-			description: 'Get user profile from shikimori.org',
+			description: '`AL: low` Get user profile from shikimori.org',
 			throttling: {
 				usages: 1,
 				duration: 5
@@ -27,11 +27,15 @@ module.exports = class TestCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { user }) {
 		const shikiUser = await this._getUser(user);
 		if (shikiUser === null) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: 'Your request has no results.'
 			});
 		}
@@ -43,7 +47,7 @@ module.exports = class TestCommand extends Command {
 				name: 'Shikimori',
 				url: `https://shikimori.org/${shikiUser.nickname.replace(' ', '+')}`
 			},
-			color: colors.green,
+			color: _sdata.colors.green,
 			fields: [
 				{
 					name: `**${shikiUser.name !== null && shikiUser.name !== '' ? 'Name / ' : ''}Nickname**`,

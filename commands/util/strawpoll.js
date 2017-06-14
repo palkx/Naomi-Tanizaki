@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const request = require('request-promise');
 const { oneLine, stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { version } = require('../../package');
 
 module.exports = class FortuneCommand extends Command {
@@ -10,7 +10,7 @@ module.exports = class FortuneCommand extends Command {
 			name: 'strawpoll',
 			group: 'util',
 			memberName: 'strawpoll',
-			description: 'Create a strawpoll.',
+			description: '`AL: low` Create a strawpoll.',
 			details: stripIndents`Create a strawpoll.
 				The first argument is always the title, if you provde it, otherwise your username will be used!
 				If you need to use spaces in your title make sure you put them in SingleQuotes => \`'topic here'\``,
@@ -57,12 +57,19 @@ module.exports = class FortuneCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { title, options }) {
 		if (options.length < 2) {
-			return msg.embed({ color: colors.blue, description: `${msg.author}, please provide 2 or more options.` });
+			return msg.embed({ color: _sdata.colors.blue, description: `${msg.author}, please provide 2 or more options.` });
 		}
 		if (options.length > 31) {
-			return msg.embed({ color: colors.blue, description: `${msg.author}, please provide less than 31 options.` });
+			return msg.embed({
+				color: _sdata.colors.blue,
+				description: `${msg.author}, please provide less than 31 options.`
+			});
 		}
 
 		const response = await request({
@@ -78,7 +85,7 @@ module.exports = class FortuneCommand extends Command {
 			json: true
 		});
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: stripIndents`🗳 ${response.title}
 			<http://strawpoll.me/${response.id}>`
 		});

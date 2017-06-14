@@ -1,12 +1,13 @@
 const { Command } = require('discord.js-commando');
 const moment = require('moment');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const humanLevels = {
 	0: 'None',
 	1: 'Low',
 	2: 'Medium',
-	3: '(╯°□°）╯︵ ┻━┻'
+	3: '(╯°□°）╯︵ ┻━┻',
+	4: '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'
 };
 
 module.exports = class ServerInfoCommand extends Command {
@@ -16,7 +17,7 @@ module.exports = class ServerInfoCommand extends Command {
 			aliases: ['server'],
 			group: 'info',
 			memberName: 'server',
-			description: 'Get info on the server.',
+			description: '`AL: low` Get info on the server.',
 			details: `Get detailed information on the server.`,
 			guildOnly: true,
 			throttling: {
@@ -26,9 +27,13 @@ module.exports = class ServerInfoCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	run(msg) {
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			description: `Info on **${msg.guild.name}** (ID: ${msg.guild.id})`,
 			fields: [
 				{

@@ -1,5 +1,5 @@
 const { Command, util } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Inventory = require('../../structures/currency/Inventory');
 const { PAGINATED_ITEMS } = require('../../assets/_data/settings.json');
 
@@ -10,7 +10,7 @@ module.exports = class InventoryShowCommand extends Command {
 			aliases: ['inv'],
 			group: 'item',
 			memberName: 'inventory',
-			description: 'Displays the items you have in your inventory',
+			description: '`AL: low` Displays the items you have in your inventory',
 			detail: 'Displays the items you have in your inventory',
 			guildOnly: true,
 			throttling: {
@@ -29,6 +29,10 @@ module.exports = class InventoryShowCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { page }) {
 		let items = [];
 		const inventory = await Inventory.fetchInventory(msg.author.id);
@@ -42,10 +46,13 @@ module.exports = class InventoryShowCommand extends Command {
 		const paginated = util.paginate(items, page, Math.floor(PAGINATED_ITEMS));
 
 		if (items.length === 0) {
-			return msg.embed({ color: colors.red, description: `${msg.author}, can't show what you don't have, man.` });
+			return msg.embed({
+				color: _sdata.colors.red,
+				description: `${msg.author}, can't show what you don't have, man.`
+			});
 		}
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `__**${msg.author.username}#${msg.author.discriminator}'s inventory:**__`,
 			fields: [
 				{

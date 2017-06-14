@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Currency = require('../../structures/currency/Currency');
 const Inventory = require('../../structures/currency/Inventory');
 const ItemGroup = require('../../structures/currency/ItemGroup');
@@ -13,7 +13,7 @@ module.exports = class BuyItemCommand extends Command {
 			aliases: ['item-buy', 'buy'],
 			group: 'item',
 			memberName: 'buy',
-			description: 'Buys an item at the store.',
+			description: '`AL: low` Buys an item at the store.',
 			details: 'Let\'s you exchange your hard earned donuts for other goods.',
 			throttling: {
 				usages: 2,
@@ -39,12 +39,16 @@ module.exports = class BuyItemCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { amount, item }) {
 		const itemName = item.replace(/(\b\w)/gi, lc => lc.toUpperCase());
 		const storeItem = Store.getItem(item);
 		if (!storeItem) {
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: stripIndents`
 				${msg.member}, that item does not exist.
 
@@ -56,7 +60,7 @@ module.exports = class BuyItemCommand extends Command {
 		const plural = amount > 1 || amount === 0;
 		if (balance < storeItem.price * amount) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: stripIndents`
 				${msg.member}, you don't have enough donuts to buy ${amount} ${itemName}${plural
 					? 's'
@@ -74,7 +78,7 @@ module.exports = class BuyItemCommand extends Command {
 		Currency.removeBalance(msg.author.id, amount * storeItem.price);
 		inventory.save();
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: stripIndents`
 			${msg.member}, you have successfully purchased ${amount} ${itemName}${plural
 				? 's'

@@ -1,4 +1,5 @@
 const Canvas = require('canvas');
+const _sdata = require('../../assets/_data/static_data.json');
 const { Command } = require('discord.js-commando');
 
 module.exports = class PleaseCommand extends Command {
@@ -8,7 +9,7 @@ module.exports = class PleaseCommand extends Command {
 			aliases: ['pls'],
 			group: 'social',
 			memberName: 'please',
-			description: 'Make someone else plead?..',
+			description: '`AL: low` Make someone else plead?..',
 			guildOnly: true,
 			throttling: {
 				usages: 1,
@@ -24,6 +25,10 @@ module.exports = class PleaseCommand extends Command {
 				}
 			]
 		});
+	}
+
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
 	}
 
 	run(msg, args) {

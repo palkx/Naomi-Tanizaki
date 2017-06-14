@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const UserRep = require('../../models/UserRep');
 
 module.exports = class RepNegativeCommand extends Command {
@@ -9,7 +9,7 @@ module.exports = class RepNegativeCommand extends Command {
 			aliases: ['remove-rep', 'rep-rem', 'rem-rep', 'rep-neg', 'neg-rep', '--'],
 			group: 'rep',
 			memberName: 'negative',
-			description: 'Add a negative reputation point to a user.',
+			description: '`AL: low` Add a negative reputation point to a user.',
 			guildOnly: true,
 
 			args: [
@@ -29,10 +29,14 @@ module.exports = class RepNegativeCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { member, message }) {
 		if (member.id === msg.author.id) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, you can't change your own reputation like that!`
 			});
 		}
@@ -46,7 +50,7 @@ module.exports = class RepNegativeCommand extends Command {
 
 		if (alreadyRepped && alreadyRepped.reputationType === '-') {
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: `${msg.author}, you have already given a negative reputation point to this user.`
 			}); // eslint-disable-line max-len
 		}
@@ -59,7 +63,7 @@ module.exports = class RepNegativeCommand extends Command {
 			reputationMessage: message || null
 		});
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, you've successfully added a negative reputation point to ${member.displayName}.`
 		});
 	}

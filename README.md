@@ -6,6 +6,14 @@
 [![Build Status](https://travis-ci.org/iSm1le/Naomi-Tanizaki.svg?branch=master)](https://travis-ci.org/iSm1le/Naomi-Tanizaki)
 # Naomi-Tanizaki
 
+## Contributing
+
+1. Fork it!
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request :D
+
 ## Installation guide for Ubuntu 16.04 LTS and Debian 8
 
 #### Run install.sh
@@ -43,3 +51,6 @@ pm2 start bot.js
 ```bash
 pm2 save
 ```
+## Author
+**[iSm1le](https://github.com/iSm1le/)** © , Released under the [MIT](https://github.com/iSm1le/Naomi-Tanizaki/blob/master/LICENSE) License.<br>
+Authored and maintained by iSm1le.

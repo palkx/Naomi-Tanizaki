@@ -2,10 +2,10 @@ const { FriendlyError } = require('discord.js-commando');
 const { oneLine } = require('common-tags');
 const path = require('path');
 const winston = require('winston');
-const colors = require('./assets/_data/colors.json');
+const _sdata = require('./assets/_data/static_data.json');
 const SequelizeProvider = require('./providers/Sequelize');
 const Starboard = require('./structures/stars/Starboard');
-const { OWNERS, TOKEN, COMMAND_PREFIX } = require('./assets/_data/settings.json');
+const { OWNERS, TOKEN, COMMAND_PREFIX, EXAMPLE_CHANNEL } = require('./assets/_data/settings.json');
 const { version, build } = require('./package.json');
 const BotClient = require('./structures/BotClient');
 
@@ -15,6 +15,7 @@ const client = new BotClient({
 	unknownCommandResponse: false,
 	disableEveryone: true
 });
+
 
 const Currency = require('./structures/currency/Currency');
 const Experience = require('./structures/currency/Experience');
@@ -40,6 +41,42 @@ client.on('error', winston.error)
 			Logged in as ${client.user.tag} (${client.user.id}))
 		`);
 		client.user.setGame(`v${version} b${build}`);
+		client.setInterval(() => {
+			let users = [];
+			client.users.forEach(el => {
+				if (!el.bot) {
+					let firstSeen = client.provider.get(el.id, 'firstSeen');
+					if (firstSeen === undefined) {
+						client.provider.set(el.id, 'firstSeen', Date.now());
+					} else if ((firstSeen + 604800000) < Date.now()) {
+						const userLevel = client.provider.get(el.id, 'userLevel');
+						if (userLevel < _sdata.aLevel.low || userLevel === undefined) {
+							client.provider.set(el.id, 'userLevel', _sdata.aLevel.low).then(users.push(el));
+						}
+					}
+				}
+			});
+			if (users.length > 0) {
+				let _users;
+				for (let i = 0, j = users.length; i < j; i += 10) {
+					_users = users.splice(i, i + 10);
+					if (client.channels.get(EXAMPLE_CHANNEL)) {
+						client.channels.get(EXAMPLE_CHANNEL).send({
+							embed: {
+								color: _sdata.colors.green,
+								author: {
+									name: `${client.user.tag} (${client.user.id})`,
+									icon_url: client.user.displayAvatarURL // eslint-disable-line camelcase
+								},
+								description: `This users will get auto \`AL: low\` permissions: ${_users}`,
+								timestamp: new Date(),
+								footer: { text: `AL: low granted` }
+							}
+						});
+					}
+				}
+			}
+		}, 6 * 60 * 60 * 1000);
 	})
 	.on('disconnect', () => {
 		winston.warn(`[DISCORD]: [${Date.now()}] Disconnected! Exiting app in 10s.`);
@@ -64,7 +101,7 @@ client.on('error', winston.error)
 	.on('guildMemberAdd', async member => {
 		await member.guild.defaultChannel.send({
 			embed: {
-				color: colors.green,
+				color: _sdata.colors.green,
 				description: `New user joined. Welcome, ${member.user}, to this server.`
 			}
 		}).catch(err => null); // eslint-disable-line no-unused-vars, handle-callback-err
@@ -72,7 +109,7 @@ client.on('error', winston.error)
 	.on('guildMemberRemove', async member => {
 		await member.guild.defaultChannel.send({
 			embed: {
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `User leaved. Bye, ${member.user}.`
 			}
 		}).catch(err => null); // eslint-disable-line no-unused-vars, handle-callback-err
@@ -127,7 +164,7 @@ client.on('error', winston.error)
 		if (!starboard) {
 			return message.channel.send({ // eslint-disable-line consistent-return
 				embed: {
-					color: colors.blue,
+					color: _sdata.colors.blue,
 					description: `${user}, can't star things without a #starboard...`
 				}
 			});
@@ -136,7 +173,7 @@ client.on('error', winston.error)
 		if (isAuthor || message.author.id === user.id) {
 			return message.channel.send({ // eslint-disable-line consistent-return
 				embed: {
-					color: colors.red,
+					color: _sdata.colors.red,
 					description: `${user}, you can't star your own messages.`
 				}
 			});

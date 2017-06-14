@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Inventory = require('../../structures/currency/Inventory');
 const ItemGroup = require('../../structures/currency/ItemGroup');
 
@@ -10,7 +10,7 @@ module.exports = class ItemGiveCommand extends Command {
 			aliases: ['give-item', 'give-itmes', 'item-give', 'items-give'],
 			group: 'item',
 			memberName: 'give',
-			description: `Give your items to another user.`,
+			description: `\`AL: low\` Give your items to another user.`,
 			guildOnly: true,
 			throttling: {
 				usages: 2,
@@ -39,6 +39,10 @@ module.exports = class ItemGiveCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { member, amount, item }) {
 		const _item = ItemGroup.convert(item, amount);
 		const inventory = await Inventory.fetchInventory(msg.author.id);
@@ -46,21 +50,24 @@ module.exports = class ItemGiveCommand extends Command {
 
 		if (member.id === msg.author.id) {
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: `${msg.author}, giving items to yourself won't change anything.`
 			});
 		}
 		if (member.user.bot) {
 			return msg.embed({
-				color: colors.grey,
+				color: _sdata.colors.grey,
 				description: `${msg.author}, don't give your items to bots: they're bots, man.`
 			});
 		}
 		if (amount <= 0) {
-			return msg.embed({ color: colors.red, description: `${msg.author}, you can't give 0 or less items.` });
+			return msg.embed({ color: _sdata.colors.red, description: `${msg.author}, you can't give 0 or less items.` });
 		}
 		if (amount > itemBalance) {
-			return msg.embed({ color: colors.blue, description: `${msg.author}, you have ${itemBalance} ${_item}(s).` });
+			return msg.embed({
+				color: _sdata.colors.blue,
+				description: `${msg.author}, you have ${itemBalance} ${_item}(s).`
+			});
 		}
 
 		const itemGroup = new ItemGroup(_item, amount);
@@ -69,7 +76,7 @@ module.exports = class ItemGiveCommand extends Command {
 		inventory.removeItems(itemGroup);
 		receiveInv.addItems(itemGroup);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, ${member.displayName} successfully received your item(s)!`
 		});
 	}

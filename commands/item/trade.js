@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Currency = require('../../structures/currency/Currency');
 const Inventory = require('../../structures/currency/Inventory');
 const ItemGroup = require('../../structures/currency/ItemGroup');
@@ -11,7 +11,7 @@ module.exports = class ItemTradeCommand extends Command {
 			aliases: ['trade-items', 'trade-item', 'items-trade'],
 			group: 'item',
 			memberName: 'trade',
-			description: `Trade items with another user.`,
+			description: `\`AL: low\` Trade items with another user.`,
 			guildOnly: true,
 			throttling: {
 				usages: 2,
@@ -52,6 +52,10 @@ module.exports = class ItemTradeCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, args) {
 		const { member, offerAmount, receiveAmount } = args;
 		const offerItem = this.isDonuts(args.offerItem, offerAmount);
@@ -59,19 +63,19 @@ module.exports = class ItemTradeCommand extends Command {
 
 		if (member.id === msg.author.id) {
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: `${msg.author}, giving items to yourself won't change anything.`
 			});
 		}
 		if (member.user.bot) {
 			return msg.embed({
-				color: colors.grey,
+				color: _sdata.colors.grey,
 				description: `${msg.author}, don't give your items to bots: they're bots, man.`
 			});
 		}
 		if (!offerItem && !receiveItem) {
 			return msg.embed({
-				color: colors.grey,
+				color: _sdata.colors.grey,
 				description: `${msg.author},you can't trade donuts for donuts.`
 			});
 		}
@@ -84,11 +88,15 @@ module.exports = class ItemTradeCommand extends Command {
 		const receiveItemBalance = receiveInv.content[receiveItem] ? receiveInv.content[receiveItem].amount : null;
 		const offerValidation = this.validate(offerItem, offerAmount, offerBalance, offerItemBalance, 'you');
 		const receiveValidation = this.validate(receiveItem, receiveAmount, receiveBalance, receiveItemBalance, member.displayName); // eslint-disable-line max-len
-		if (offerValidation) return msg.embed({ color: colors.blue, description: `${msg.author}, ${offerValidation}` });
-		if (receiveValidation) return msg.embed({ color: colors.blue, description: `${msg.author}, ${receiveValidation}` });
+		if (offerValidation) {
+			return msg.embed({ color: _sdata.colors.blue, description: `${msg.author}, ${offerValidation}` });
+		}
+		if (receiveValidation) {
+			return msg.embed({ color: _sdata.colors.blue, description: `${msg.author}, ${receiveValidation}` });
+		}
 
 		const embed = {
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			title: `${msg.member.displayName} < -- > ${member.displayName}`,
 			description: 'Type `accept` within the next 30 seconds to accept this trade.',
 			fields: [
@@ -109,7 +117,7 @@ module.exports = class ItemTradeCommand extends Command {
 
 		if (!await this.response(msg, member, embed)) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, ${member.displayName} declined or failed to respond.`
 			});
 		}
@@ -117,7 +125,7 @@ module.exports = class ItemTradeCommand extends Command {
 		else this.sendItems(offerInv, receiveInv, offerItem, offerAmount);
 		if (!receiveItem) this.sendDonuts(member, msg.author, receiveAmount);
 		else this.sendItems(receiveInv, offerInv, receiveItem, receiveAmount);
-		return msg.embed({ color: colors.green, description: 'Trade successful.' });
+		return msg.embed({ color: _sdata.colors.green, description: 'Trade successful.' });
 	}
 
 	validate(item, amount, balance, itemBalance, user) {

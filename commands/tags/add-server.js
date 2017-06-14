@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Tag = require('../../models/Tag');
 const Util = require('../../util/Util');
 const { PERMITTED_GROUP } = require('../../assets/_data/settings.json');
@@ -11,7 +11,7 @@ module.exports = class ServerTagAddCommand extends Command {
 			aliases: ['tag-add-server', 'add-servertag', 'servertag-add', 'servertag'],
 			group: 'tags',
 			memberName: 'add-server',
-			description: 'Adds a server tag.',
+			description: '`AL: owner, high, perm_group` Adds a server tag.',
 			details: `Adds a server tag, usable for everyone on the server. (Markdown can be used.)`,
 			guildOnly: true,
 			throttling: {
@@ -38,7 +38,9 @@ module.exports = class ServerTagAddCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author) || msg.member.roles.exists('name', PERMITTED_GROUP);
+		return this.client.isOwner(msg.author)
+			|| msg.member.roles.exists('name', PERMITTED_GROUP)
+			|| this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.high;
 	}
 
 	async run(msg, args) {
@@ -48,7 +50,7 @@ module.exports = class ServerTagAddCommand extends Command {
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
 		if (tag) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `A server tag with the name **${name}** already exists, ${msg.author}`
 			});
 		}
@@ -64,7 +66,7 @@ module.exports = class ServerTagAddCommand extends Command {
 			type: true
 		});
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `A server tag with the name **${name}** has been added, ${msg.author}`
 		});
 	}

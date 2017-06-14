@@ -1,0 +1,20 @@
+{
+  "colors":{
+    "red": 14365748,
+    "green": 2817834,
+    "dark_green": 3463988,
+    "blue": 3447003,
+    "yellow": 15451167,
+    "orange": 14845440,
+    "grey": 14211540,
+    "dark_grey": 11316394,
+    "black": 789516
+  },
+  "aLevel":{
+    "zero": 0,
+    "low": 1,
+    "moderate": 2,
+    "high": 3,
+    "full": 5
+  }
+}

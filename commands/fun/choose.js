@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const RESPONSES = [
 	ch => `I choose **${ch}**`,
 	ch => `I pick **${ch}**`,
@@ -15,7 +15,7 @@ module.exports = class ChooseCommand extends Command {
 			aliases: ['pick', 'decide'],
 			group: 'fun',
 			memberName: 'choose',
-			description: 'Makes a choice for you.',
+			description: '`AL: low` Makes a choice for you.',
 			throttling: {
 				usages: 2,
 				duration: 3
@@ -32,10 +32,14 @@ module.exports = class ChooseCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
 	async run(msg, { choices }) {
 		if (choices.length < 2) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `You need to tell me atleast 2 things to choose from, ${msg.author}`
 			});
 		}
@@ -46,7 +50,7 @@ module.exports = class ChooseCommand extends Command {
 		});
 		if (userError) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `Please seperate your choices with a simple space, ${msg.author}`
 			});
 		}
@@ -64,7 +68,7 @@ module.exports = class ChooseCommand extends Command {
 		});
 
 		await msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${RESPONSES[Math.floor(Math.random() * RESPONSES.length)](choices[pick])}, ${msg.author}.`
 		});
 		return null;

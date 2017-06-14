@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 
 module.exports = class GetIconCommand extends Command {
 	constructor(client) {
@@ -8,7 +8,7 @@ module.exports = class GetIconCommand extends Command {
 			aliases: ['gi'],
 			group: 'util',
 			memberName: 'get-icon',
-			description: 'With this command you can get avatar of user or server.',
+			description: '`AL: zero` With this command you can get avatar of user or server.',
 
 			args: [
 				{
@@ -34,12 +34,16 @@ module.exports = class GetIconCommand extends Command {
 		});
 	}
 
+	hasPermission(msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.zero;
+	}
+
 	async run(msg, { obj, user }) {
 		const _obj = obj === 'user';
 		await msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `Here **${_obj ? user.tag : msg.guild.name}\`s** avatar:`,
-			image: { url: _obj ? user.avatarURL : msg.guild.iconURL || undefined }
+			image: { url: _obj ? user.displayAvatarURL : msg.guild.iconURL || undefined }
 		});
 		return null;
 	}
