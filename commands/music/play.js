@@ -55,13 +55,13 @@ module.exports = class PlaySongCommand extends Command {
 			}
 
 			const permissions = voiceChannel.permissionsFor(msg.client.user);
-			if (!permissions.hasPermission('CONNECT')) {
+			if (!permissions.has('CONNECT')) {
 				return msg.embed({
 					color: _sdata.colors.red,
 					description: `${msg.author}, I don't have permission to join your voice channel. No parties allowed there.`
 				});
 			}
-			if (!permissions.hasPermission('SPEAK')) {
+			if (!permissions.has('SPEAK')) {
 				return msg.embed({
 					color: _sdata.colors.red,
 					description: `${msg.author}, I don't have permission to speak in your voice channel. What a disappointment.`

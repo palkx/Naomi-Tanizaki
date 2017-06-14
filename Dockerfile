@@ -5,7 +5,7 @@ LABEL maintainer "iSm1le <sm1leua@ya.ru>"
 RUN apt update
 RUN apt upgrade -y
 RUN apt install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_7.x | bash
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt update

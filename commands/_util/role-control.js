@@ -137,5 +137,4 @@ module.exports = class RoleControlCommand extends Command {
 			});
 		}
 	}
-
 };

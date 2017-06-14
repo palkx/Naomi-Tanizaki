@@ -44,7 +44,7 @@ module.exports = class RoleWhitelistCommand extends Command {
 			|| msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
-	async run(msg, { job, role }) {  // eslint-disable-line consistent-return, require-await
+	async run(msg, { job, role }) { // eslint-disable-line consistent-return, require-await
 		let _role = msg.guild.roles.find('name', role);
 		if (!_role) { return msg.embed({ color: _sdata.colors.red, description: `${role} group is not exist on server` }); }
 		const _job = job.toLowerCase() === 'add';

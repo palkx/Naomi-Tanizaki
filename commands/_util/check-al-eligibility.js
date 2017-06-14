@@ -73,5 +73,4 @@ module.exports = class checkALEligibilityCommand extends Command {
 		}
 		return null;
 	}
-
 };
