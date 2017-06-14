@@ -3,7 +3,7 @@ const _sdata = require('../../assets/_data/static_data.json');
 const Request = require('../../models/Request');
 
 module.exports = class RequestCommand extends Command {
-	constructor (client) {
+	constructor(client) {
 		super(client, {
 			name: 'request-reset',
 			group: 'bot',
@@ -29,11 +29,11 @@ module.exports = class RequestCommand extends Command {
 		});
 	}
 
-	hasPermission (msg) {
+	hasPermission(msg) {
 		return this.client.isOwner(msg.author);
 	}
 
-	run (msg) {
+	run(msg) {
 		Request.sync({ force: true });
 		return msg.embed({
 			color: _sdata.colors.green,

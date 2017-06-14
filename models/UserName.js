@@ -7,7 +7,7 @@ const UserName = Database.db.define('userName', {
 	username: Sequelize.STRING
 }, {
 	indexes: [
-		{ fields: ['userID'] },
+			{ fields: ['userID'] },
 		{
 			fields: ['userID', 'username'],
 			unique: true

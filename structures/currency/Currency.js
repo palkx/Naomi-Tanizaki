@@ -8,7 +8,7 @@ Redis.db.hgetAsync('money', 'bank').then(async balance => {
 });
 
 class Currency {
-	static _changeBalance (user, amount) {
+	static _changeBalance(user, amount) {
 		Redis.db.hgetAsync('money', user).then(balance => {
 			const bal = parseInt(balance) || 0;
 
@@ -16,26 +16,26 @@ class Currency {
 		});
 	}
 
-	static changeBalance (user, amount) {
+	static changeBalance(user, amount) {
 		Currency._changeBalance(user, amount);
 		Currency._changeBalance('bank', -amount);
 	}
 
-	static addBalance (user, amount) {
+	static addBalance(user, amount) {
 		Currency.changeBalance(user, amount);
 	}
 
-	static removeBalance (user, amount) {
+	static removeBalance(user, amount) {
 		Currency.changeBalance(user, -amount);
 	}
 
-	static async getBalance (user) {
+	static async getBalance(user) {
 		const money = await Redis.db.hgetAsync('money', user) || 0;
 
 		return parseInt(money);
 	}
 
-	static async leaderboard () {
+	static async leaderboard() {
 		const balances = await Redis.db.hgetallAsync('money') || {};
 		const bankBalances = await Redis.db.hgetallAsync('ledger') || {};
 
@@ -69,26 +69,26 @@ class Currency {
 		setTimeout(() => Currency.leaderboard(), UPDATE_DURATION);
 	}
 
-	static convert (amount, text = false) {
+	static convert(amount, text = false) {
 		if (isNaN(amount)) amount = parseInt(amount);
 		if (!text) return `${amount.toLocaleString()} ${Math.abs(amount) === 1 ? Currency.singular : Currency.plural}`;
 
 		return `${amount.toLocaleString()} ${Math.abs(amount) === 1 ? Currency.textSingular : Currency.textPlural}`;
 	}
 
-	static get singular () {
+	static get singular() {
 		return '🧀';
 	}
 
-	static get plural () {
+	static get plural() {
 		return '🧀';
 	}
 
-	static get textSingular () {
+	static get textSingular() {
 		return 'cheese';
 	}
 
-	static get textPlural () {
+	static get textPlural() {
 		return 'cheese';
 	}
 }

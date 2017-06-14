@@ -3,7 +3,7 @@ const _sdata = require('../../assets/_data/static_data.json');
 const Starboard = require('../../structures/stars/Starboard');
 
 module.exports = class StarInfoCommand extends Command {
-	constructor (client) {
+	constructor(client) {
 		super(client, {
 			name: 'info-star',
 			aliases: ['star-info', 'star-who', 'who-star'],
@@ -25,11 +25,7 @@ module.exports = class StarInfoCommand extends Command {
 		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
 	}
 
-	hasPermission (msg) {
-		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
-	}
-
-	async run (msg, { message }) {
+	async run(msg, { message }) {
 		const starboard = msg.guild.channels.find('name', 'starboard');
 		if (!starboard) {
 			return msg.embed({

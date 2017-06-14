@@ -426,7 +426,7 @@ discord.js-commando@gawdl3y/discord.js-commando:
   dependencies:
     common-tags "^1.4.0"
     escape-string-regexp "^1.0.0"
-    require-all "^2.2.0"
+    require-all "^2.0.0"
 
 discord.js@hydrabolt/discord.js:
   version "12.0.0-dev"
@@ -521,8 +521,8 @@ escape-string-regexp@^1.0.0, escape-string-regexp@^1.0.2, escape-string-regexp@^
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
 eslint-config-aqua@iSm1le/eslint-config:
-  version "1.0.0"
-  resolved "https://codeload.github.com/iSm1le/eslint-config/tar.gz/097a515f6589a9a2af5e1fe8d9a8a9dca6b3a42a"
+  version "1.0.1"
+  resolved "https://codeload.github.com/iSm1le/eslint-config/tar.gz/435366b405a08d9a048528e240c65f9b8d633dc5"
 
 eslint-scope@^3.7.1:
   version "3.7.1"
@@ -1833,13 +1833,9 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
-uuid@3.0.0:
+uuid@3.0.0, uuid@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.0.tgz#6728fc0459c450d796a99c31837569bdf672d728"
-
-uuid@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 
 validator@^6.3.0:
   version "6.3.0"

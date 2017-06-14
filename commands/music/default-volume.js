@@ -3,7 +3,7 @@ const _sdata = require('../../assets/_data/static_data.json');
 const { DEFAULT_VOLUME, PERMITTED_GROUP } = require('../../assets/_data/settings.json');
 
 module.exports = class DefaultVolumeCommand extends Command {
-	constructor (client) {
+	constructor(client) {
 		super(client, {
 			name: 'default-volume',
 			group: 'music',
@@ -18,12 +18,12 @@ module.exports = class DefaultVolumeCommand extends Command {
 		});
 	}
 
-	hasPermission (msg) {
+	hasPermission(msg) {
 		return this.client.isOwner(msg.author)
 			|| msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
-	run (msg, args) {
+	run(msg, args) {
 		if (!args) {
 			const defaultVolume = this.client.provider.get(msg.guild.id, 'defaultVolume', DEFAULT_VOLUME);
 			return msg.embed({

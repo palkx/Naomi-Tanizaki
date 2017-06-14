@@ -1,14 +1,14 @@
 const games = new Map();
 
 class RussianRoulette {
-	constructor (guildID) {
+	constructor(guildID) {
 		this.guildID = guildID;
 		this.players = [];
 
 		games.set(this.guildID, this);
 	}
 
-	join (user, donuts) {
+	join(user, donuts) {
 		this.players.push({
 			user: user,
 			donuts: donuts
@@ -17,11 +17,11 @@ class RussianRoulette {
 		games.set(this.guildID, this);
 	}
 
-	hasPlayer (userID) {
+	hasPlayer(userID) {
 		return !!this.players.find(player => player.user.id === userID);
 	}
 
-	awaitPlayers (time) {
+	awaitPlayers(time) {
 		return new Promise(resolve => {
 			setTimeout(() => {
 				games.delete(this.guildID);
@@ -30,7 +30,7 @@ class RussianRoulette {
 		});
 	}
 
-	static findGame (guildID) {
+	static findGame(guildID) {
 		return games.get(guildID) || null;
 	}
 }

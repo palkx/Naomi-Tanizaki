@@ -5,7 +5,7 @@ const _sdata = require('../../assets/_data/static_data.json');
 const request = require('request-promise');
 
 module.exports = class KonachanCommand extends Command {
-	constructor (client) {
+	constructor(client) {
 		super(client, {
 			name: 'konachan',
 			aliases: ['kc'],
@@ -26,14 +26,14 @@ module.exports = class KonachanCommand extends Command {
 		});
 	}
 
-	hasPermission (msg) {
+	hasPermission(msg) {
 		if (msg.channel.type === 'dm') return true;
 		return (this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low
 			&& msg.channel.name.toLowerCase().indexOf('nsfw') > -1)
 			|| msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
-	async run (msg, { tags }) {
+	async run(msg, { tags }) {
 		const _tags = tags.replace(' ', '+');
 		const page = _tags === '' ? Math.floor((Math.random() * 8900) + 1) : 1;
 		const response = await request({

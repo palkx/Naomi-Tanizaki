@@ -1,5 +1,5 @@
 class StoreItem {
-	constructor (name, price) {
+	constructor(name, price) {
 		this.name = name;
 		this.price = price;
 	}
