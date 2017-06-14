@@ -4,24 +4,24 @@ const Redis = require('../Redis');
 setInterval(() => Experience.saveExperience(), 30 * 60 * 1000);
 
 class Experience {
-	static addExperience(userID, earned) {
+	static addExperience (userID, earned) {
 		return Redis.db.hgetAsync('experience', userID).then(async balance => {
 			const bal = parseInt(balance) || 0;
 			await Redis.db.hsetAsync('experience', userID, earned + parseInt(bal));
 		});
 	}
 
-	static removeExperience(userID, earned) {
+	static removeExperience (userID, earned) {
 		Experience.addExperience(userID, -earned);
 	}
 
-	static async getTotalExperience(userID) {
+	static async getTotalExperience (userID) {
 		const experience = await Redis.db.hgetAsync('experience', userID) || 0;
 
 		return experience;
 	}
 
-	static async getCurrentExperience(userID) {
+	static async getCurrentExperience (userID) {
 		const totalXP = await Experience.getTotalExperience(userID);
 		const level = await Experience.getLevel(userID);
 		const { lowerBound } = Experience.getLevelBounds(level);
@@ -29,7 +29,7 @@ class Experience {
 		return totalXP - lowerBound;
 	}
 
-	static getLevelBounds(level) {
+	static getLevelBounds (level) {
 		const upperBound = Math.ceil((level / 0.177) ** 2);
 		const lowerBound = Math.ceil(((level - 1) / 0.177) ** 2);
 
@@ -39,13 +39,13 @@ class Experience {
 		};
 	}
 
-	static async getLevel(userID) {
+	static async getLevel (userID) {
 		const experience = await Experience.getTotalExperience(userID);
 
 		return Math.floor(0.177 * Math.sqrt(experience)) + 1;
 	}
 
-	static async saveExperience() {
+	static async saveExperience () {
 		const experiences = await Redis.db.hgetallAsync('experience');
 		const ids = Object.keys(experiences || {});
 
