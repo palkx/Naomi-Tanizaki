@@ -4,18 +4,18 @@ const moment = require('moment');
 const nani = require('nani');
 
 const { ANILIST_ID, ANILIST_SECRET } = require('../../assets/_data/settings.json');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 
 let seasons = { 0: 'Winter', 1: 'Spring', 2: 'Summer', 3: 'Fall', Winter: 0, Spring: 1, Summer: 2, Fall: 3 };
 
 module.exports = class AnimeCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'anime',
 			aliases: ['animu'],
 			group: 'anime',
 			memberName: 'anime',
-			description: 'Get info on an anime.',
+			description: '`AL: low` Get info on an anime.',
 			throttling: {
 				usages: 2,
 				duration: 3
@@ -32,10 +32,14 @@ module.exports = class AnimeCommand extends Command {
 		nani.init(ANILIST_ID, ANILIST_SECRET);
 	}
 
-	async run(msg, { anime }) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, { anime }) {
 		let data = await nani.get(`anime/search/${anime}`);
 		if (!Array.isArray(data)) {
-			return msg.embed({ color: colors.red, description: data.error.messages[0] });
+			return msg.embed({ color: _sdata.colors.red, description: data.error.messages[0] });
 		}
 		data = data.length === 1
 			? data[0]
@@ -50,7 +54,7 @@ module.exports = class AnimeCommand extends Command {
 			: 'No description';
 		const score = data.average_score / 10;
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			author: {
 				name: title,
 				url: `https://www.anilist.co/anime/${data.id}`
@@ -61,11 +65,11 @@ module.exports = class AnimeCommand extends Command {
 					value: stripIndents`
 						${data.type}
 						${data.season !== null
-						? this._parseSeason(data.season)
-						: '?'}
+		? this._parseSeason(data.season)
+		: '?'}
 						${data.source !== null
-						? data.source
-						: '?'}
+		? data.source
+		: '?'}
 					`,
 					inline: true
 				},
@@ -104,16 +108,16 @@ module.exports = class AnimeCommand extends Command {
 			footer: {
 				text: `
 					Started: ${moment.utc(data.start_date)
-					.format('DD/MM/YYYY')} | Finished: ${data.end_date !== null
-					? moment.utc(data.end_date)
-						.format('DD/MM/YYYY')
-					: '?'}
+		.format('DD/MM/YYYY')} | Finished: ${data.end_date !== null
+	? moment.utc(data.end_date)
+		.format('DD/MM/YYYY')
+	: '?'}
 				`
 			}
 		});
 	}
 
-	_parseSeason(season) {
+	_parseSeason (season) {
 		return season < 350
 			? `${seasons[season % 10]} 20${Math.floor(season / 10)}`
 			: `${seasons[season % 10]} 19${Math.floor(season / 10)}`;

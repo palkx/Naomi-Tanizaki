@@ -5,7 +5,7 @@ const winston = require('winston');
 const Star = require('../../models/Star.js');
 
 module.exports = class Starboard {
-	static async createStar(message, starboardChannel, starBy) {
+	static async createStar (message, starboardChannel, starBy) {
 		message.content = message.content.length <= 1024 ? message.content : `${message.content.substr(0, 1021)}...`;
 
 		const starboardMessage = await starboardChannel.send({ embed: Starboard._starEmbed(message, 1) });
@@ -18,19 +18,19 @@ module.exports = class Starboard {
 		});
 	}
 
-	static async deleteStar(message, starboardChannel) {
+	static async deleteStar (message, starboardChannel) {
 		const star = await Star.findByPrimary(message.id);
 		const starMessage = await starboardChannel.fetchMessage(star.starboardMessageID);
 		await starMessage.delete();
 		await star.destroy();
 	}
 
-	static async isStarred(messageID) {
+	static async isStarred (messageID) {
 		const star = await Star.findByPrimary(messageID);
 		return Boolean(star);
 	}
 
-	static async isAuthor(messageID, userID) {
+	static async isAuthor (messageID, userID) {
 		const star = await Star.findOne({
 			where: {
 				messageID,
@@ -40,13 +40,13 @@ module.exports = class Starboard {
 		return Boolean(star);
 	}
 
-	static async hasStarred(messageID, userID) {
+	static async hasStarred (messageID, userID) {
 		const star = await Star.findByPrimary(messageID);
 		if (!star) return false;
 		return star.starredBy.includes(userID);
 	}
 
-	static async addStar(message, starboardChannel, starredBy) {
+	static async addStar (message, starboardChannel, starredBy) {
 		const star = await Star.findByPrimary(message.id);
 		const { stars: newCount } = await star.increment('stars');
 		star.starredBy = star.starredBy.concat([starredBy]);
@@ -55,7 +55,7 @@ module.exports = class Starboard {
 		starMessage.edit({ embed: Starboard._starEmbed(message, newCount) });
 	}
 
-	static async removeStar(message, starboardChannel, starredBy) {
+	static async removeStar (message, starboardChannel, starredBy) {
 		const star = await Star.findByPrimary(message.id);
 		await star.decrement('stars');
 		star.starredBy = star.starredBy.filter(user => user !== starredBy);
@@ -69,12 +69,12 @@ module.exports = class Starboard {
 		}
 	}
 
-	static async getStar(messageID) {
+	static async getStar (messageID) {
 		const star = await Star.findByPrimary(messageID);
 		return star;
 	}
 
-	static _starEmbed(message, starCount) {
+	static _starEmbed (message, starCount) {
 		let attachmentImage;
 		const extensions = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp']);
 		const linkRegex = /https?:\/\/(?:\w+\.)?[\w-]+\.[\w]{2,3}(?:\/[\w-_\.]+)+\.(?:png|jpg|jpeg|gif|webp)/; // eslint-disable-line no-useless-escape, max-len

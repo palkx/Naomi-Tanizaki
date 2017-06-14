@@ -1,15 +1,15 @@
 const { Command, util } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const UserRep = require('../../models/UserRep');
 
 module.exports = class RepShowCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'rep-show',
 			aliases: ['show-rep'],
 			group: 'rep',
 			memberName: 'show',
-			description: 'Display the reputation a user has received from other people.',
+			description: '`AL: low` Display the reputation a user has received from other people.',
 			guildOnly: true,
 
 			args: [
@@ -23,7 +23,11 @@ module.exports = class RepShowCommand extends Command {
 		});
 	}
 
-	async run(msg, { page }) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, { page }) {
 		const reputation = await UserRep.findAll({ where: { userID: msg.author.id } });
 		const positive = reputation.filter(rep => rep.reputationType.trim() === '+').length;
 		const negative = reputation.length - positive;
@@ -33,7 +37,10 @@ module.exports = class RepShowCommand extends Command {
 			value: rep.reputationMessage || '*-no message-*'
 		}));
 		return msg.embed({
-			color: positive === negative ? colors.orange : positive > negative ? colors.green : colors.red,
+			color: positive === negative ? _sdata.colors.orange
+				: positive > negative
+					? _sdata.colors.green
+					: _sdata.colors.red,
 			author: {
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 				icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase

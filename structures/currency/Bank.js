@@ -11,30 +11,30 @@ Redis.db.getAsync('bankupdate').then(update => {
 });
 
 class Bank {
-	static changeLedger(user, amount) {
+	static changeLedger (user, amount) {
 		Redis.db.hgetAsync('ledger', user).then(async balance => {
 			const bal = parseInt(balance) || 0;
 			await Redis.db.hsetAsync('ledger', user, amount + parseInt(bal));
 		});
 	}
 
-	static async getBalance(user) {
+	static async getBalance (user) {
 		const balance = await Redis.db.hgetAsync('ledger', user) || 0;
 
 		return parseInt(balance);
 	}
 
-	static deposit(user, amount) {
+	static deposit (user, amount) {
 		Currency.removeBalance(user, amount);
 		this.changeLedger(user, amount);
 	}
 
-	static withdraw(user, amount) {
+	static withdraw (user, amount) {
 		Currency.addBalance(user, amount);
 		this.changeLedger(user, -amount);
 	}
 
-	static async applyInterest() {
+	static async applyInterest () {
 		const interestRate = await this.getInterestRate();
 		const bankBalance = await Currency.getBalance('bank');
 		const previousBankBalance = await Redis.db.getAsync('lastbankbalance') || bankBalance;
@@ -58,13 +58,13 @@ class Bank {
 		setTimeout(() => Bank.applyInterest(), UPDATE_DURATION);
 	}
 
-	static async getInterestRate() {
+	static async getInterestRate () {
 		const interestRate = await Redis.db.getAsync('interestrate') || 0.01;
 
 		return parseFloat(interestRate);
 	}
 
-	static async nextUpdate() {
+	static async nextUpdate () {
 		const lastUpdate = await Redis.db.getAsync('bankupdate');
 
 		return UPDATE_DURATION - (Date.now() - lastUpdate);

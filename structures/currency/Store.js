@@ -6,15 +6,15 @@ const StoreItem = require('./StoreItem');
 const storeItems = new Collection();
 
 class Store {
-	static registerItem(item) {
+	static registerItem (item) {
 		storeItems.set(item.name, item);
 	}
 
-	static getItem(itemName) {
+	static getItem (itemName) {
 		return storeItems.get(itemName);
 	}
 
-	static getItems() {
+	static getItems () {
 		return storeItems;
 	}
 }

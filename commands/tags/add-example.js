@@ -1,17 +1,17 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { EXAMPLE_CHANNEL, PERMITTED_GROUP } = require('../../assets/_data/settings.json');
 const Tag = require('../../models/Tag');
 const Util = require('../../util/Util');
 
 module.exports = class ExampleAddCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'add-example',
 			aliases: ['example-add', 'tag-add-example', 'add-example-tag'],
 			group: 'tags',
 			memberName: 'add-example',
-			description: 'Adds an example.',
+			description: '`AL: owner, high, perm_group` Adds an example.',
 			details: `Adds an example and posts it into the #examples channel. (Markdown can be used.)`,
 			guildOnly: true,
 			throttling: {
@@ -37,17 +37,19 @@ module.exports = class ExampleAddCommand extends Command {
 		});
 	}
 
-	hasPermission(msg) {
-		return this.client.isOwner(msg.author) || msg.member.roles.exists('name', PERMITTED_GROUP);
+	hasPermission (msg) {
+		return this.client.isOwner(msg.author)
+			|| msg.member.roles.exists('name', PERMITTED_GROUP)
+			|| this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.high;
 	}
 
-	async run(msg, args) {
+	async run (msg, args) {
 		const name = Util.cleanContent(msg, args.name.toLowerCase());
 		const content = Util.cleanContent(msg, args.content);
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
 		if (tag) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `An example with the name **${name}** already exists, ${msg.author}`
 			});
 		}
@@ -66,13 +68,13 @@ module.exports = class ExampleAddCommand extends Command {
 		});
 		const message = await msg.guild.channels.get(EXAMPLE_CHANNEL).send('', {
 			embed: {
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: content
 			}
 		});
 		Tag.update({ exampleID: message.id }, { where: { name, guildID: msg.guild.id } });
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `An example with the name **${name}** has been added, ${msg.author}`
 		});
 	}

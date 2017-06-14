@@ -22,28 +22,28 @@ setInterval(async () => {
 }, 30 * 60 * 1000);
 
 class Inventory {
-	constructor(user, content) {
+	constructor (user, content) {
 		this.user = user;
 		this.content = content || {};
 	}
 
-	addItem(item) {
+	addItem (item) {
 		const itemGroup = new ItemGroup(item, 1);
 		this.addItems(itemGroup);
 	}
 
-	addItems(itemGroup) {
+	addItems (itemGroup) {
 		const amountInInventory = this.content[itemGroup.item.name] ? this.content[itemGroup.item.name].amount : 0;
 		itemGroup.amount += amountInInventory;
 		this.content[itemGroup.item.name] = itemGroup;
 	}
 
-	removeItem(item) {
+	removeItem (item) {
 		const itemGroup = new ItemGroup(item, 1);
 		this.removeItems(itemGroup);
 	}
 
-	removeItems(itemGroup) {
+	removeItems (itemGroup) {
 		const amountInInventory = this.content[itemGroup.item.name] ? this.content[itemGroup.item.name].amount : 0;
 
 		if (amountInInventory === itemGroup.amount) {
@@ -54,11 +54,11 @@ class Inventory {
 		}
 	}
 
-	save() {
+	save () {
 		return Redis.db.hsetAsync('inventory', this.user, JSON.stringify(this.content));
 	}
 
-	static fetchInventory(user) {
+	static fetchInventory (user) {
 		return new Promise((resolve, reject) => {
 			Redis.db.hgetAsync('inventory', user).then(content => {
 				resolve(new Inventory(user, JSON.parse(content)));

@@ -1,10 +1,10 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Currency = require('../../structures/currency/Currency');
 
 module.exports = class MoneyTradeCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'trade',
 			aliases: [
@@ -21,7 +21,7 @@ module.exports = class MoneyTradeCommand extends Command {
 			],
 			group: 'economy',
 			memberName: 'trade',
-			description: `Trades the ${Currency.textPlural} you have earned.`,
+			description: `\`AL: low\` Trades the ${Currency.textPlural} you have earned.`,
 			details: `Trades the amount of ${Currency.textPlural} you have earned.`,
 			guildOnly: true,
 			throttling: {
@@ -51,22 +51,26 @@ module.exports = class MoneyTradeCommand extends Command {
 		});
 	}
 
-	async run(msg, { member, donuts }) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, { member, donuts }) {
 		if (member.id === msg.author.id) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, you can't trade ${Currency.textPlural} with yourself, ya dingus.`
 			});
 		}
 		if (member.user.bot) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, don't give your ${Currency.textPlural} to bots: they're bots, man.`
 			});
 		}
 		if (donuts <= 0) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, you can't trade 0 or less ${Currency.convert(0)}.`
 			});
 		}
@@ -74,7 +78,7 @@ module.exports = class MoneyTradeCommand extends Command {
 		const userBalance = await Currency.getBalance(msg.author.id);
 		if (userBalance < donuts) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: stripIndents`
 				${msg.author}, you don't have that many ${Currency.textPlural} to trade!
 				You currently have ${Currency.convert(userBalance)} on hand.`
@@ -84,7 +88,7 @@ module.exports = class MoneyTradeCommand extends Command {
 		Currency.removeBalance(msg.author.id, donuts);
 		Currency.addBalance(member.id, donuts);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, ${member.displayName} successfully received your ${Currency.convert(donuts)}!`
 		});
 	}

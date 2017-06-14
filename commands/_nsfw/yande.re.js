@@ -1,17 +1,17 @@
 const { Command } = require('discord.js-commando');
 const { version } = require('../../package.json');
 const { PERMITTED_GROUP } = require('../../assets/_data/settings.json');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const request = require('request-promise');
 
 module.exports = class YandereCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'yandere',
 			aliases: ['yare'],
 			group: 'nsfw',
 			memberName: 'yandere',
-			description: 'Random picture from yande.re',
+			description: '`AL: low` Random picture from yande.re. Usable only in nsfw channels.',
 			throttling: {
 				usages: 1,
 				duration: 15
@@ -26,14 +26,14 @@ module.exports = class YandereCommand extends Command {
 		});
 	}
 
-	hasPermission(msg) {
+	hasPermission (msg) {
 		if (msg.channel.type === 'dm') return true;
-		return (this.client.provider.get(msg.author.id, 'userLevel') >= 1
+		return (this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low
 			&& msg.channel.name.toLowerCase().indexOf('nsfw') > -1)
-				|| msg.member.roles.exists('name', PERMITTED_GROUP);
+			|| msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
-	async run(msg, { tags }) {
+	async run (msg, { tags }) {
 		const _tags = tags.replace(' ', '+');
 		const page = _tags === '' ? Math.floor((Math.random() * 7500) + 1) : 1;
 		const response = await request({
@@ -43,7 +43,7 @@ module.exports = class YandereCommand extends Command {
 		});
 		if (response.length === 0) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: 'your request returned no results.'
 			});
 		}
@@ -54,7 +54,7 @@ module.exports = class YandereCommand extends Command {
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 				url: `https://yande.re/post/show/${response[_id].id}`
 			},
-			color: colors.green,
+			color: _sdata.colors.green,
 			fields: [
 				{
 					name: 'ID',

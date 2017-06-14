@@ -1,17 +1,17 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { oneLine } = require('common-tags');
 const Bank = require('../../structures/currency/Bank');
 const Currency = require('../../structures/currency/Currency');
 
 module.exports = class MoneyInfoCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'money',
 			aliases: ['bal', 'balance', 'donut', 'donuts', 'doughnut', 'doughnuts'],
 			group: 'economy',
 			memberName: 'money',
-			description: `Displays the ${Currency.textPlural} you have earned.`,
+			description: `\`AL: low\` Displays the ${Currency.textPlural} you have earned.`,
 			details: `Displays the ${Currency.textPlural} you have earned.`,
 			guildOnly: true,
 			throttling: {
@@ -30,7 +30,11 @@ module.exports = class MoneyInfoCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, args) {
 		const member = args.member || msg.author;
 		const money = await Currency.getBalance(member.id);
 		const balance = await Bank.getBalance(member.id) || 0;
@@ -39,12 +43,12 @@ module.exports = class MoneyInfoCommand extends Command {
 		if (args.member) {
 			if (money === null) {
 				return msg.embed({
-					color: colors.blue,
+					color: _sdata.colors.blue,
 					description: oneLine`${msg.author}, ${member.displayName} hasn't earned any ${Currency.textPlural} yet.`
 				});
 			}
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: oneLine`
 				${member.displayName} has ${Currency.convert(money)} on hand and
 				${Currency.convert(balance)} in the bank.
@@ -54,13 +58,13 @@ module.exports = class MoneyInfoCommand extends Command {
 		} else {
 			if (money === null) {
 				return msg.embed({
-					color: colors.blue,
+					color: _sdata.colors.blue,
 					description: `
 					${msg.author}, you haven't earned any ${Currency.textPlural} yet.`
 				});
 			}
 			return msg.embed({
-				color: colors.green,
+				color: _sdata.colors.green,
 				description: oneLine`
 				${msg.author}, you have ${Currency.convert(money)} on hand and
 				${Currency.convert(balance)} in the bank.

@@ -1,5 +1,5 @@
 const { oneLine, stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { Command, util } = require('discord.js-commando');
 const moment = require('moment');
 const Sequelize = require('sequelize');
@@ -8,7 +8,7 @@ const { PAGINATED_ITEMS } = require('../../assets/_data/settings.json');
 const UserProfile = require('../../models/UserProfile');
 
 module.exports = class MoneyLeaderboardCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'leaderboard',
 			aliases: [
@@ -22,7 +22,7 @@ module.exports = class MoneyLeaderboardCommand extends Command {
 			],
 			group: 'economy',
 			memberName: 'leaderboard',
-			description: `Displays the ${Currency.textPlural} members have earned.`,
+			description: `\`AL: low\` Displays the ${Currency.textPlural} members have earned.`,
 			details: `Display the amount of ${Currency.textPlural} members have earned in a leaderboard.`,
 			guildOnly: true,
 			throttling: {
@@ -41,7 +41,11 @@ module.exports = class MoneyLeaderboardCommand extends Command {
 		});
 	}
 
-	async run(msg, { page }) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, { page }) {
 		const lastUpdate = await this.client.redis.getAsync('moneyleaderboardreset');
 		const cooldown = 30 * 60 * 1000;
 		const reset = cooldown - (Date.now() - lastUpdate);
@@ -52,7 +56,7 @@ module.exports = class MoneyLeaderboardCommand extends Command {
 		for (const user of paginated.items) await this.client.fetchUser(user.userID); // eslint-disable-line
 
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			description: stripIndents`
 				__**${Currency.textSingular.replace(/./, lc => lc.toUpperCase())} leaderboard, page ${paginated.page}**__
 
@@ -66,7 +70,7 @@ module.exports = class MoneyLeaderboardCommand extends Command {
 		});
 	}
 
-	async findCached() {
+	async findCached () {
 		const cache = await this.client.redis.getAsync('moneyleaderboard');
 		const cacheExpire = await this.client.redis.ttlAsync('moneyleaderboard');
 		if (cacheExpire !== -1 && cacheExpire !== -2) return cache;

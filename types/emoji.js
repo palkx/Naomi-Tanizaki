@@ -13,11 +13,11 @@ const emojiRegex = new RegExp(emojiRanges.join('|'), 'g');
 const regex = /<:([a-zA-Z0-9_]+):(\d+)>/;
 
 class EmojiArgumentType extends ArgumentType {
-	constructor(client) {
+	constructor (client) {
 		super(client, 'emoji');
 	}
 
-	validate(value, msg) {
+	validate (value, msg) {
 		if (value.match(regex)) {
 			const emoji = msg.client.emojis.get(value.match(regex)[2]);
 			if (emoji) return true;
@@ -27,7 +27,7 @@ class EmojiArgumentType extends ArgumentType {
 		return false;
 	}
 
-	parse(value, msg) { // eslint-disable-line consistent-return
+	parse (value, msg) { // eslint-disable-line consistent-return
 		if (value.match(regex)) {
 			const emoji = msg.client.emojis.get(value.match(regex)[2]);
 			if (emoji) return emoji;

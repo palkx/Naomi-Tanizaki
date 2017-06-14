@@ -1,17 +1,17 @@
 const { Command } = require('discord.js-commando');
 const request = require('request-promise');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { SHERLOCK_API } = require('../../assets/_data/settings.json');
 const { version } = require('../../package');
 
 module.exports = class TranslateCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'translate',
 			aliases: ['t'],
 			group: 'util',
 			memberName: 'translate',
-			description: 'Translates the input text into the specified output language.',
+			description: '`AL: low` Translates the input text into the specified output language.',
 			throttling: {
 				usages: 5,
 				duration: 60
@@ -38,10 +38,14 @@ module.exports = class TranslateCommand extends Command {
 		});
 	}
 
-	async run(msg, { query, to, from }) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, { query, to, from }) {
 		if (!SHERLOCK_API) {
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: `${msg.author}, my owner has not set the Sherlock API Key. Go yell at him.`
 			});
 		}
@@ -60,15 +64,18 @@ module.exports = class TranslateCommand extends Command {
 			});
 		} catch (error) {
 			if (error.error) {
-				return msg.embed({ color: colors.blue, description: `${msg.author}, ${this.handleError(error.error)}` });
+				return msg.embed({
+					color: _sdata.colors.blue,
+					description: `${msg.author}, ${this.handleError(error.error)}`
+				});
 			}
 		}
 
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			author: {
 				name: msg.member ? msg.member.displayName : msg.author.username,
-				icon_url: msg.author.avatarURL // eslint-disable-line camelcase
+				icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase
 			},
 			fields: [
 				{
@@ -83,7 +90,7 @@ module.exports = class TranslateCommand extends Command {
 		});
 	}
 
-	handleError(response) {
+	handleError (response) {
 		if (response.error === 'Missing \'query\' field' || response.error === 'Missing \'to\' lang field') {
 			return 'Required Fields are missing!';
 		} else if (response.error === 'Unknown \'to\' Language') {

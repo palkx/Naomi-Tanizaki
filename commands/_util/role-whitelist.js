@@ -1,16 +1,17 @@
 const { Command } = require('discord.js-commando');
 const { PERMITTED_GROUP } = require('../../assets/_data/settings.json');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 
 module.exports = class RoleWhitelistCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'role-whitelist',
 			aliases: ['rw'],
 			group: 'util',
 			memberName: 'role-whitelist',
-			description: 'Add/remove role to/from a whitelist',
+			description: '`AL: moderate` Add/remove role to/from a whitelist',
 			guildOnly: true,
+			guarded: true,
 			throttling: {
 				usages: 2,
 				duration: 5
@@ -38,29 +39,31 @@ module.exports = class RoleWhitelistCommand extends Command {
 		});
 	}
 
-	hasPermission(msg) {
-		return this.client.provider.get(msg.author.id, 'userLevel') >= 3
-		|| msg.member.roles.exists('name', PERMITTED_GROUP);
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.moderate
+			|| msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
-	async run(msg, { job, role }) {  // eslint-disable-line consistent-return, require-await
+	async run (msg, { job, role }) { // eslint-disable-line consistent-return, require-await
 		let _role = msg.guild.roles.find('name', role);
-		if (!_role) { return msg.embed({ color: colors.red, description: `${role} group is not exist on server` }); }
+		if (!_role) {
+			return msg.embed({ color: _sdata.colors.red, description: `${role} group is not exist on server` });
+		}
 		const _job = job.toLowerCase() === 'add';
 
 		const roleWhitelist = this.client.provider.get(msg.guild.id, 'roleWhitelist', []);
 		if (_job) {
 			if (roleWhitelist.includes(_role.id)) {
-				return msg.embed({ color: colors.red, description: `${_role} is already whitelisted.` });
+				return msg.embed({ color: _sdata.colors.red, description: `${_role} is already whitelisted.` });
 			}
 
 			roleWhitelist.push(_role.id);
 			this.client.provider.set(msg.guild.id, 'roleWhitelist', roleWhitelist);
 
-			return msg.embed({ color: colors.green, description: `${_role} has been added to the whitelist.` });
+			return msg.embed({ color: _sdata.colors.green, description: `${_role} has been added to the whitelist.` });
 		} else {
 			if (!roleWhitelist.includes(_role.id)) {
-				return msg.embed({ color: colors.red, description: `${_role} is not whitelisted.` });
+				return msg.embed({ color: _sdata.colors.red, description: `${_role} is not whitelisted.` });
 			}
 
 			const index = roleWhitelist.indexOf(_role.id);
@@ -72,7 +75,10 @@ module.exports = class RoleWhitelistCommand extends Command {
 				this.client.provider.set(msg.guild.id, 'roleWhitelist', roleWhitelist);
 			}
 
-			return msg.embed({ color: colors.green, description: `${_role} has been removed from the whitelist.` });
+			return msg.embed({
+				color: _sdata.colors.green,
+				description: `${_role} has been removed from the whitelist.`
+			});
 		}
 	}
 };

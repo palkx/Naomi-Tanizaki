@@ -1,14 +1,15 @@
 const Canvas = require('canvas');
+const _sdata = require('../../assets/_data/static_data.json');
 const { Command } = require('discord.js-commando');
 
 module.exports = class PleaseCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'please',
 			aliases: ['pls'],
 			group: 'social',
 			memberName: 'please',
-			description: 'Make someone else plead?..',
+			description: '`AL: low` Make someone else plead?..',
 			guildOnly: true,
 			throttling: {
 				usages: 1,
@@ -26,7 +27,11 @@ module.exports = class PleaseCommand extends Command {
 		});
 	}
 
-	run(msg, args) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	run (msg, args) {
 		const member = args.member.displayName || 'Grey';
 		const canvas = new Canvas();
 		const ctx = canvas.getContext('2d');
@@ -49,7 +54,7 @@ module.exports = class PleaseCommand extends Command {
 		return msg.channel.send({ files: [{ attachment: canvas.toBuffer(), name: 'please.png' }] });
 	}
 
-	textSizes(ctx, text) {
+	textSizes (ctx, text) {
 		ctx.font = '700 32px Arial';
 		const dimensions = ctx.measureText(text);
 		const sizes = {

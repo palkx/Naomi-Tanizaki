@@ -1,17 +1,17 @@
 const { Command, util } = require('discord.js-commando');
 const { oneLine, stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { PAGINATED_ITEMS } = require('../../assets/_data/settings.json');
 const Song = require('../../structures/Song');
 
 module.exports = class ViewQueueCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'queue',
 			aliases: ['songs', 'song-list'],
 			group: 'music',
 			memberName: 'queue',
-			description: 'Lists the queued songs.',
+			description: '`AL: low` Lists the queued songs.',
 			guildOnly: true,
 			throttling: {
 				usages: 2,
@@ -29,11 +29,15 @@ module.exports = class ViewQueueCommand extends Command {
 		});
 	}
 
-	run(msg, { page }) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	run (msg, { page }) {
 		const queue = this.queue.get(msg.guild.id);
 		if (!queue) {
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: `${msg.author}, there are no songs in the queue. Why not start the party yourself?`
 			});
 		}
@@ -44,7 +48,7 @@ module.exports = class ViewQueueCommand extends Command {
 		const currentTime = currentSong.dispatcher ? currentSong.dispatcher.time / 1000 : 0;
 
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			author: {
 				name: `${msg.author.username}#${msg.author.discriminator} (${msg.author.id})`,
 				icon_url: msg.author.displayAvatarURL // eslint-disable-line camelcase
@@ -52,13 +56,13 @@ module.exports = class ViewQueueCommand extends Command {
 			description: stripIndents`
 				__**Song queue, page ${paginated.page}**__
 				${paginated.items.map(song => `**-** ${!isNaN(song.id)
-				? `${song.name} (${song.lengthString})`
-				: `[${song.name}](${`https://www.youtube.com/watch?v=${song.id}`})`} (${song.lengthString})`).join('\n')}
+		? `${song.name} (${song.lengthString})`
+		: `[${song.name}](${`https://www.youtube.com/watch?v=${song.id}`})`} (${song.lengthString})`).join('\n')}
 				${paginated.maxPage > 1 ? `\nUse ${msg.usage()} to view a specific page.\n` : ''}
 
 				**Now playing:** ${!isNaN(currentSong.id)
-				? `${currentSong.name}`
-				: `[${currentSong.name}](${`https://www.youtube.com/watch?v=${currentSong.id}`})`}
+		? `${currentSong.name}`
+		: `[${currentSong.name}](${`https://www.youtube.com/watch?v=${currentSong.id}`})`}
 				${oneLine`
 					**Progress:**
 					${!currentSong.playing ? 'Paused: ' : ''}${Song.timeString(currentTime)} /
@@ -70,7 +74,7 @@ module.exports = class ViewQueueCommand extends Command {
 		});
 	}
 
-	get queue() {
+	get queue () {
 		if (!this._queue) this._queue = this.client.registry.resolveCommand('music:play').queue;
 		return this._queue;
 	}

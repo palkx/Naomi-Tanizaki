@@ -17,7 +17,7 @@ const spaces = new Collection([
 ]);
 
 class Roulette {
-	constructor(guildID) {
+	constructor (guildID) {
 		this.guildID = guildID;
 		this.players = [];
 		this.winSpaces = Roulette._generateSpaces();
@@ -25,7 +25,7 @@ class Roulette {
 		games.set(this.guildID, this);
 	}
 
-	join(user, donuts, space) {
+	join (user, donuts, space) {
 		const multiplier = this.winSpaces.includes(space)
 			? spaces.find(spc => spc.values.includes(space)).multiplier
 			: 0;
@@ -37,11 +37,11 @@ class Roulette {
 		games.set(this.guildID, this);
 	}
 
-	hasPlayer(userID) {
+	hasPlayer (userID) {
 		return !!this.players.find(player => player.user.id === userID);
 	}
 
-	awaitPlayers(time) {
+	awaitPlayers (time) {
 		return new Promise(resolve => {
 			setTimeout(() => {
 				games.delete(this.guildID);
@@ -50,15 +50,15 @@ class Roulette {
 		});
 	}
 
-	static findGame(guildID) {
+	static findGame (guildID) {
 		return games.get(guildID) || null;
 	}
 
-	static hasSpace(space) {
+	static hasSpace (space) {
 		return !!spaces.find(spc => spc.values.includes(space));
 	}
 
-	static _generateSpaces() {
+	static _generateSpaces () {
 		const winNumber = Math.floor(Math.random() * 37);
 		return [
 			winNumber.toString(),
@@ -70,12 +70,12 @@ class Roulette {
 		];
 	}
 
-	static _getColor(number) {
+	static _getColor (number) {
 		if (number === 0) return null;
 		return roulette.red.includes(number) ? 'red' : 'black';
 	}
 
-	static _getRange(number, size) {
+	static _getRange (number, size) {
 		if (number === 0) return null;
 		return spaces.get(size).values.find(value => {
 			const min = parseInt(value.split('-')[0]);
@@ -84,12 +84,12 @@ class Roulette {
 		});
 	}
 
-	static _getColumn(number) {
+	static _getColumn (number) {
 		if (number === 0) return null;
 		return spaces.get('columns').values[(number - 1) % 3];
 	}
 
-	static _getParity(number) {
+	static _getParity (number) {
 		if (number === 0) return null;
 		return spaces.get('parity').values[number % 2];
 	}

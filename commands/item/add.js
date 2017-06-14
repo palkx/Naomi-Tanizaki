@@ -1,17 +1,17 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Item = require('../../models/Item');
 const Store = require('../../structures/currency/Store');
 const StoreItem = require('../../structures/currency/StoreItem');
 
 module.exports = class ItemAddCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'item-add',
 			aliases: ['add-item'],
 			group: 'item',
 			memberName: 'add',
-			description: 'Adds an item to the store.',
+			description: '`AL: full` Adds an item to the store.',
 			details: 'Adds an item to the store.',
 			throttling: {
 				usages: 2,
@@ -35,16 +35,17 @@ module.exports = class ItemAddCommand extends Command {
 		});
 	}
 
-	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
+	hasPermission (msg) {
+		return this.client.isOwner(msg.author)
+			|| this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.full;
 	}
 
-	async run(msg, { name, price }) {
+	async run (msg, { name, price }) {
 		const item = Store.getItem(name);
 
 		if (item) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, an item with that name already exists.`
 			});
 		}
@@ -57,7 +58,7 @@ module.exports = class ItemAddCommand extends Command {
 		Store.registerItem(new StoreItem(newItem.name, newItem.price));
 
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, the item ${newItemName} has been successfully created!`
 		});
 	}

@@ -1,10 +1,10 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { EXAMPLE_CHANNEL, PERMITTED_GROUP } = require('../../assets/_data/settings.json');
 const Tag = require('../../models/Tag');
 
 module.exports = class TagDeleteCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'delete-tag',
 			aliases: [
@@ -30,7 +30,7 @@ module.exports = class TagDeleteCommand extends Command {
 			],
 			group: 'tags',
 			memberName: 'delete',
-			description: 'Deletes a tag.',
+			description: '`AL: low` Deletes a tag.',
 			guildOnly: true,
 			throttling: {
 				usages: 2,
@@ -49,19 +49,23 @@ module.exports = class TagDeleteCommand extends Command {
 		});
 	}
 
-	async run(msg, { name }) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, { name }) {
 		const staffRole = this.client.isOwner(msg.author) || await msg.member.roles.exists('name', PERMITTED_GROUP);
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
 		if (!tag) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `A tag with the name **${name}** doesn't exist, ${msg.author}`
 			});
 		}
 
 		if (tag.userID !== msg.author.id && !staffRole) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `You can only delete your own tags, ${msg.author}`
 			});
 		}
@@ -71,7 +75,7 @@ module.exports = class TagDeleteCommand extends Command {
 			messageToDelete.delete();
 		}
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `The tag **${name}** has been deleted, ${msg.author}`
 		});
 	}

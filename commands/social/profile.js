@@ -1,6 +1,6 @@
 const Canvas = require('canvas');
 const { Command } = require('discord.js-commando');
-
+const _sdata = require('../../assets/_data/static_data.json');
 const path = require('path');
 const request = require('request-promise');
 
@@ -12,13 +12,13 @@ const { promisifyAll } = require('tsubaki');
 const fs = promisifyAll(require('fs'));
 
 module.exports = class ProfileCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'profile',
 			aliases: ['p'],
 			group: 'social',
 			memberName: 'profile',
-			description: 'Display your profile.',
+			description: '`AL: low` Display your profile.',
 			guildOnly: true,
 			throttling: {
 				usages: 1,
@@ -36,7 +36,11 @@ module.exports = class ProfileCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, args) {
 		const user = args.member || msg.member;
 		const Image = Canvas.Image;
 		const profile = await UserProfile.findOne({ where: { userID: user.id } });
@@ -154,14 +158,14 @@ module.exports = class ProfileCommand extends Command {
 		};
 		base.src = await fs.readFileAsync(path.join(__dirname, '..', '..', 'assets', 'profile', 'backgrounds', `${profile ? profile.background : 'default'}.png`)); // eslint-disable-line max-len
 		cond.src = await request({
-			uri: user.user.avatarURL() ? user.user.avatarURL('png') : user.user.displayAvatarURL,
+			uri: user.user.avatarURL() ? user.user.avatarURL('png') : user.user.displayAvatarURL.replace('.webp', '.png'),
 			encoding: null
 		});
 		generate();
 		return msg.channel.send({ files: [{ attachment: canvas.toBuffer(), name: 'profile.png' }] });
 	}
 
-	_wrapText(ctx, text, maxWidth) {
+	_wrapText (ctx, text, maxWidth) {
 		return new Promise(resolve => {
 			const words = text.split(' ');
 			let lines = [];

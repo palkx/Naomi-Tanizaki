@@ -4,7 +4,7 @@ const Database = require('./PostgreSQL');
 const Redis = require('./Redis');
 
 class BotClient extends Client {
-	constructor(options) {
+	constructor (options) {
 		super(options);
 		this.database = Database.db;
 		this.redis = Redis.db;

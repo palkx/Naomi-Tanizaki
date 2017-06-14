@@ -1,15 +1,15 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const UserProfile = require('../../models/UserProfile');
 
 module.exports = class PersonalMessageCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'personal-message',
 			aliases: ['set-personal-message', 'set-biography', 'biography', 'set-bio', 'bio'],
 			group: 'social',
 			memberName: 'personal-message',
-			description: 'Set your personal message for your profile.',
+			description: '`AL: low` Set your personal message for your profile.',
 			details: 'Set your personal message for your profile.',
 			guildOnly: true,
 			throttling: {
@@ -37,18 +37,25 @@ module.exports = class PersonalMessageCommand extends Command {
 		});
 	}
 
-	async run(msg, { personalMessage }) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, { personalMessage }) {
 		const profile = await UserProfile.findOne({ where: { userID: msg.author.id } });
 		if (!profile) {
 			await UserProfile.create({
 				userID: msg.author.id,
 				personalMessage
 			});
-			return msg.embed({ color: colors.green, description: `${msg.author}, your message has been updated!` });
+			return msg.embed({
+				color: _sdata.colors.green,
+				description: `${msg.author}, your message has been updated!`
+			});
 		}
 
 		profile.personalMessage = personalMessage;
 		await profile.save();
-		return msg.embed({ color: colors.green, description: `${msg.author}, your message has been updated!` });
+		return msg.embed({ color: _sdata.colors.green, description: `${msg.author}, your message has been updated!` });
 	}
 };

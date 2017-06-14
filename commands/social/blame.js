@@ -1,13 +1,14 @@
 const Canvas = require('canvas');
+const _sdata = require('../../assets/_data/static_data.json');
 const { Command } = require('discord.js-commando');
 
 module.exports = class BlameCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'blame',
 			group: 'social',
 			memberName: 'blame',
-			description: 'Put the blame on someone.',
+			description: '`AL: low` Put the blame on someone.',
 			guildOnly: true,
 			throttling: {
 				usages: 1,
@@ -25,7 +26,11 @@ module.exports = class BlameCommand extends Command {
 		});
 	}
 
-	run(msg, args) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	run (msg, args) {
 		const member = args.member.displayName || 'Crawl';
 		const canvas = new Canvas();
 		const ctx = canvas.getContext('2d');
@@ -48,7 +53,7 @@ module.exports = class BlameCommand extends Command {
 		return msg.channel.send({ files: [{ attachment: canvas.toBuffer(), name: 'blame.png' }] });
 	}
 
-	_textSizes(ctx, text) {
+	_textSizes (ctx, text) {
 		ctx.font = '700 32px Arial';
 		const dimensions = ctx.measureText(text);
 		const sizes = {

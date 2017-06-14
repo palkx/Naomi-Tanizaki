@@ -1,16 +1,16 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Tag = require('../../models/Tag');
 const Util = require('../../util/Util');
 
 module.exports = class TagAddCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'add-tag',
 			aliases: ['tag-add'],
 			group: 'tags',
 			memberName: 'add',
-			description: 'Adds a tag.',
+			description: '`AL: low` Adds a tag.',
 			details: `Adds a tag, usable for everyone on the server. (Markdown can be used.)`,
 			guildOnly: true,
 			throttling: {
@@ -36,13 +36,17 @@ module.exports = class TagAddCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, args) {
 		const name = Util.cleanContent(msg, args.name.toLowerCase());
 		const content = Util.cleanContent(msg, args.content);
 		const tag = await Tag.findOne({ where: { name, guildID: msg.guild.id } });
 		if (tag) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `A tag with the name **${name}** already exists, ${msg.author}`
 			});
 		}
@@ -58,7 +62,7 @@ module.exports = class TagAddCommand extends Command {
 			content
 		});
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `A tag with the name **${name}** has been added, ${msg.author}`
 		});
 	}

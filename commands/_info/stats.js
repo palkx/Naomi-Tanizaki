@@ -2,17 +2,17 @@ const { Command } = require('discord.js-commando');
 const moment = require('moment');
 require('moment-duration-format');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const { version } = require('../../package');
 
 module.exports = class StatsCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'stats',
 			aliases: ['statistics'],
 			group: 'util',
 			memberName: 'stats',
-			description: 'Displays statistics about the bot.',
+			description: '`AL: low` Displays statistics about the bot.',
 			guildOnly: true,
 			throttling: {
 				usages: 2,
@@ -21,9 +21,13 @@ module.exports = class StatsCommand extends Command {
 		});
 	}
 
-	run(msg) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	run (msg) {
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			description: '**Statistics**',
 			fields: [
 				{
@@ -52,7 +56,7 @@ module.exports = class StatsCommand extends Command {
 					inline: true
 				}
 			],
-			thumbnail: { url: this.client.user.avatarURL }
+			thumbnail: { url: this.client.user.displayAvatarURL }
 		});
 	}
 };

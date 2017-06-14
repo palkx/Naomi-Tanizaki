@@ -1,15 +1,15 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Currency = require('../../structures/currency/Currency');
 
 module.exports = class RouletteInfo extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'roulette-info',
 			group: 'games',
 			memberName: 'roulette-info',
-			description: 'Displays information about the roulette.',
+			description: '`AL: low` Displays information about the roulette.',
 			details: 'Displays information about the roulette.',
 			guildOnly: true,
 			throttling: {
@@ -19,9 +19,13 @@ module.exports = class RouletteInfo extends Command {
 		});
 	}
 
-	run(msg) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	run (msg) {
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			description: stripIndents`
 				To start a game or place a bet use \`roulette <${Currency.textPlural}> <space>\`
 
@@ -36,7 +40,7 @@ module.exports = class RouletteInfo extends Command {
 				*Columns* - 3x
 				*Halves* - 2x
 				*Odd/Even* - 2x
-				*Colors* - 2x
+				*colors* - 2x
 
 				**Examples:**
 				\`roulette 300 2nd\`

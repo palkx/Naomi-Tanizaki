@@ -6,18 +6,18 @@ const path = require('path');
 const request = require('request-promise');
 const { promisifyAll } = require('tsubaki');
 const fs = promisifyAll(require('fs'));
-
+const _sdata = require('../../assets/_data/static_data.json');
 const { GOOGLE_API, WEATHER_API } = require('../../assets/_data/settings.json');
 const { version } = require('../../package');
 
 module.exports = class WeatherCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'weather',
 			aliases: ['w', '☁', '⛅', '⛈', '🌤', '🌥', '🌦', '🌧', '🌨', '🌩', '🌪'],
 			group: 'weather',
 			memberName: 'weather',
-			description: 'Get the weather.',
+			description: '`AL: low` Get the weather.',
 			throttling: {
 				usages: 1,
 				duration: 30
@@ -33,7 +33,11 @@ module.exports = class WeatherCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, args) {
 		const { location } = args;
 		const Image = Canvas.Image;
 
@@ -143,7 +147,7 @@ module.exports = class WeatherCommand extends Command {
 		return msg.channel.send({ files: [{ attachment: canvas.toBuffer(), name: `${geocodelocation}.png` }] });
 	}
 
-	handleNotOK(msg, status) {
+	handleNotOK (msg, status) {
 		if (status === 'ZERO_RESULTS') return 'your request returned no results.';
 		else if (status === 'REQUEST_DENIED') return 'Geocode API Request was denied.';
 		else if (status === 'INVALID_REQUEST') return 'Invalid Request,';
@@ -151,7 +155,7 @@ module.exports = class WeatherCommand extends Command {
 		else return 'Unknown.';
 	}
 
-	getBase(icon) {
+	getBase (icon) {
 		if (icon === 'clear-day' || icon === 'partly-cloudy-day') {
 			return path.join(__dirname, '..', '..', 'assets', 'weather', 'base', 'day.png');
 		} else if (icon === 'clear-night' || icon === 'partly-cloudy-night') {

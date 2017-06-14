@@ -1,14 +1,15 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Issue = require('../../models/Issue');
 
 module.exports = class ResetIssuesCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'issue-reset',
 			group: 'bot',
 			memberName: 'issue-reset',
-			description: 'Reset the issues data table.',
+			description: '`AL: owner` Reset the issues data table.',
+			guarded: true,
 
 			args: [
 				{
@@ -28,12 +29,15 @@ module.exports = class ResetIssuesCommand extends Command {
 		});
 	}
 
-	hasPermission(msg) {
+	hasPermission (msg) {
 		return this.client.isOwner(msg.author);
 	}
 
-	run(msg) {
+	run (msg) {
 		Issue.sync({ force: true });
-		return msg.embed({ color: colors.green, description: `${msg.author}, 'the issue data table has been reset.` });
+		return msg.embed({
+			color: _sdata.colors.green,
+			description: `${msg.author}, 'the issue data table has been reset.`
+		});
 	}
 };

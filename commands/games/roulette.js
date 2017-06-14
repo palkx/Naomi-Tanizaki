@@ -1,17 +1,17 @@
 const { Command } = require('discord.js-commando');
 const { stripIndents } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const Currency = require('../../structures/currency/Currency');
 const Roulette = require('../../structures/games/Roulette');
 
 module.exports = class RouletteCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'roulette',
 			aliases: ['roulette'],
 			group: 'games',
 			memberName: 'roulette',
-			description: `Play a game of roulette for ${Currency.textPlural}!`,
+			description: `\`AL: low\` Play a game of roulette for ${Currency.textPlural}!`,
 			details: `Play a game of roulette for ${Currency.textPlural}.`,
 			guildOnly: true,
 			throttling: {
@@ -64,19 +64,26 @@ module.exports = class RouletteCommand extends Command {
 		});
 	}
 
-	run(msg, { bet, space }) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	run (msg, { bet, space }) {
 		let roulette = Roulette.findGame(msg.guild.id);
 
 		if (roulette) {
 			if (roulette.hasPlayer(msg.author.id)) {
-				return msg.embed({ color: colors.red, description: 'you have already put a bet in this game of roulette.' });
+				return msg.embed({
+					color: _sdata.colors.red,
+					description: 'you have already put a bet in this game of roulette.'
+				});
 			}
 
 			roulette.join(msg.author, bet, space);
 			Currency.removeBalance(msg.author.id, bet);
 
 			return msg.embed({
-				color: colors.green,
+				color: _sdata.colors.green,
 				description: `you have successfully placed your bet of ${Currency.convert(bet)} on ${space}.`
 			});
 		}
@@ -86,7 +93,7 @@ module.exports = class RouletteCommand extends Command {
 		Currency.removeBalance(msg.author.id, bet);
 
 		return msg.embed({
-			color: colors.blue,
+			color: _sdata.colors.blue,
 			description: stripIndents`
 			A new game of roulette has been initiated!
 
@@ -94,27 +101,30 @@ module.exports = class RouletteCommand extends Command {
 		})
 			.then(async () => {
 				setTimeout(() => msg.embed({
-					color: colors.blue,
+					color: _sdata.colors.blue,
 					description: '5 more seconds for new people to bet.'
 				}), 10000);
-				setTimeout(() => msg.embed({ color: colors.blue, description: 'The roulette starts spinning!' }), 14500);
+				setTimeout(() => msg.embed({
+					color: _sdata.colors.blue,
+					description: 'The roulette starts spinning!'
+				}), 14500);
 
 				const winners = await roulette.awaitPlayers(16000).filter(player => player.winnings !== 0);
 
 				winners.forEach(winner => Currency.changeBalance(winner.user.id, winner.winnings));
 
 				return msg.embed({
-					color: roulette.winSpaces[1] ? colors.black : colors.red,
+					color: roulette.winSpaces[1] ? _sdata.colors.black : _sdata.colors.red,
 					description: stripIndents`
 						The ball landed on: **${roulette.winSpaces[1]
-							? roulette.winSpaces[1]
-							: ''} ${roulette.winSpaces[0]}**!
+		? roulette.winSpaces[1]
+		: ''} ${roulette.winSpaces[0]}**!
 
 						${winners.length !== 0
-							? `__**Winners:**__
+		? `__**Winners:**__
 							${winners.map(winner => `${winner.user.username} won ${Currency.convert(winner.winnings)}`)
-								.join('\n')}`
-							: '__**No winner.**__'}
+		.join('\n')}`
+		: '__**No winner.**__'}
 					`
 				});
 			});

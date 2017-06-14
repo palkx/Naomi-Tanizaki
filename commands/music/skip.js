@@ -1,13 +1,13 @@
 const { Command } = require('discord.js-commando');
 const { oneLine } = require('common-tags');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 module.exports = class SkipSongCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'skip',
 			group: 'music',
 			memberName: 'skip',
-			description: 'Skips the song that is currently playing.',
+			description: '`AL: low` Skips the song that is currently playing.',
 			details: oneLine`
 				If there are 3 people or fewer (excluding the bot) in the voice channel, the skip will be immediate.
 				With at least 4 people, a voteskip will be started with 15 seconds to accept votes.
@@ -25,24 +25,28 @@ module.exports = class SkipSongCommand extends Command {
 		this.votes = new Map();
 	}
 
-	run(msg, args) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	run (msg, args) {
 		const queue = this.queue.get(msg.guild.id);
 		if (!queue) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `${msg.author}, there isn't a song playing right now, silly.`
 			});
 		}
 		if (!queue.voiceChannel.members.has(msg.author.id)) {
 			return msg.embed({
-				color: colors.red,
+				color: _sdata.colors.red,
 				description: `
 				${msg.author}, you're not in the voice channel. You better not be trying to mess with their mojo, man.`
 			});
 		}
 		if (!queue.songs[0].dispatcher) {
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: `${msg.author}, the song hasn't even begun playing yet. Why not give it a chance?`
 			});
 		}
@@ -54,7 +58,7 @@ module.exports = class SkipSongCommand extends Command {
 			&& args.toLowerCase() === 'force');
 		if (force) {
 			return msg.embed({
-				color: colors.green,
+				color: _sdata.colors.green,
 				description: `${msg.author}, ${this.skip(msg.guild, queue)}`
 			});
 		}
@@ -63,7 +67,7 @@ module.exports = class SkipSongCommand extends Command {
 		if (vote && vote.count >= 1) {
 			if (vote.users.some(user => user === msg.author.id)) {
 				return msg.embed({
-					color: colors.blue,
+					color: _sdata.colors.blue,
 					description: `${msg.author}, you've already voted to skip the song.`
 				});
 			}
@@ -72,7 +76,7 @@ module.exports = class SkipSongCommand extends Command {
 			vote.users.push(msg.author.id);
 			if (vote.count >= threshold) {
 				return msg.embed({
-					color: colors.green,
+					color: _sdata.colors.green,
 					description: `${msg.author}, ${this.skip(msg.guild, queue)}`
 				});
 			}
@@ -80,7 +84,7 @@ module.exports = class SkipSongCommand extends Command {
 			const time = this.setTimeout(vote);
 			const remaining = threshold - vote.count;
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: oneLine`
 				${vote.count} vote${vote.count > 1 ? 's' : ''} received so far,
 				${remaining} more ${remaining > 1 ? 'are' : 'is'} needed to skip.
@@ -100,7 +104,7 @@ module.exports = class SkipSongCommand extends Command {
 			this.votes.set(msg.guild.id, newVote);
 			const remaining = threshold - 1;
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: oneLine`
 				Starting a voteskip.
 				${remaining} more vote${remaining > 1 ? 's are' : ' is'} required for the song to be skipped.
@@ -109,7 +113,7 @@ module.exports = class SkipSongCommand extends Command {
 		}
 	}
 
-	skip(guild, queue) {
+	skip (guild, queue) {
 		if (this.votes.has(guild.id)) {
 			clearTimeout(this.votes.get(guild.id).timeout);
 			this.votes.delete(guild.id);
@@ -120,14 +124,14 @@ module.exports = class SkipSongCommand extends Command {
 		return `Skipped: **${song}**`;
 	}
 
-	setTimeout(vote) {
+	setTimeout (vote) {
 		const time = vote.start + 15000 - Date.now() + ((vote.count - 1) * 5000);
 		clearTimeout(vote.timeout);
 		vote.timeout = setTimeout(() => {
 			this.votes.delete(vote.guild);
 			vote.queue.textChannel.send('', {
 				embed: {
-					color: colors.blue,
+					color: _sdata.colors.blue,
 					description: 'The vote to skip the current song has ended. Get outta here, party poopers.'
 				}
 			});
@@ -135,7 +139,7 @@ module.exports = class SkipSongCommand extends Command {
 		return Math.round(time / 1000);
 	}
 
-	get queue() {
+	get queue () {
 		if (!this._queue) this._queue = this.client.registry.resolveCommand('music:play').queue;
 		return this._queue;
 	}

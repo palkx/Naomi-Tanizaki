@@ -1,15 +1,16 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
+const { PERMITTED_GROUP } = require('../../assets/_data/settings.json');
 const { stripIndents } = require('common-tags');
 const Currency = require('../../structures/currency/Currency');
 
 module.exports = class LockAllCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'lock-all',
 			group: 'economy',
 			memberName: 'lock-all',
-			description: `Disable xp and ${Currency.textSingular} earning on all channels in the server.`,
+			description: `\`AL: owner, perm_group\` Disable xp and ${Currency.textSingular} earning on all channels.`,
 			guildOnly: true,
 			throttling: {
 				usages: 2,
@@ -18,11 +19,12 @@ module.exports = class LockAllCommand extends Command {
 		});
 	}
 
-	hasPermission(msg) {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('MANAGE_GUILD');
+	hasPermission (msg) {
+		return this.client.isOwner(msg.author)
+			|| msg.member.roles.exists('name', PERMITTED_GROUP);
 	}
 
-	run(msg) {
+	run (msg) {
 		const channels = msg.guild.channels.filter(channel => channel.type === 'text');
 		const channelLocks = this.client.provider.get(msg.guild.id, 'locks', []);
 		for (const channel of channels.values()) {
@@ -33,7 +35,7 @@ module.exports = class LockAllCommand extends Command {
 
 		this.client.provider.set(msg.guild.id, 'locks', channelLocks);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: stripIndents`
 			${msg.author}, all channels on this server have been locked.
 			You can no longer earn xp or ${Currency.textPlural} anywhere.

@@ -1,12 +1,12 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 module.exports = class EchoCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'echo',
 			group: 'fun',
 			memberName: 'echo',
-			description: 'Repeats your message.',
+			description: '`AL: low` Repeats your message.',
 			guildOnly: true,
 			throttling: {
 				usages: 2,
@@ -25,9 +25,13 @@ module.exports = class EchoCommand extends Command {
 		});
 	}
 
-	async run(msg, { message }) { // eslint-disable-line require-await
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, { message }) { // eslint-disable-line require-await
 		msg.delete();
 
-		return msg.embed({ color: colors.dark_grey, description: message });
+		return msg.embed({ color: _sdata.colors.dark_grey, description: message });
 	}
 };

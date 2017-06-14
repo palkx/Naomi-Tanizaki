@@ -1,17 +1,17 @@
 const { Command } = require('discord.js-commando');
-const colors = require('../../assets/_data/colors.json');
+const _sdata = require('../../assets/_data/static_data.json');
 const moment = require('moment');
 const { stripIndents } = require('common-tags');
 const Currency = require('../../structures/currency/Currency');
 const Daily = require('../../structures/currency/Daily');
 
 module.exports = class DailyCommand extends Command {
-	constructor(client) {
+	constructor (client) {
 		super(client, {
 			name: 'daily',
 			group: 'economy',
 			memberName: 'daily',
-			description: `Receive or gift your daily ${Currency.textPlural}.`,
+			description: `\`AL: low\` Receive or gift your daily ${Currency.textPlural}.`,
 			guildOnly: true,
 			throttling: {
 				usages: 2,
@@ -29,14 +29,18 @@ module.exports = class DailyCommand extends Command {
 		});
 	}
 
-	async run(msg, args) {
+	hasPermission (msg) {
+		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+	}
+
+	async run (msg, args) {
 		const received = await Daily.received(msg.author.id);
 		const member = args.member || msg.member;
 
 		if (received) {
 			const nextDaily = await Daily.nextDaily(msg.author.id);
 			return msg.embed({
-				color: colors.blue,
+				color: _sdata.colors.blue,
 				description: stripIndents`
 				${msg.author}, you have already received your daily ${Currency.textPlural}.
 				You can receive your next daily in ${moment.duration(nextDaily).format('hh [hours] mm [minutes]')}`
@@ -46,7 +50,7 @@ module.exports = class DailyCommand extends Command {
 		if (member.id !== msg.author.id) {
 			Daily.receive(msg.author.id, member.id);
 			return msg.embed({
-				color: colors.green,
+				color: _sdata.colors.green,
 				description: `
 				${msg.author}, ${member} has successfully received your daily ${Currency.convert(Daily.dailyDonationPayout)}.`
 			});
@@ -54,7 +58,7 @@ module.exports = class DailyCommand extends Command {
 
 		Daily.receive(msg.author.id);
 		return msg.embed({
-			color: colors.green,
+			color: _sdata.colors.green,
 			description: `${msg.author}, you have successfully received your daily ${Currency.convert(Daily.dailyPayout)}.`
 		});
 	}
