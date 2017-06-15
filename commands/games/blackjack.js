@@ -23,7 +23,7 @@ module.exports = class BlackjackCommand extends Command {
 					key: 'bet',
 					prompt: `how many ${Currency.textPlural} do you want to bet?\n`,
 					type: 'integer',
-					validate: async (bet, msg) => {
+					validate: async(bet, msg) => {
 						bet = parseInt(bet);
 						const balance = await Currency.getBalance(msg.author.id);
 
@@ -66,7 +66,7 @@ module.exports = class BlackjackCommand extends Command {
 			color: _sdata.colors.blue,
 			description: oneLine`
 			New game of blackjack started with ${msg.member.displayName} with a bet of ${Currency.convert(bet)}!`
-		}).then(async () => {
+		}).then(async() => {
 			const balance = await Currency.getBalance(msg.author.id);
 			const playerHand = blackjack.getHand();
 			let dealerHand = blackjack.getHand();

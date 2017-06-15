@@ -72,7 +72,7 @@ module.exports = class RussianRouletteCommand extends Command {
 			A new game of russian roulette has been initiated!
 
 			Use the ${msg.usage()} command in the next 15 seconds to join!`
-		}).then(async () => {
+		}).then(async() => {
 			setTimeout(() => msg.embed({
 				color: _sdata.colors.blue,
 				description: '5 more seconds for new people to join'
