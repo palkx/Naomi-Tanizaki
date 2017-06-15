@@ -70,7 +70,7 @@ module.exports = class ApproveRequestCommand extends Command {
 			color: _sdata.colors.green,
 			description: `${msg.author}, successfully approved request #${request.id}!`
 		})
-			.then(async () => {
+			.then(async() => {
 				const messages = await msg.channel.fetchMessages({ after: msg.id });
 				const requestMessage = await msg.channel.fetchMessage(request.requestMessage);
 				messages.deleteAll();

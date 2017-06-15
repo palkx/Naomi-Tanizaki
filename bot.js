@@ -142,7 +142,7 @@ client.on('error', winston.error)
 			const xpEarned = Math.ceil(Math.random() * 9) + 3;
 			const oldLevel = await Experience.getLevel(message.author.id);
 
-			Experience.addExperience(message.author.id, xpEarned).then(async () => {
+			Experience.addExperience(message.author.id, xpEarned).then(async() => {
 				const newLevel = await Experience.getLevel(message.author.id);
 
 				if (newLevel > oldLevel) {
@@ -157,7 +157,7 @@ client.on('error', winston.error)
 			}, 60 * 1000);
 		}
 	})
-	.on('messageReactionAdd', async (reaction, user) => {
+	.on('messageReactionAdd', async(reaction, user) => {
 		if (reaction.emoji.name !== '⭐') return;
 		const { message } = reaction;
 		const starboard = message.guild.channels.find('name', 'starboard');

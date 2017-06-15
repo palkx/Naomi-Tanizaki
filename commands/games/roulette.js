@@ -24,7 +24,7 @@ module.exports = class RouletteCommand extends Command {
 					key: 'bet',
 					prompt: `how many ${Currency.textPlural} do you want to bet?\n`,
 					type: 'integer',
-					validate: async (bet, msg) => {
+					validate: async(bet, msg) => {
 						bet = parseInt(bet);
 						const balance = await Currency.getBalance(msg.author.id);
 
@@ -99,7 +99,7 @@ module.exports = class RouletteCommand extends Command {
 
 			Use ${msg.usage()} in the next 15 seconds to place your bet.`
 		})
-			.then(async () => {
+			.then(async() => {
 				setTimeout(() => msg.embed({
 					color: _sdata.colors.blue,
 					description: '5 more seconds for new people to bet.'

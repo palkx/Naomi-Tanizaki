@@ -43,7 +43,7 @@
     "request-promise": "^4.2.1",
     "sequelize": "^4.1.0",
     "simple-youtube-api": "^2.1.0",
-    "snekfetch": "^3.1.8",
+    "snekfetch": "^3.1.11",
     "sodium": "^2.0.1",
     "tsubaki": "^1.1.1",
     "winston": "^2.3.1",
@@ -51,10 +51,10 @@
   },
   "devDependencies": {
     "eslint": "^4.0.0",
-    "eslint-config-aqua": "iSm1le/eslint-config"
+    "eslint-config-isalpha": "^1.0.3"
   },
   "eslintConfig": {
-    "extends": "aqua",
+    "extends": "isalpha",
     "rules": {
       "no-process-env": "off"
     }

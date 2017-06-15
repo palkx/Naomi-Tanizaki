@@ -2,7 +2,7 @@ const UserProfile = require('../../models/UserProfile');
 const ItemGroup = require('./ItemGroup');
 const Redis = require('../Redis');
 
-setInterval(async () => {
+setInterval(async() => {
 	const inventories = await Redis.db.hgetallAsync('inventory');
 	const ids = Object.keys(inventories || {});
 

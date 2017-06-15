@@ -70,7 +70,7 @@ module.exports = class FixIssueCommand extends Command {
 			color: _sdata.colors.green,
 			description: `${msg.author}, successfully fixed issue #${issue.id}!`
 		})
-			.then(async () => {
+			.then(async() => {
 				const messages = await msg.channel.fetchMessages({ after: msg.id });
 				const issueMessage = await msg.channel.fetchMessage(issue.issueMessage);
 				messages.deleteAll();

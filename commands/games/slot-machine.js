@@ -47,7 +47,7 @@ module.exports = class SlotMachineCommand extends Command {
 					label: 'amount of coins',
 					prompt: 'how many coins do you want to bet?\n',
 					type: 'integer',
-					validate: async (coins, msg) => {
+					validate: async(coins, msg) => {
 						coins = parseInt(coins);
 						const inventory = await Inventory.fetchInventory(msg.author.id);
 						const userCoins = (inventory.content.coin || { amount: 0 }).amount;
