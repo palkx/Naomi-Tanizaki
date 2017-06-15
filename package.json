@@ -1,7 +1,7 @@
 {
   "name": "naomi-tanizaki-discord-bot",
-  "version": "1.0.8",
-  "build": "170614",
+  "version": "1.0.9",
+  "build": "170615",
   "description": "discord bot",
   "main": "bot.js",
   "scripts": {
@@ -26,7 +26,7 @@
     "canvas": "automattic/node-canvas",
     "cheerio": "^1.0.0-rc.1",
     "cleverbot.io": "^1.0.4",
-    "discord.js": "hydrabolt/discord.js",
+    "discord.js": "hydrabolt/discord.js#stable",
     "discord.js-commando": "gawdl3y/discord.js-commando",
     "erlpack": "hammerandchisel/erlpack",
     "libsodium-wrappers": "^0.5.1",
