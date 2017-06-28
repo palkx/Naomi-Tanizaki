@@ -10,14 +10,14 @@ promisifyAll(redisClient.Multi.prototype);
 const redis = redisClient.createClient({ host: REDIS, port: 6379 });
 
 class Redis {
-	static get db() {
-		return redis;
-	}
+    static get db() {
+        return redis;
+    }
 
-	static start() {
-		redis.on('error', error => winston.error(`[REDIS]: Encountered error: \n${error}`))
+    static start() {
+        redis.on('error', error => winston.error(`[REDIS]: Encountered error: \n${error}`))
             .on('reconnecting', () => winston.warn('[REDIS]: Reconnecting...'));
-	}
+    }
 }
 
 module.exports = Redis;
