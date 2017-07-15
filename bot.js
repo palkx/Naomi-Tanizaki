@@ -102,7 +102,7 @@ client.on('error', winston.error)
         await member.guild.defaultChannel.send({
             embed: {
                 color: _sdata.colors.green,
-                description: `New user joined. Welcome, ${member.user}, to this server.`
+                description: `New user joined. Welcome, ${member.user} (${member.user.tag}), to this server.`
             }
         }).catch(err => null); // eslint-disable-line no-unused-vars, handle-callback-err
     })
@@ -110,7 +110,7 @@ client.on('error', winston.error)
         await member.guild.defaultChannel.send({
             embed: {
                 color: _sdata.colors.red,
-                description: `User leaved. Bye, ${member.user}.`
+                description: `User leaved. Bye, ${member.user} (${member.user.tag}).`
             }
         }).catch(err => null); // eslint-disable-line no-unused-vars, handle-callback-err
     })
