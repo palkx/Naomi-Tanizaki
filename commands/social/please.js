@@ -1,6 +1,7 @@
 const Canvas = require('canvas');
 const _sdata = require('../../assets/_data/static_data.json');
 const { Command } = require('discord.js-commando');
+const path = require('path');
 
 module.exports = class PleaseCommand extends Command {
     constructor(client) {
@@ -32,7 +33,11 @@ module.exports = class PleaseCommand extends Command {
     }
 
     run(msg, args) {
-        const member = args.member.displayName || 'Grey';
+        const member = args.member.displayName || 'iSm1le';
+
+        Canvas.registerFont(path.join(__dirname, '..', '..', 'assets', 'profile', 'fonts', 'Roboto.ttf'), { family: 'Roboto' }); // eslint-disable-line max-len
+        Canvas.registerFont(path.join(__dirname, '..', '..', 'assets', 'profile', 'fonts', 'NotoEmoji-Regular.ttf'), { family: 'Roboto' }); // eslint-disable-line max-len
+
         const canvas = new Canvas();
         const ctx = canvas.getContext('2d');
         const { width, height } = this.textSizes(ctx, member);
@@ -41,7 +46,7 @@ module.exports = class PleaseCommand extends Command {
         canvas.height = height;
 
         const generate = () => {
-            ctx.font = '700 32px Arial';
+            ctx.font = '700 32px Roboto';
             ctx.fillStyle = '#B93F2C';
             ctx.textAlign = 'center';
             ctx.fillText(member, canvas.width / 2, 35);
