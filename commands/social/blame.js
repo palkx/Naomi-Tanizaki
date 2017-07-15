@@ -59,7 +59,7 @@ module.exports = class BlameCommand extends Command {
     }
 
     _textSizes(ctx, text) {
-        ctx.font = '700 32px Roboto';
+        ctx.font = '700 32px Arial';
         const dimensions = ctx.measureText(text);
         const sizes = {
             width: dimensions.width + 20,
