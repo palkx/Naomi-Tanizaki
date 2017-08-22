@@ -4,62 +4,62 @@ const _sdata = require('../../assets/_data/static_data.json');
 const { MAX_LENGTH } = require('../../assets/_data/settings.json');
 
 module.exports = class MaxLengthCommand extends Command {
-	constructor(client) {
-		super(client, {
-			name: 'max-length',
-			aliases: ['max-duration', 'max-song-length', 'max-song-duration'],
-			group: 'music',
-			memberName: 'max-length',
-			description: '`AL: owner, full` Shows or sets the max song length.',
-			format: '[minutes|"default"]',
-			details: oneLine`
+    constructor(client) {
+        super(client, {
+            name: 'max-length',
+            aliases: ['max-duration', 'max-song-length', 'max-song-duration'],
+            group: 'music',
+            memberName: 'max-length',
+            description: '`AL: owner, full` Shows or sets the max song length.',
+            format: '[minutes|"default"]',
+            details: oneLine`
 				This is the maximum length of a song that users may queue, in minutes.
 				The default is ${MAX_LENGTH}.
 				Only administrators may change this setting.
 			`,
-			guildOnly: true,
-			throttling: {
-				usages: 2,
-				duration: 3
-			}
-		});
-	}
+            guildOnly: true,
+            throttling: {
+                usages: 2,
+                duration: 3
+            }
+        });
+    }
 
-	hasPermission(msg) {
-		return this.client.isOwner(msg.author)
-			|| this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.full;
-	}
+    hasPermission(msg) {
+        return this.client.isOwner(msg.author)
+   || this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.full;
+    }
 
-	run(msg, args) {
-		if (!args) {
-			const maxLength = this.client.provider.get(msg.guild.id, 'maxLength', MAX_LENGTH);
-			return msg.embed({
-				color: _sdata.colors.red,
-				description: `${msg.author}, the maximum length of a song is ${maxLength} minutes.`
-			});
-		}
+    run(msg, args) {
+        if (!args) {
+            const maxLength = this.client.provider.get(msg.guild.id, 'maxLength', MAX_LENGTH);
+            return msg.embed({
+                color: _sdata.colors.red,
+                description: `${msg.author}, the maximum length of a song is ${maxLength} minutes.`
+            });
+        }
 
-		if (args.toLowerCase() === 'default') {
-			this.client.provider.remove(msg.guild.id, 'maxLength');
-			return msg.embed({
-				color: _sdata.colors.green,
-				description: `
+        if (args.toLowerCase() === 'default') {
+            this.client.provider.remove(msg.guild.id, 'maxLength');
+            return msg.embed({
+                color: _sdata.colors.green,
+                description: `
 				${msg.member}, set the maximum song length to the default (currently ${MAX_LENGTH} minutes).`
-			});
-		}
+            });
+        }
 
-		const maxLength = parseInt(args);
-		if (isNaN(maxLength) || maxLength <= 0) {
-			return msg.embed({
-				color: _sdata.colors.red,
-				description: `${msg.author}, invalid number provided.`
-			});
-		}
+        const maxLength = parseInt(args);
+        if (isNaN(maxLength) || maxLength <= 0) {
+            return msg.embed({
+                color: _sdata.colors.red,
+                description: `${msg.author}, invalid number provided.`
+            });
+        }
 
-		this.client.provider.set(msg.guild.id, 'maxLength', maxLength);
-		return msg.embed({
-			color: _sdata.colors.green,
-			description: `${msg.author}, set the maximum song length to ${maxLength} minutes.`
-		});
-	}
+        this.client.provider.set(msg.guild.id, 'maxLength', maxLength);
+        return msg.embed({
+            color: _sdata.colors.green,
+            description: `${msg.author}, set the maximum song length to ${maxLength} minutes.`
+        });
+    }
 };

@@ -1,67 +1,72 @@
 const Canvas = require('canvas');
 const _sdata = require('../../assets/_data/static_data.json');
 const { Command } = require('discord.js-commando');
+const path = require('path');
 
 module.exports = class BlameCommand extends Command {
-	constructor(client) {
-		super(client, {
-			name: 'blame',
-			group: 'social',
-			memberName: 'blame',
-			description: '`AL: low` Put the blame on someone.',
-			guildOnly: true,
-			throttling: {
-				usages: 1,
-				duration: 10
-			},
+    constructor(client) {
+        super(client, {
+            name: 'blame',
+            group: 'social',
+            memberName: 'blame',
+            description: '`AL: low` Put the blame on someone.',
+            guildOnly: true,
+            throttling: {
+                usages: 1,
+                duration: 10
+            },
 
-			args: [
-				{
-					key: 'member',
-					prompt: 'whom would you like to blame?\n',
-					type: 'member',
-					default: ''
-				}
-			]
-		});
-	}
+            args: [
+                {
+                    key: 'member',
+                    prompt: 'whom would you like to blame?\n',
+                    type: 'member',
+                    default: ''
+                }
+            ]
+        });
+    }
 
-	hasPermission(msg) {
-		return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
-	}
+    hasPermission(msg) {
+        return this.client.provider.get(msg.author.id, 'userLevel') >= _sdata.aLevel.low;
+    }
 
-	run(msg, args) {
-		const member = args.member.displayName || 'Crawl';
-		const canvas = new Canvas();
-		const ctx = canvas.getContext('2d');
-		const { width, height } = this._textSizes(ctx, member);
+    run(msg, args) {
+        const member = args.member.displayName || 'iSm1le';
 
-		canvas.width = width < 130 ? 130 : width;
-		canvas.height = height;
+        Canvas.registerFont(path.join(__dirname, '..', '..', 'assets', 'profile', 'fonts', 'Roboto.ttf'), { family: 'Roboto' }); // eslint-disable-line max-len
+        Canvas.registerFont(path.join(__dirname, '..', '..', 'assets', 'profile', 'fonts', 'NotoEmoji-Regular.ttf'), { family: 'Roboto' }); // eslint-disable-line max-len
 
-		const generate = () => {
-			ctx.font = '700 32px Arial';
-			ctx.fillStyle = '#B93F2C';
-			ctx.textAlign = 'center';
-			ctx.fillText('Blame', canvas.width / 2, 35);
+        const canvas = new Canvas();
+        const ctx = canvas.getContext('2d');
+        const { width, height } = this._textSizes(ctx, member);
 
-			ctx.fillStyle = '#F01111';
-			ctx.fillText(member, canvas.width / 2, 70);
-		};
-		generate();
+        canvas.width = width < 130 ? 130 : width;
+        canvas.height = height;
 
-		return msg.channel.send({ files: [{ attachment: canvas.toBuffer(), name: 'blame.png' }] });
-	}
+        const generate = () => {
+            ctx.font = '700 32px Roboto';
+            ctx.fillStyle = '#B93F2C';
+            ctx.textAlign = 'center';
+            ctx.fillText('Blame', canvas.width / 2, 35);
 
-	_textSizes(ctx, text) {
-		ctx.font = '700 32px Arial';
-		const dimensions = ctx.measureText(text);
-		const sizes = {
-			width: dimensions.width + 20,
-			height: dimensions.emHeightAscent + 54
-		};
-		if (dimensions.actualBoundingBoxDescent) sizes.height += dimensions.actualBoundingBoxDescent - 3;
+            ctx.fillStyle = '#F01111';
+            ctx.fillText(member, canvas.width / 2, 70);
+        };
+        generate();
 
-		return sizes;
-	}
+        return msg.channel.send({ files: [{ attachment: canvas.toBuffer(), name: 'blame.png' }] });
+    }
+
+    _textSizes(ctx, text) {
+        ctx.font = '700 32px Arial';
+        const dimensions = ctx.measureText(text);
+        const sizes = {
+            width: dimensions.width + 20,
+            height: dimensions.emHeightAscent + 54
+        };
+        if (dimensions.actualBoundingBoxDescent) sizes.height += dimensions.actualBoundingBoxDescent - 3;
+
+        return sizes;
+    }
 };
