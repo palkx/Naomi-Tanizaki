@@ -204,7 +204,7 @@ module.exports = class BlackjackCommand extends Command {
                             value: stripIndents`
 								${currentHand.join(' - ')}
 								Value: ${Blackjack.isSoft(currentHand)
-                            /* eslint-disable indent */
+    /* eslint-disable indent */
                                      ? 'Soft '
                                      : ''}${Blackjack.handValue(currentHand)}`,
                             inline: true
