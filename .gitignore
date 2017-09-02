@@ -30,6 +30,7 @@ node_modules
 .idea
 .vscode
 commands/_util/test.js
+commands/games/roulette.js
 deploy/deploy_key
 deploy/deploy_key.pub
 docker-compose.yml
