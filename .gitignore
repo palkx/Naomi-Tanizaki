@@ -32,7 +32,5 @@ node_modules
 commands/_util/test.js
 deploy/deploy_key
 deploy/deploy_key.pub
-docker-compose.yml
-settings.json
-docsdata.json
+/assets/_data/settings.json
 build.sh

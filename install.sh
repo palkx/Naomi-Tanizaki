@@ -40,4 +40,3 @@ yarn install
 yarn run test
 
 echo "Now create a database in postgresql and fill out settings.json in assets/_data/"
-sleep 10
