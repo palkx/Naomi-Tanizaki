@@ -1,6 +1,6 @@
 FROM ubuntu:xenial
 
-LABEL maintainer "iSm1le <sm1leua@ya.ru>"
+LABEL maintainer "iSm1le <sm1leua@xaff.ru>"
 
 RUN apt update
 RUN apt upgrade -y
