@@ -52,5 +52,5 @@ pm2 start bot.js
 pm2 save
 ```
 ## Author
-**[iSm1le](https://github.com/iSm1le/)** © , Released under the [MIT](https://github.com/iSm1le/Naomi-Tanizaki/blob/master/LICENSE) License.<br>
+© **[iSm1le](https://github.com/iSm1le/)**, Released under the [MIT](https://github.com/iSm1le/Naomi-Tanizaki/blob/master/LICENSE) License.<br>
 Authored and maintained by iSm1le.
